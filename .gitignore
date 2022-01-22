@@ -138,3 +138,16 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+/blockchain_visiable_v2.zip
+/.idea/.gitignore
+/.idea/blockchain_visiable.iml
+/blockchain_visiable_v1.zip
+/blockchain_visiable_v3.zip
+/blockchain_visiable_v4.zip
+/.idea/dataSources.xml
+/configs/file.svg
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/configs/pygraphviz-1.7-cp310-cp310-win_amd64.whl
+/.idea/vcs.xml
