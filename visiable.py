@@ -14,21 +14,21 @@ def vis_init():
             nodesmap[edge['addrfrom']] = Node(edge['addrfrom'])
         if edge['addrto'] not in nodesmap:
             nodesmap[edge['addrto']] = Node(edge['addrto'])
-        edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(edge['transferhash'],
-                                                                             nodesmap[edge['addrto']],
-                                                                             {edge["symbol"]: edge["value"],
-                                                                              'data': edge["blocktime"]})
+        edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(nodesmap[edge['addrto']], [
+            (edge['transferhash'], edge["blocktime"], edge["symbol"], edge["value"])])
     return nodesmap, edgesmap
 
 
 def getedges(nodes_get):
     edges_get: list[Edge] = []
-    for _ in range(config['TURN']):
+    repeat_nodes: set[Node] = set(nodes_get)
+    for _ in range(config['TURN']-1):
         nextnodes = []
         for node in nodes_get:
             for edge in node.edges_generate():
-                nextnodes.append(edge.nodeto)
                 edges_get.append(edge)
+                if edge.nodeto not in repeat_nodes:
+                    nextnodes.append(edge.nodeto)
         nodes_get = nextnodes
     return edges_get
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     edges = getedges(nodes)
     G.add_edges_from([(i.nodefrom.address, i.nodeto.address) for i in edges])
-    # G = nx.relabel_nodes(G, {node: node.address for node in list(nodesmap.values())})
+
     # create a png file
     G.layout(prog='dot')  # use dot
     G.draw('./configs/file.svg')

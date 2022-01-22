@@ -108,29 +108,22 @@ class Node:
             yield head
             head = head.lastedge
 
-    def add_edge(self, transferhash, nodeto, transfer):
+    def add_edge(self, nodeto, info):
         for edge in self.edges_generate():
             if edge.nodeto == nodeto:
-                edge.add_transfer(transfer)
+                edge.info.append(info)
                 break
         else:
-            edge = Edge(transferhash, self, nodeto, transfer, self.head)
+            edge = Edge(self, nodeto, info, self.head)
             self.head = edge
         return edge
 
 
 class Edge:
-    def __init__(self, transferhash: str, nodefrom: Node, nodeto: Node, transfer: dict[str, float],
+    def __init__(self, nodefrom: Node, nodeto: Node, info: list[tuple[str, str, str, float]],
                  lastedge: 'Edge' = None):
-        self.transferhash = transferhash
         self.nodefrom = nodefrom
         self.nodeto = nodeto
-        self.transfer = transfer
+        self.info = info
         self.lastedge = lastedge
 
-    def add_transfer(self, transfer):
-        (key, value) = list(transfer.items())[0]
-        if key in self.transfer.keys():
-            self.transfer[key] += value
-        else:
-            self.transfer[key] = value
