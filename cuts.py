@@ -1,11 +1,7 @@
 # coding=utf-8
 from config import count, config
 from model import Label, Transfer
-from utils import outof_list, date_transform
-
-
-def use(_):
-    ...
+from utils import outof_list, date_transform, use
 
 
 #   剪掉合约

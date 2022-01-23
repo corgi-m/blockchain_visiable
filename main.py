@@ -1,6 +1,7 @@
 # coding=utf-8
 from cuts import nodecut_reg, is_count
-from utils import get_total_transaction, get_total_transfer, get_nodes_transfer, get_nodes_transaction, save_data
+from get import get_total_transaction, get_total_transfer, get_nodes_transfer, get_nodes_transaction
+from save import save_data
 from config import config, init
 from model import Label
 

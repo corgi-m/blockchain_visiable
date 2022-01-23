@@ -1,9 +1,6 @@
 from vismodel import Edge, Node
 from config import config, count
-
-
-def use(_):
-    ...
+from utils import use
 
 
 def pre_cut(edge: Edge):

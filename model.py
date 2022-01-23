@@ -60,15 +60,6 @@ class Label(DB):
         return account
 
 
-class Count(DB):
-    _dbname = "counts"
-    _dbcolumn = ["address", "count"]
-    _dbsave = "REPLACE INTO %s (%s, %s) VALUES(%s, %s)"
-
-    def __init__(self, address, count):
-        super().__init__([address, count])
-
-
 class Transfer(DB):
     _dbname = "transfers"
     _dbcolumn = ["transferhash", "addrfrom", "addrto", "symbol", "value", "blocktime"]

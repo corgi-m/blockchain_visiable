@@ -4,7 +4,7 @@ import argparse
 import pymysql
 import sys
 
-count = set()  # 计数变量
+count: set[any] = set()  # 计数变量
 config: dict[str, any] = {}
 
 
