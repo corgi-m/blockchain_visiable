@@ -61,7 +61,7 @@ def vismain():
     nodes = [nodesmap[i] for i in config["visnodes"]]
 
     edges = getedges(nodes)
-    G.add_edges_from([(i.getnodefrom.getaddress, i.getnodeto.getaddress) for i in edges])
+    G.add_edges_from([(i.getnodefrom.getaddress, i.getnodeto.getaddress) for i in edges], penwidth=2)
 
     # create a png file
     G.layout(prog='dot')  # use dot
