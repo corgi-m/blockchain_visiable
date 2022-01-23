@@ -55,12 +55,11 @@ def getedges(nodes_get):
     return edges_get
 
 
-if __name__ == "__main__":
-    init()
+def vismain():
     vis_init()
     G = pgv.AGraph(directed=True)
-
-    nodes = [nodesmap['TYAy9bXUZ9Hf3VcBkdghfbuRScCcxRHkh1']]
+    print(nodesmap['TYAy9bXUZ9Hf3VcBkdghfbuRScCcxRHkh1'])
+    nodes = [nodesmap[i] for i in config["visnodes"]]
 
     edges = getedges(nodes)
     G.add_edges_from([(i.getnodefrom.getaddress, i.getnodeto.getaddress) for i in edges])
@@ -68,3 +67,7 @@ if __name__ == "__main__":
     # create a png file
     G.layout(prog='dot')  # use dot
     G.draw('./configs/file.svg')
+
+
+if __name__ == "__main__":
+    init()

@@ -4,6 +4,7 @@ from get import get_total_transaction, get_total_transfer, get_nodes_transfer, g
 from save import save_data
 from config import config, init
 from model import Label
+from visiable import vismain
 
 
 def get_next_nodes(node):
@@ -44,4 +45,7 @@ def main():
 
 if __name__ == "__main__":
     init()
-    main()
+    if not config['visit']:
+        main()
+    else:
+        vismain()

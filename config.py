@@ -40,7 +40,9 @@ def parse_nodes(file) -> list[str]:
 def get_config(args: argparse.Namespace):
     parse_config(args.config)
     config["nodes"] = parse_nodes(args.nodes)
+    config["visnodes"] = parse_nodes(args.visnodes)
     config['proxies'] = parse_proxy(args.proxy)
+    config['visit'] = args.visit
     if "apiKey" not in config:
         config['apiKey'] = args.apiKey
     if "log" not in config:
@@ -56,9 +58,11 @@ def get_config(args: argparse.Namespace):
 def init():
     parser = argparse.ArgumentParser(prog='blockchain_visiable', description='developed by corgi')
     parser.add_argument('-p', '--proxy', type=str)
+    parser.add_argument('-v', '--visit', action='store_true')
     parser.add_argument('-k', '--apiKey', type=str, default="301cac89-b56c-45ab-82b4-33656d074f73")
     parser.add_argument('-n', '--nodes', type=argparse.FileType('r'), default='./configs/nodeslist.txt')
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s 3.0')
+    parser.add_argument('-N', '--visnodes', type=argparse.FileType('r'), default='./configs/visnodes.txt')
+    parser.add_argument('-V', '--version', action='version', version='%(prog)s 3.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
     parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('w'), default='./configs/error.log')
     parser.add_argument('-d', '--deep', type=int, default=3)
