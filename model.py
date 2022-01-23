@@ -93,37 +93,3 @@ class Balance(DB):
 
     def __init__(self, address, balance):
         super().__init__([address, balance])
-
-
-class Node:
-    def __init__(self, address: str, balance: dict[str, float] = None, label: str = None):
-        self.address = address
-        self.balance = balance
-        self.label = label
-        self.head = None
-
-    def edges_generate(self):
-        head = self.head
-        while head is not None:
-            yield head
-            head = head.lastedge
-
-    def add_edge(self, nodeto, info):
-        for edge in self.edges_generate():
-            if edge.nodeto == nodeto:
-                edge.info.append(info)
-                break
-        else:
-            edge = Edge(self, nodeto, info, self.head)
-            self.head = edge
-        return edge
-
-
-class Edge:
-    def __init__(self, nodefrom: Node, nodeto: Node, info: list[tuple[str, str, str, float]],
-                 lastedge: 'Edge' = None):
-        self.nodefrom = nodefrom
-        self.nodeto = nodeto
-        self.info = info
-        self.lastedge = lastedge
-

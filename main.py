@@ -5,7 +5,7 @@ from config import config, init
 from model import Label
 
 
-def get_next_node(node):
+def get_next_nodes(node):
     # get length
     len_edges_transfer = get_total_transfer(node)
     len_edges_transaction = get_total_transaction(node)
@@ -28,7 +28,7 @@ def jungle(nodes):
     for turn in range(config['TURN']):
         next_nodes = set()
         for node in nodes:
-            next_nodes = next_nodes.union(get_next_node(node))
+            next_nodes = next_nodes.union(get_next_nodes(node))
         print(turn, len(next_nodes))
         nodes = next_nodes
 

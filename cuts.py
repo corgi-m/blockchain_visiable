@@ -5,7 +5,7 @@ from utils import outof_list, date_transform
 
 
 def use(_):
-    pass
+    ...
 
 
 #   剪掉合约
@@ -25,9 +25,8 @@ def is_novalue(edge):
 #  剪掉重复
 def is_count(node):  # 是否出现过，减少重复
     if node in count:
-        count[node] += 1
         return True
-    count[node] = 1
+    count.add(node)
     return False
 
 

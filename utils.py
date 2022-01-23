@@ -97,9 +97,9 @@ def save_balance(address):
 
 
 def save_data():
-    for address, value in count.items():
+    for address in count:
         print(address)
-        save_count(address, value)
+        # save_count(address, value)
         save_balance(address)
 
 
