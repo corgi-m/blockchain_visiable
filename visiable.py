@@ -57,8 +57,7 @@ def getedges(nodes_get):
 
 def vismain():
     vis_init()
-    G = pgv.AGraph(directed=True)
-    print(nodesmap['TYAy9bXUZ9Hf3VcBkdghfbuRScCcxRHkh1'])
+    G = pgv.AGraph(directed=True, rankdir="LR")
     nodes = [nodesmap[i] for i in config["visnodes"]]
 
     edges = getedges(nodes)
