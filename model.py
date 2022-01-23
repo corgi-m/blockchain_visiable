@@ -6,7 +6,7 @@ class DB:
     _dbcolumn = None
     _dbsave = None
     _dbname = None
-    _sqlget = "SELECT * FROM %s"
+    __sqlget = "SELECT * FROM %s"
 
     def __init__(self, dbvalue):
         self._dbvalue = dbvalue
@@ -34,7 +34,7 @@ class DB:
         try:
             cur = config['conn'].cursor()
 
-            cur.execute(cls.sqlformat(cls._sqlget, [cls._dbname]))
+            cur.execute(cls.sqlformat(cls.__sqlget, [cls._dbname]))
             results = cur.fetchall()
             cur.close()
             return results
