@@ -153,4 +153,4 @@ cython_debug/
 /.idea/vcs.xml
 *.html
 
-/result.svg
+result/result.svg
