@@ -1,5 +1,4 @@
 from utils import outof_list
-from vismodel import Balance, balances
 
 
 def infoformat(infos):

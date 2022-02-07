@@ -1,7 +1,7 @@
 # coding=utf-8
 from config import count, config
-from model import Label, Transfer
-from utils import outof_list, date_transform, use
+from utils import outof_list, date_transform
+from spider.save import save_label, save_transfer
 
 
 class Edgecut:
@@ -13,7 +13,8 @@ class Edgecut:
         self.postcut = Postcut(self.edge, self.node, self.from_or_to)
 
     # 边初始化
-    def init_edge(self, edge):
+    @staticmethod
+    def init_edge(edge):
         edge["from"] = outof_list(edge["from"])
         edge["to"] = outof_list(edge["to"])
         return edge
@@ -22,11 +23,8 @@ class Edgecut:
     def cut(self):
         if self.precut.cut():
             return True
-        transfer = Transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
-                            self.edge["to"],
-                            self.edge["symbol"],
-                            self.edge["value"], date_transform(self.edge["blocktime"]))
-        transfer.save()
+        save_transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
+                      self.edge["to"], self.edge["symbol"], self.edge["value"], date_transform(self.edge["blocktime"]))
         if self.postcut.cut():
             return True
         return False
@@ -82,8 +80,7 @@ class Postcut:
     def is_tag(self):
         if self.from_or_to + "Tag" in self.edge and len(self.edge[self.from_or_to + "Tag"]) > 0:
             config['account'][self.node] = self.edge[self.from_or_to + "Tag"]
-            label = Label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
-            label.save()
+            save_label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
             return True
         return False
 

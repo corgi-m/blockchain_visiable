@@ -1,5 +1,4 @@
-from trx.get import get_next_nodes
-from save import save_data
+from trx.get import get_next_nodes, final
 from config import config, count
 from model import Label
 
@@ -19,4 +18,6 @@ def spidermain():
         if i not in count:
             count.add(i)
     jungle(config['nodes'])
-    save_data()
+    final()
+
+
