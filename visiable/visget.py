@@ -1,4 +1,4 @@
-from vismodel import Balance, balances, Edge, nodesappear
+from visiable.vismodel import Balance, balances, Edge, nodesappear
 from config import count, config
 from visiable.viscut import pre_cut, post_cut
 

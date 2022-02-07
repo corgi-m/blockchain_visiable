@@ -2,9 +2,10 @@
 from config import count, config
 from utils import outof_list, date_transform
 from spider.save import save_label, save_transfer
+from spider.cuts import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
 
 
-class Edgecut:
+class Edgecut(ABCEdgecut):
     def __init__(self, edge, from_or_to):
         self.edge = self.init_edge(edge)
         self.node = edge[from_or_to]
@@ -30,7 +31,7 @@ class Edgecut:
         return False
 
 
-class Precut:
+class Precut(ABCPrecut):
     def __init__(self, edge, node, from_or_to):
         self.edge = edge
         self.node = node
@@ -38,7 +39,7 @@ class Precut:
 
     #   剪掉合约
     def is_notransfer(self):
-        if "contractType" in self.edge and config['contractType'] not in self.edge["contractType"]:
+        if "contractType" in self.edge and 'TransferContract' not in self.edge["contractType"]:
             return True
         return False
 
@@ -57,7 +58,7 @@ class Precut:
         return False
 
 
-class Postcut:
+class Postcut(ABCPostcut):
     def __init__(self, edge, node, from_or_to):
         self.edge = edge
         self.node = node
@@ -95,7 +96,7 @@ class Postcut:
         return False
 
 
-class Nodecut:
+class Nodecut(ABCNodecut):
     def __init__(self, node, len_edges):
         self.node = node
         self.len_edges = len_edges

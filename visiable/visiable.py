@@ -1,7 +1,7 @@
 from config import config, init
 from model import Transfer, Balance
 from visiable.visget import getedges, get_balance
-from vismodel import Node, balances, nodesmap, edgesmap, nodesappear
+from visiable.vismodel import Node, balances, nodesmap, edgesmap, nodesappear
 from visiable.visdraw import draw_nodes, draw_edges, graph_init, graph_save
 
 

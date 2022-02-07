@@ -1,7 +1,7 @@
-from net import req_get
+from spider.net import req_get
 from config import config, count
 from utils import outof_list
-from cuts import Edgecut, Nodecut
+from spider.trx.cuts import Edgecut, Nodecut
 from spider.save import save_balance
 import json
 

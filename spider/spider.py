@@ -1,4 +1,4 @@
-from trx.get import get_next_nodes, final
+from spider.trx.get import get_next_nodes, final
 from config import config, count
 from model import Label
 

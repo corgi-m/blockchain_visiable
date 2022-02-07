@@ -1,4 +1,4 @@
-from vismodel import Edge, Node
+from visiable.vismodel import Edge, Node
 from config import config, count
 from utils import use
 

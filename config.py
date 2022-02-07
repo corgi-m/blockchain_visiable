@@ -66,7 +66,7 @@ def init():
     parser.add_argument('-s', '--save', type=argparse.FileType('w'), default='./result/result.svg')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 4.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
-    parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('w'), default='./configs/error.log')
+    parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('a'), default='./configs/error.log')
     parser.add_argument('-d', '--deep', type=int)
     parser.add_argument('-e', '--edgelimit', type=int)
     parser.add_argument('-u', '--valuelimit', type=int)
