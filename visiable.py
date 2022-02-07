@@ -1,27 +1,10 @@
 from config import config, init, count
 from model import Transfer, Balance
-from vismodel import Node, Edge
-from vismodel import Balance as Balancetype
+from vismodel import Node, Edge, balances, nodesmap, edgesmap, nodesappear
 from viscut import pre_cut, post_cut
 import graphviz as gv
-from visutils import *
 from visdraw import *
-
-nodesmap: dict[str, Node] = {}
-edgesmap: dict[str, Edge] = {}
-balances: dict[str, str] = {}
-nodesappear: list[set[Node]] = []
-
-
-def get_balance(address) -> Balancetype:
-    res = {}
-    if address not in balances:
-        return res
-    balance = balances[address]
-    for balan in balance.split(';'):
-        temp = balan.split(',')
-        res[temp[0]] = float(temp[1])
-    return res
+from visutils import get_balance
 
 
 def vis_init():
@@ -59,7 +42,6 @@ def get_next_nodes(node, edges_get):
 
 
 def getedges(nodes_get):
-    global nodesappear
     edges_get: list[Edge] = []
     nodesappear.append(nodes_get)
 
@@ -79,7 +61,7 @@ def vismain():
     G = gv.Digraph(format='svg')
     G.graph_attr.update(ranksep='10', rankdir='LR')
 
-    nodes = [nodesmap[i] for i in config["visnodes"]]
+    nodes = [nodesmap[node] for node in config["visnodes"]]
     for node in nodes:
         node.relation = {node}
         count.add(node)

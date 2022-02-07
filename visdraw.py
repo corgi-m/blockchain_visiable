@@ -1,4 +1,4 @@
-from visutils import *
+from visutils import relationformat, balanceformat, infoformat
 
 
 def draw_nodes(G, nodesappear):

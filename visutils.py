@@ -1,26 +1,38 @@
 from utils import outof_list
+from vismodel import Balance, balances
 
 
-def infoformat(info):
+def infoformat(infos):
     res = ""
     form = "{{transferhash: {0}, blocktime: {1}, symbol: {2}, value: {3}}}\n"
-    for i in info:
-        i = outof_list(i)
-        res += form.format(i[0], i[1], i[2], i[3])
+    for info in infos:
+        info = outof_list(info)
+        res += form.format(info[0], info[1], info[2], info[3])
     return res
 
 
 def balanceformat(balance):
     res = ""
     form = "{{token: {0}, value: {1}}}\n"
-    for i in balance.items():
-        res += form.format(i[0], i[1])
+    for balan in balance.items():
+        res += form.format(balan[0], balan[1])
     return res
 
 
 def relationformat(relation):
     res = str(len(relation)) + '\n'
     res += "from:\n"
-    for i in relation:
-        res += i.address + '\n'
+    for relat in relation:
+        res += relat.address + '\n'
+    return res
+
+
+def get_balance(address) -> Balance:
+    res = {}
+    if address not in balances:
+        return res
+    balance = balances[address]
+    for balan in balance.split(';'):
+        temp = balan.split(',')
+        res[temp[0]] = float(temp[1])
     return res

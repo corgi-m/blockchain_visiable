@@ -2,7 +2,10 @@ from typing import Generator
 
 Info = list[tuple[str, str, str, float]]
 Balance = dict[str, float]
-
+nodesmap: dict[str, 'Node'] = {}
+edgesmap: dict[str, 'Edge'] = {}
+nodesappear: list[set['Node']] = []
+balances: dict[str, str] = {}
 
 class Node:
     def __init__(self, address: str, balance: Balance, relation: set['Node'] = set(), label: str = None):
