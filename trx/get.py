@@ -1,7 +1,7 @@
-from config import config
 from net import req_get
-from cuts import edgecut_reg
+from config import config
 from utils import outof_list
+from cuts import Edgecut, Nodecut
 import json
 
 
@@ -10,9 +10,19 @@ def get_nodes(address, res):
         return set()
     data = json.loads(res.text)
     hits = data["data"]["hits"]
-    nodesto = set([i["to"] for i in hits if outof_list(i["from"]) == address and not edgecut_reg(i, "to")])
-    nodesfrom = set([i["from"] for i in hits if outof_list(i["to"]) == address and not edgecut_reg(i, "from")])
-    return nodesto.union(nodesfrom)
+    nodesto = set()
+    nodesfrom = set()
+    for i in hits:
+        if outof_list(i['from']) == address:
+            edgecut = Edgecut(i, "to")
+            if not edgecut.cut():
+                nodesto.add(i["to"])
+        else:
+            edgecut = Edgecut(i, "from")
+            if not edgecut.cut():
+                nodesfrom.add(i["from"])
+
+    return nodesto | nodesfrom
 
 
 def get_total(res):
@@ -20,6 +30,18 @@ def get_total(res):
         return 0
     data = json.loads(res.text)
     return data['data']['total']
+
+
+def get_total_transfer(address):
+    params = {"tokenType": "TRC20", "contractAddress": address}
+    res = req_get(config['trxtransfer'], params)
+    return get_total(res)
+
+
+def get_total_transaction(address):
+    params = {"address": address}
+    res = req_get(config['trxtransaction'], params)
+    return get_total(res)
 
 
 # 转账
@@ -36,16 +58,25 @@ def get_nodes_transaction(address, offset, limit):
     return get_nodes(address, res)
 
 
-def get_total_transfer(address):
-    params = {"tokenType": "TRC20", "contractAddress": address}
-    res = req_get(config['trxtransfer'], params)
-    return get_total(res)
+def get_next_nodes(node):
+    # get length
+    len_edges_transfer = get_total_transfer(node)
+    len_edges_transaction = get_total_transaction(node)
+    next_nodes = set()
+    length = len_edges_transfer + len_edges_transaction
 
+    # cut node
+    nodecut = Nodecut(node, length)
+    if nodecut.cut():
+        return next_nodes
 
-def get_total_transaction(address):
-    params = {"address": address}
-    res = req_get(config['trxtransaction'], params)
-    return get_total(res)
+    # transfers
+    for page in range(0, len_edges_transfer, 100):
+        next_nodes |= get_nodes_transfer(node, page, 100)
+    # transactions
+    for page in range(0, len_edges_transaction, 100):
+        next_nodes |= get_nodes_transaction(node, page, 100)
+    return next_nodes
 
 
 def get_balance(address):

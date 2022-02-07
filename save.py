@@ -1,5 +1,5 @@
 from config import count
-from get import get_balance
+from trx.get import get_balance
 from model import Balance
 
 

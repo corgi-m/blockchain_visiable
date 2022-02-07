@@ -13,7 +13,7 @@ def infoformat(infos):
 
 def balanceformat(balance):
     res = ""
-    form = "{{token: {0}, value: {1}}}\n"
+    form = "{{symbol: {0}, value: {1}}}\n"
     for balan in balance.items():
         res += form.format(balan[0], balan[1])
     return res

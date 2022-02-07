@@ -4,103 +4,113 @@ from model import Label, Transfer
 from utils import outof_list, date_transform, use
 
 
-#   剪掉合约
-def is_notransfer(edge):
-    if "contractType" in edge and config['contractType'] not in edge["contractType"]:
-        return True
-    return False
+class Edgecut:
+    def __init__(self, edge, from_or_to):
+        self.edge = self.init_edge(edge)
+        self.node = edge[from_or_to]
+        self.from_or_to = from_or_to
+        self.precut = Precut(self.edge, self.node, self.from_or_to)
+        self.postcut = Postcut(self.edge, self.node, self.from_or_to)
+
+    # 边初始化
+    def init_edge(self, edge):
+        edge["from"] = outof_list(edge["from"])
+        edge["to"] = outof_list(edge["to"])
+        return edge
+
+    # 边剪枝
+    def cut(self):
+        if self.precut.cut():
+            return True
+        transfer = Transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
+                            self.edge["to"],
+                            self.edge["symbol"],
+                            self.edge["value"], date_transform(self.edge["blocktime"]))
+        transfer.save()
+        if self.postcut.cut():
+            return True
+        return False
 
 
-#  剪掉零交易
-def is_novalue(edge):
-    if edge["value"] < config['MIN_TRANSFER_VALUE']:
-        return True
-    return False
+class Precut:
+    def __init__(self, edge, node, from_or_to):
+        self.edge = edge
+        self.node = node
+        self.from_or_to = from_or_to
+
+    #   剪掉合约
+    def is_notransfer(self):
+        if "contractType" in self.edge and config['contractType'] not in self.edge["contractType"]:
+            return True
+        return False
+
+    #  剪掉零交易
+    def is_novalue(self):
+        if self.edge["value"] < config['MIN_TRANSFER_VALUE']:
+            return True
+        return False
+
+    # 边预剪枝
+    def cut(self):
+        if self.is_notransfer():
+            return True
+        if self.is_novalue():
+            return True
+        return False
 
 
-#  剪掉重复
-def is_count(node):  # 是否出现过，减少重复
-    if node in count:
-        return True
-    count.add(node)
-    return False
+class Postcut:
+    def __init__(self, edge, node, from_or_to):
+        self.edge = edge
+        self.node = node
+        self.from_or_to = from_or_to
+
+    #  剪掉重复
+    def is_count(self):  # 是否出现过，减少重复
+        if self.node in count:
+            return True
+        count.add(self.node)
+        return False
+
+    #  剪掉tag
+    def is_inaccount(self):
+        if self.node in config['account']:
+            return True
+        return False
+
+    #  剪掉tag
+    def is_tag(self):
+        if self.from_or_to + "Tag" in self.edge and len(self.edge[self.from_or_to + "Tag"]) > 0:
+            config['account'][self.node] = self.edge[self.from_or_to + "Tag"]
+            label = Label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
+            label.save()
+            return True
+        return False
+
+    # 边后剪枝
+    def cut(self):
+        if self.is_count():
+            return True
+        if self.is_inaccount():
+            return True
+        if self.is_tag():
+            return True
+        return False
 
 
-#  剪掉tag
-def is_inaccount(node):
-    if node in config['account']:
-        return True
-    return False
+class Nodecut:
+    def __init__(self, node, len_edges):
+        self.node = node
+        self.len_edges = len_edges
 
+    #  剪掉出度超过阈值
+    def is_outof_len(self):
+        if self.len_edges > config['MAXN_LEN_EDGES']:
+            return True
+        return False
 
-#  剪掉tag
-def is_tag(edge, node, tag_name):
-    if tag_name in edge and len(edge[tag_name]) > 0:
-        config['account'][node] = edge[tag_name]
-        label = Label(node, edge[tag_name][0]['tag'])
-        label.save()
-        return True
-    return False
-
-
-#  剪掉出度超过阈值
-def is_outof_len(len_edges):
-    if len_edges > config['MAXN_LEN_EDGES']:
-        return True
-    return False
-
-
-# 边预剪枝
-def pre_cut(edge, node, from_or_to):
-    use(from_or_to)
-    use(node)
-    if is_notransfer(edge):
-        return True
-    if is_novalue(edge):
-        return True
-    return False
-
-
-# 边后剪枝
-def post_cut(edge, node, from_or_to):
-    if is_count(node):
-        return True
-    if is_inaccount(node):
-        return True
-    if is_tag(edge, node, from_or_to + "Tag"):
-        return True
-    return False
-
-
-# 边初始化
-def init_edge(edge):
-    edge["from"] = outof_list(edge["from"])
-    edge["to"] = outof_list(edge["to"])
-    return edge
-
-
-# 边剪枝
-def edgecut_reg(edge, from_or_to):
-    edge = init_edge(edge)
-    node = edge[from_or_to]
-
-    if pre_cut(edge, node, from_or_to):
-        return True
-
-    transfer = Transfer(edge["txhash"] if "txhash" in edge else edge["hash"], edge["from"], edge["to"], edge["symbol"],
-                        edge["value"], date_transform(edge["blocktime"]))
-    transfer.save()
-
-    if post_cut(edge, node, from_or_to):
-        return True
-
-    return False
-
-
-# 节点剪枝
-def nodecut_reg(node, len_edges):
-    use(node)
-    if is_outof_len(len_edges):
-        return True
-
-    return False
+    # 节点剪枝
+    def cut(self):
+        if self.is_outof_len():
+            return True
+        return False
