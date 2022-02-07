@@ -2,6 +2,8 @@ from vismodel import Edge, Node
 from config import config, count
 from utils import use
 
+use(Node)
+
 
 def pre_cut(edge: Edge):
     use(edge)
@@ -9,8 +11,8 @@ def pre_cut(edge: Edge):
 
 
 def post_cut(edge: Edge):
-    if edge.getnodeto.gethlen > config['MAX_OUT_DEGREE']:
+    if edge.nodeto.hlen > config['MAX_OUT_DEGREE']:
         return True
-    if edge.getnodeto in count:
+    if edge.nodeto in count:
         return True
     return False

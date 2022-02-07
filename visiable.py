@@ -1,23 +1,41 @@
 from config import config, init, count
-import pygraphviz as pgv
-from model import Transfer
+from model import Transfer, Balance
 from vismodel import Node, Edge
+from vismodel import Balance as Balancetype
 from viscut import pre_cut, post_cut
+import graphviz as gv
+from visutils import *
+from visdraw import *
 
 nodesmap: dict[str, Node] = {}
 edgesmap: dict[str, Edge] = {}
+balances: dict[str, str] = {}
+nodesappear: list[set[Node]] = []
+
+
+def get_balance(address) -> Balancetype:
+    res = {}
+    if address not in balances:
+        return res
+    balance = balances[address]
+    for balan in balance.split(';'):
+        temp = balan.split(',')
+        res[temp[0]] = float(temp[1])
+    return res
 
 
 def vis_init():
     edges_init: list[any] = Transfer.get()
+    for i in Balance.get():
+        balances[i[0]] = i[1]
     for edge in edges_init:
         edge = dict(zip(Transfer.column(), edge))
         if edge['addrfrom'] not in nodesmap:
-            nodesmap[edge['addrfrom']] = Node(edge['addrfrom'])
+            nodesmap[edge['addrfrom']] = Node(address=edge['addrfrom'], balance=get_balance(edge['addrfrom']))
         if edge['addrto'] not in nodesmap:
-            nodesmap[edge['addrto']] = Node(edge['addrto'])
+            nodesmap[edge['addrto']] = Node(address=edge['addrto'], balance=get_balance(edge['addrfrom']))
         edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(nodesmap[edge['addrto']], [
-            (edge['transferhash'], edge["blocktime"], edge["symbol"], edge["value"])])
+            (edge['transferhash'], str(edge["blocktime"]), edge["symbol"], edge["value"])])
     return nodesmap, edgesmap
 
 
@@ -27,46 +45,54 @@ def get_next_nodes(node, edges_get):
     for edge in node.edges_generate():
 
         if pre_cut(edge):
-            return next_nodes
+            continue
 
         edges_get.append(edge)
+        edge.nodeto.relation = edge.nodefrom.relation
 
         if post_cut(edge):
-            return next_nodes
+            continue
 
-        next_nodes.add(edge.getnodeto)
-        count.add(edge.getnodeto)
+        next_nodes.add(edge.nodeto)
+        count.add(edge.nodeto)
     return next_nodes
 
 
 def getedges(nodes_get):
+    global nodesappear
     edges_get: list[Edge] = []
+    nodesappear.append(nodes_get)
+
     for _ in range(config['TURN']):
         next_nodes = set()
+
         for node in nodes_get:
-            next_nodes = next_nodes.union(get_next_nodes(node, edges_get))
-        '''        
-            for edge in node.edges_generate():
-                edges_get.append(edge)
-                if edge.nodeto not in repeat_nodes:
-                    nextnodes.append(edge.nodeto)
-        '''
-        nodes_get = next_nodes
+            next_nodes |= get_next_nodes(node, edges_get)
+
+        nodes_get = next_nodes - nodes_get
+        nodesappear.append(nodes_get)
     return edges_get
 
 
 def vismain():
     vis_init()
-    G = pgv.AGraph(directed=True, rankdir="LR")
+    G = gv.Digraph(format='svg')
+    G.graph_attr.update(ranksep='10', rankdir='LR')
+
     nodes = [nodesmap[i] for i in config["visnodes"]]
+    for node in nodes:
+        node.relation = {node}
+        count.add(node)
+    edges = getedges(set(nodes))
 
-    edges = getedges(nodes)
-    G.add_edges_from([(i.getnodefrom.getaddress, i.getnodeto.getaddress) for i in edges], penwidth=2)
+    draw_nodes(G, nodesappear)
+    draw_edges(G, edges)
 
-    # create a png file
-    G.layout(prog='dot')  # use dot
-    G.draw('./configs/file.svg')
+    f = open("svg.svg", "w")
+    print(G.pipe().decode('utf-8'), file=f)
 
 
 if __name__ == "__main__":
     init()
+
+# comment

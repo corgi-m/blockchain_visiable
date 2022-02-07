@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 22/01/2022 16:59:44
+ Date: 23/01/2022 16:07:03
 */
 
 SET NAMES utf8mb4;
@@ -24,16 +24,6 @@ DROP TABLE IF EXISTS `balances`;
 CREATE TABLE `balances`  (
   `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `balance` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
-  PRIMARY KEY (`address`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for counts
--- ----------------------------
-DROP TABLE IF EXISTS `counts`;
-CREATE TABLE `counts`  (
-  `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `count` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`address`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 

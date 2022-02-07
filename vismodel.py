@@ -5,9 +5,10 @@ Balance = dict[str, float]
 
 
 class Node:
-    def __init__(self, address: str, balance: Balance = None, label: str = None):
+    def __init__(self, address: str, balance: Balance, relation: set['Node'] = set(), label: str = None):
         self.__head: Edge = None
         self.__address: str = address
+        self.__relation: set['Node'] = relation
         self.__balance: Balance = balance
         self.__label: str = label
         self.__hlen: int = 0
@@ -16,11 +17,11 @@ class Node:
         head = self.__head
         while head is not None:
             yield head
-            head = head.getlastedge
+            head = head.lastedge
 
     def add_edge(self, nodeto, info) -> 'Edge':
         for edge in self.edges_generate():
-            if edge.getnodeto == nodeto:
+            if edge.nodeto == nodeto:
                 edge.add_info(info)
                 break
         else:
@@ -30,24 +31,36 @@ class Node:
         return edge
 
     @property
-    def getaddress(self) -> str:
+    def address(self) -> str:
         return self.__address
 
     @property
-    def getbalance(self) -> Balance:
+    def balance(self) -> Balance:
         return self.__balance
 
     @property
-    def getlabel(self) -> str:
+    def label(self) -> str:
         return self.__label
 
     @property
-    def gethead(self) -> 'Edge':
+    def head(self) -> 'Edge':
         return self.__head
 
     @property
-    def gethlen(self) -> int:
+    def hlen(self) -> int:
         return self.__hlen
+
+    @property
+    def relation(self) -> set['Node']:
+        return self.__relation
+
+    @property
+    def relationcount(self) -> int:
+        return len(self.__relation)
+
+    @relation.setter
+    def relation(self, value: set['Node']):
+        self.__relation = self.__relation.union(value)
 
 
 class Edge:
@@ -62,17 +75,17 @@ class Edge:
         self.__info.append(info)
 
     @property
-    def getinfo(self) -> Info:
+    def info(self) -> Info:
         return self.__info
 
     @property
-    def getnodeto(self) -> Node:
+    def nodeto(self) -> Node:
         return self.__nodeto
 
     @property
-    def getnodefrom(self) -> Node:
+    def nodefrom(self) -> Node:
         return self.__nodefrom
 
     @property
-    def getlastedge(self) -> 'Edge':
+    def lastedge(self) -> 'Edge':
         return self.__lastedge

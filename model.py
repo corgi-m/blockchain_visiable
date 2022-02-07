@@ -33,7 +33,6 @@ class DB:
     def get_db(cls):
         try:
             cur = config['conn'].cursor()
-
             cur.execute(cls.sqlformat(cls.__sqlget, [cls._dbname]))
             results = cur.fetchall()
             cur.close()
@@ -84,3 +83,7 @@ class Balance(DB):
 
     def __init__(self, address, balance):
         super().__init__([address, balance])
+
+    @classmethod
+    def get(cls):
+        return cls.get_db()
