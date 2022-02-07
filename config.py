@@ -40,6 +40,7 @@ def parse_nodes(file) -> list[str]:
 def get_config(args: argparse.Namespace):
     parse_config(args.config)
     config["nodes"] = parse_nodes(args.nodes)
+    config["save"] = args.save
     config["visnodes"] = parse_nodes(args.visnodes)
     config['proxies'] = parse_proxy(args.proxy)
     config['visit'] = args.visit
@@ -62,6 +63,7 @@ def init():
     parser.add_argument('-k', '--apiKey', type=str, default="301cac89-b56c-45ab-82b4-33656d074f73")
     parser.add_argument('-n', '--nodes', type=argparse.FileType('r'), default='./configs/nodeslist.txt')
     parser.add_argument('-N', '--visnodes', type=argparse.FileType('r'), default='./configs/visnodes.txt')
+    parser.add_argument('-s', '--save', type=argparse.FileType('w'), default='./result/result.svg')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 4.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
     parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('w'), default='./configs/error.log')

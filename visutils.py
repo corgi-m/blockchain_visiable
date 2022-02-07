@@ -27,12 +27,3 @@ def relationformat(relation):
     return res
 
 
-def get_balance(address) -> Balance:
-    res = {}
-    if address not in balances:
-        return res
-    balance = balances[address]
-    for balan in balance.split(';'):
-        temp = balan.split(',')
-        res[temp[0]] = float(temp[1])
-    return res
