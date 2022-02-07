@@ -70,7 +70,7 @@ def vismain():
     draw_nodes(G, nodesappear)
     draw_edges(G, edges)
 
-    f = open("svg.svg", "w")
+    f = open("result\svg.svg", "w")
     print(G.pipe().decode('utf-8'), file=f)
 
 

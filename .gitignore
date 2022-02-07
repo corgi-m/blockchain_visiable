@@ -152,3 +152,5 @@ cython_debug/
 /configs/pygraphviz-1.7-cp310-cp310-win_amd64.whl
 /.idea/vcs.xml
 *.html
+
+result/
