@@ -1,4 +1,17 @@
 from visutils import relationformat, balanceformat, infoformat
+import graphviz as gv
+from config import config
+
+
+def graph_save(G):
+    print(G.pipe().decode('utf-8'), file=config["save"])
+    return
+
+
+def graph_init():
+    G = gv.Digraph(format='svg')
+    G.graph_attr.update(ranksep='10', rankdir='LR')
+    return G
 
 
 def draw_nodes(G, nodesappear):

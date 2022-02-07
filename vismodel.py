@@ -7,6 +7,7 @@ edgesmap: dict[str, 'Edge'] = {}
 nodesappear: list[set['Node']] = []
 balances: dict[str, str] = {}
 
+
 class Node:
     def __init__(self, address: str, balance: Balance, relation: set['Node'] = set(), label: str = None):
         self.__head: Edge = None

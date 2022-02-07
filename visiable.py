@@ -1,9 +1,8 @@
-from config import config, init, count
+from config import config, init
 from model import Transfer, Balance
 from visget import getedges, get_balance
 from vismodel import Node, balances, nodesmap, edgesmap, nodesappear
-import graphviz as gv
-from visdraw import draw_nodes, draw_edges
+from visdraw import draw_nodes, draw_edges, graph_init, graph_save
 
 
 def vis_init():
@@ -23,18 +22,16 @@ def vis_init():
 
 def vismain():
     vis_init()
-    G = gv.Digraph(format='svg')
-    G.graph_attr.update(ranksep='10', rankdir='LR')
+
+    G = graph_init()
 
     edges = getedges({nodesmap[node] for node in config["visnodes"]})
 
     draw_nodes(G, nodesappear)
     draw_edges(G, edges)
 
-    print(G.pipe().decode('utf-8'), file=config["save"])
+    graph_save(G)
 
 
 if __name__ == "__main__":
     init()
-
-# comment

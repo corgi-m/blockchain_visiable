@@ -25,5 +25,3 @@ def relationformat(relation):
     for relat in relation:
         res += relat.address + '\n'
     return res
-
-
