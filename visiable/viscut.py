@@ -1,3 +1,4 @@
+# coding=utf-8
 from visiable.vismodel import Edge, Node
 from config import config, count
 from utils import use

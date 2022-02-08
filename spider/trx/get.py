@@ -1,3 +1,4 @@
+# coding=utf-8
 from spider.net import req_get
 from config import config, count
 from utils import outof_list

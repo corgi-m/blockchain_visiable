@@ -86,4 +86,8 @@ class Balance(DB):
 
     @classmethod
     def get(cls):
-        return cls.get_db()
+        res = {}
+        results = cls.get_db()
+        for i in results:
+            res[i[0]] = i[1]
+        return res

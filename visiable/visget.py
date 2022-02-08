@@ -1,9 +1,17 @@
-from visiable.vismodel import Balance, balances, Edge, nodesappear
+# coding=utf-8
+from visiable.vismodel import Balance, Edge, nodesappear
 from config import count, config
 from visiable.viscut import pre_cut, post_cut
 
 
-def get_balance(address) -> Balance:
+def get_label(address, labels) -> str:
+    if address not in labels:
+        return ""
+    else:
+        return labels[address]
+
+
+def get_balance(address, balances) -> Balance:
     res = {}
     if address not in balances:
         return res

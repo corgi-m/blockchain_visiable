@@ -1,4 +1,5 @@
-from visutils import relationformat, balanceformat, infoformat
+# coding=utf-8
+from visiable.visutils import relationformat, balanceformat, infoformat
 import graphviz as gv
 from config import config
 
@@ -20,8 +21,14 @@ def draw_nodes(G, nodesappear):
             L.graph_attr.update(rank='same', color='green', label='layer_' + str(i), fontsize='100')
             for node in nodesappear[i]:
                 color = 'black' if node.relationcount <= 5 else 'white'
-                fillcolor = 'grey{}0'.format(str(10 - node.relationcount)) if i != 0 else 'yellow'
                 tips = relationformat(node.relation) + balanceformat(node.balance)
+                if i == 0:
+                    fillcolor = 'red'
+                elif node.label != '':
+                    fillcolor = 'blue'
+                    tips = node.label + '\n' + tips
+                else:
+                    fillcolor = 'grey{}0'.format(str(10 - node.relationcount))
                 L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=color,
                        tooltip=tips, shape='box')
 

@@ -1,3 +1,4 @@
+# coding=utf-8
 from model import Balance, Label, Transfer
 
 

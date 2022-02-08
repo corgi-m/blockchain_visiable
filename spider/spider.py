@@ -1,4 +1,6 @@
+# coding=utf-8
 from spider.trx.get import get_next_nodes, final
+
 from config import config, count
 from model import Label
 

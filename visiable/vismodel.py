@@ -1,3 +1,4 @@
+# coding=utf-8
 from typing import Generator
 
 Info = list[tuple[str, str, str, float]]
@@ -5,7 +6,6 @@ Balance = dict[str, float]
 nodesmap: dict[str, 'Node'] = {}
 edgesmap: dict[str, 'Edge'] = {}
 nodesappear: list[set['Node']] = []
-balances: dict[str, str] = {}
 
 
 class Node:
