@@ -2,12 +2,12 @@
 from utils import outof_list
 
 
-def infoformat(infos):
+def infoformat(addrfrom, addrto, infos):
     res = ""
-    form = "{{transferhash: {0}, blocktime: {1}, symbol: {2}, value: {3}}}\n"
+    form = "{{transferhash: {0},from: {1}, to: {2}, blocktime: {3}, symbol: {4}, value: {5}}}\n"
     for info in infos:
         info = outof_list(info)
-        res += form.format(info[0], info[1], info[2], info[3])
+        res += form.format(info[0], addrfrom, addrto, info[1], info[2], info[3])
     return res
 
 

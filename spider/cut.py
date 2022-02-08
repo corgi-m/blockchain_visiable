@@ -1,8 +1,8 @@
 # coding=utf-8
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 
-class ABCEdgecut(ABCMeta):
+class ABCEdgecut(ABC):
 
     @abstractmethod
     def cut(self):
@@ -12,7 +12,7 @@ class ABCEdgecut(ABCMeta):
         ...
 
 
-class ABCPrecut(ABCMeta):
+class ABCPrecut(ABC):
 
     @abstractmethod
     def is_notransfer(self):
@@ -31,7 +31,7 @@ class ABCPrecut(ABCMeta):
         ...
 
 
-class ABCPostcut(ABCMeta):
+class ABCPostcut(ABC):
 
     @abstractmethod
     def is_count(self):
@@ -55,7 +55,7 @@ class ABCPostcut(ABCMeta):
         ...
 
 
-class ABCNodecut(ABCMeta):
+class ABCNodecut(ABC):
 
     @abstractmethod
     def is_outof_len(self):

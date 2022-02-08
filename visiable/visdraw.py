@@ -11,7 +11,7 @@ def graph_save(G):
 
 def graph_init():
     G = gv.Digraph(format='svg')
-    G.graph_attr.update(ranksep='10', rankdir='LR')
+    G.graph_attr.update(ranksep='20', rankdir='LR')
     return G
 
 
@@ -20,19 +20,21 @@ def draw_nodes(G, nodesappear):
         with G.subgraph(name='cluster_' + str(i)) as L:
             L.graph_attr.update(rank='same', color='green', label='layer_' + str(i), fontsize='100')
             for node in nodesappear[i]:
-                color = 'black' if node.relationcount <= 5 else 'white'
+                fontcolor = 'black' if node.relationcount <= 5 else 'white'
                 tips = relationformat(node.relation) + balanceformat(node.balance)
                 if i == 0:
                     fillcolor = 'red'
                 elif node.label != '':
                     fillcolor = 'blue'
+                    fontcolor = 'white'
                     tips = node.label + '\n' + tips
                 else:
                     fillcolor = 'grey{}0'.format(str(10 - node.relationcount))
-                L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=color,
-                       tooltip=tips, shape='box')
+                if node.relationcount > 0:
+                    L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=fontcolor,
+                           tooltip=tips, shape='box')
 
 
 def draw_edges(G, edges):
     for edge in edges:
-        G.edge(edge.nodefrom.address, edge.nodeto.address, edgetooltip=infoformat(edge.info), penwidth='4')
+        G.edge(edge.nodefrom.address, edge.nodeto.address, edgetooltip=infoformat(edge.nodefrom.address, edge.nodeto.address, edge.info), penwidth='4')

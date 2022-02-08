@@ -1,15 +1,16 @@
 # coding=utf-8
+
 from config import config
 
 
-class DB:
-    _dbcolumn = None
-    _dbsave = None
-    _dbname = None
+class Table:
+    _tablename = None
+    _column = None
+    _sqlsave = None
     __sqlget = "SELECT * FROM %s"
 
-    def __init__(self, dbvalue):
-        self._dbvalue = dbvalue
+    def __init__(self, value):
+        self._value = value
 
     @staticmethod
     def sqlformat(sql, arglist):
@@ -19,11 +20,11 @@ class DB:
 
     def save(self):
         try:
-            cur = config['conn'].cursor()
-            sql = self.sqlformat(self.__class__._dbsave, [self.__class__._dbname] +
-                                 self.__class__._dbcolumn)
-            cur.execute(sql, self._dbvalue)
-            config['conn'].commit()
+            cur = config['db'].cursor
+            sql = self.sqlformat(self.__class__._sqlsave, [self.__class__._tablename] +
+                                 self.__class__._column)
+            cur.execute(sql, self._value)
+            config['db'].commit()
             cur.close()
         except Exception as e:
             print("sql save error:")
@@ -32,8 +33,8 @@ class DB:
     @classmethod
     def get_db(cls):
         try:
-            cur = config['conn'].cursor()
-            cur.execute(cls.sqlformat(cls.__sqlget, [cls._dbname]))
+            cur = config['db'].cursor
+            cur.execute(cls.sqlformat(cls.__sqlget, [cls._tablename]))
             results = cur.fetchall()
             cur.close()
             return results
@@ -42,10 +43,10 @@ class DB:
             print(e)
 
 
-class Label(DB):
-    _dbname = "labels"
-    _dbcolumn = ["address", "tag"]
-    _dbsave = "REPLACE INTO %s (%s,%s)  VALUES(%s, %s)"
+class Label(Table):
+    _tablename = "labels"
+    _column = ["address", "tag"]
+    _sqlsave = "REPLACE INTO %s (%s,%s)  VALUES(%s, %s)"
 
     def __init__(self, address, tag):
         super().__init__([address, tag])
@@ -59,10 +60,10 @@ class Label(DB):
         return account
 
 
-class Transfer(DB):
-    _dbname = "transfers"
-    _dbcolumn = ["transferhash", "addrfrom", "addrto", "symbol", "value", "blocktime"]
-    _dbsave = "REPLACE INTO %s (%s, %s, %s, %s, %s, %s)  VALUES(%s, %s, %s, %s, %s, %s)"
+class Transfer(Table):
+    _tablename = "transfers"
+    _column = ["transferhash", "addrfrom", "addrto", "symbol", "value", "blocktime"]
+    _sqlsave = "REPLACE INTO %s (%s, %s, %s, %s, %s, %s)  VALUES(%s, %s, %s, %s, %s, %s)"
 
     def __init__(self, transferhash, addrfrom, addrto, symbol, value, blocktime):
         super().__init__([transferhash, addrfrom, addrto, symbol, value, blocktime])
@@ -73,13 +74,13 @@ class Transfer(DB):
 
     @classmethod
     def column(cls):
-        return cls._dbcolumn
+        return cls._column
 
 
-class Balance(DB):
-    _dbname = "balances"
-    _dbcolumn = ["address", "balance"]
-    _dbsave = "REPLACE INTO %s (%s, %s) VALUES(%s, %s)"
+class Balance(Table):
+    _tablename = "balances"
+    _column = ["address", "balance"]
+    _sqlsave = "REPLACE INTO %s (%s, %s) VALUES(%s, %s)"
 
     def __init__(self, address, balance):
         super().__init__([address, balance])

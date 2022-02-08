@@ -1,8 +1,9 @@
 # coding=utf-8
 import configparser
 import argparse
-import pymysql
 import sys
+
+from db import DB
 
 count: set[any] = set()  # 计数变量
 config: dict[str, any] = {}
@@ -14,9 +15,9 @@ def parse_config(path_config):
 
     config_parser.read(path_config, encoding='utf-8')
 
-    config['conn'] = pymysql.connect(host=config_parser['mysql']['host'], port=int(config_parser['mysql']['port']),
-                                     user=config_parser['mysql']['user'], passwd=config_parser['mysql']['passwd'],
-                                     db=config_parser['mysql']['db'])
+    config['db'] = DB(host=config_parser['mysql']['host'], port=int(config_parser['mysql']['port']),
+                      user=config_parser['mysql']['user'], passwd=config_parser['mysql']['passwd'], )
+
     config.update(config_parser['common'])
     for key, value in config.items():
         if isinstance(value, str) and value.isdigit():
@@ -44,6 +45,9 @@ def get_config(args: argparse.Namespace):
     config["visnodes"] = parse_nodes(args.visnodes)
     config['proxies'] = parse_proxy(args.proxy)
     config['visit'] = args.visit
+    config['db'].dbname = args.link
+    config['db'].check_db(args.dbstruct)
+
     if "apiKey" not in config:
         config['apiKey'] = args.apiKey
     if "log" not in config:
@@ -67,9 +71,11 @@ def init():
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 4.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
     parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('a'), default='./configs/error.log')
-    parser.add_argument('-d', '--deep', type=int)
+    parser.add_argument('-m', '--dbstruct', type=argparse.FileType('r'), default='./configs/db.sql')
+    parser.add_argument('-d', '--deep', type=int, default=3)
     parser.add_argument('-e', '--edgelimit', type=int)
     parser.add_argument('-u', '--valuelimit', type=int)
+    parser.add_argument('-L', '--link', nargs='?', type=str, default='trx', choices=['trx'])
 
     args = parser.parse_args(sys.argv[1:])
 

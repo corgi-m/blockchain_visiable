@@ -1,5 +1,6 @@
 # coding=utf-8
 from config import config
+from utils import date_transform
 import requests
 import time
 
@@ -18,6 +19,6 @@ def req_get(url, params=None):
         except Exception as e:
             print("error")
             print(e)
-            print(time.time(), url, params, file=config['log'])
+            print(date_transform(time.time()), url, params, file=config['log'])
             return None
     return res

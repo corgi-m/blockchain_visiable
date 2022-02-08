@@ -49,6 +49,7 @@ def getedges(nodes):
     nodesappear.append(nodes)
 
     for _ in range(config['TURN']):
+    #while len(nodes) != 0:
         next_nodes = set()
 
         for node in nodes:
