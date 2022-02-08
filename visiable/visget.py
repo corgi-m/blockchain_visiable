@@ -1,5 +1,5 @@
 # coding=utf-8
-from visiable.vismodel import Balance, Edge, nodesappear, Node
+from visiable.vismodel import Balance, Edge, nodesappear_to,nodesappear_from, Node
 from config import count, config
 from visiable.viscut import pre_cut, post_cut
 
@@ -22,10 +22,10 @@ def get_balance(address, balances) -> Balance:
     return res
 
 
-def get_next_nodes(node, edges_get) -> set[Node]:
+def get_to_next_nodes(node, edges_get) -> set[Node]:
     next_nodes = set()
 
-    for edge in node.edges_generate():
+    for edge in node.to_edges_generate():
 
         if pre_cut(edge):
             continue
@@ -33,7 +33,7 @@ def get_next_nodes(node, edges_get) -> set[Node]:
         edges_get.append(edge)
         edge.nodeto.relation = edge.nodefrom.relation
 
-        if post_cut(edge):
+        if post_cut(edge, edge.nodeto):
             continue
 
         next_nodes.add(edge.nodeto)
@@ -41,20 +41,58 @@ def get_next_nodes(node, edges_get) -> set[Node]:
     return next_nodes
 
 
-def getedges(nodes) -> list[Edge]:
+def get_from_next_nodes(node, edges_get) -> set[Node]:
+    next_nodes = set()
+
+    for edge in node.from_edges_generate():
+
+        if pre_cut(edge):
+            continue
+
+        edges_get.append(edge)
+        edge.nodefrom.relation = edge.nodeto.relation
+
+        if post_cut(edge, edge.nodefrom):
+            continue
+
+        next_nodes.add(edge.nodefrom)
+        count.add(edge.nodefrom)
+    return next_nodes
+
+
+def get_to_edges(nodes) -> list[Edge]:
     for node in nodes:
         node.relation = {node}
         count.add(node)
     edges_get: list[Edge] = []
-    nodesappear.append(nodes)
+    nodesappear_to.append(nodes)
 
     # while len(nodes) != 0:
     for _ in range(config['TURN']):
         next_nodes = set()
 
         for node in nodes:
-            next_nodes |= get_next_nodes(node, edges_get)
+            next_nodes |= get_to_next_nodes(node, edges_get)
 
         nodes = next_nodes - nodes
-        nodesappear.append(nodes)
+        nodesappear_to.append(nodes)
+    return edges_get
+
+
+def get_from_edges(nodes) -> list[Edge]:
+    for node in nodes:
+        node.relation = {node}
+        count.add(node)
+    edges_get: list[Edge] = []
+    nodesappear_from.append(nodes)
+
+    # while len(nodes) != 0:
+    for _ in range(config['TURN']):
+        next_nodes = set()
+
+        for node in nodes:
+            next_nodes |= get_from_next_nodes(node, edges_get)
+
+        nodes = next_nodes - nodes
+        nodesappear_from.append(nodes)
     return edges_get

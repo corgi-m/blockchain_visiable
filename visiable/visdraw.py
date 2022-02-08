@@ -5,18 +5,20 @@ from config import config
 import os
 
 
-def graph_save(G) -> None:
+def graph_save(G, path) -> None:
     if not os.path.exists(config['save']):
         os.makedirs(config['save'])
-    with open(config['save'] + '/result.svg', 'w') as result:
+    with open(config['save'] + '/' + path, 'w') as result:
         print(G.pipe().decode('gbk'), file=result)
     return
 
 
 def graph_init() -> gv.graphs.Digraph:
-    G = gv.Digraph(format='svg')
-    G.graph_attr.update(ranksep='20', rankdir='LR', nodesep='0.5')
-    return G
+    G_from = gv.Digraph(format='svg')
+    G_from.graph_attr.update(ranksep='20', rankdir='LR', nodesep='0.5')
+    G_to = gv.Digraph(format='svg')
+    G_to.graph_attr.update(ranksep='20', rankdir='LR', nodesep='0.5')
+    return G_from, G_to
 
 
 def draw_nodes(G, nodesappear) -> None:
@@ -33,7 +35,7 @@ def draw_nodes(G, nodesappear) -> None:
                     fontcolor = 'white'
                     tips = node.label + '\n' + tips
                 else:
-                    fillcolor = 'grey'+str(100 - 10*node.relationcount)
+                    fillcolor = 'grey' + str(100 - 10 * node.relationcount)
                 if node.relationcount > 0:
                     L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=fontcolor,
                            tooltip=tips, shape='box', layer=str(i))
