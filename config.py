@@ -17,7 +17,6 @@ def parse_config(path_config):
 
     config['db'] = DB(host=config_parser['mysql']['host'], port=int(config_parser['mysql']['port']),
                       user=config_parser['mysql']['user'], passwd=config_parser['mysql']['passwd'], )
-
     config.update(config_parser['common'])
     for key, value in config.items():
         if isinstance(value, str) and value.isdigit():
@@ -67,7 +66,7 @@ def init():
     parser.add_argument('-k', '--apiKey', type=str, default="301cac89-b56c-45ab-82b4-33656d074f73")
     parser.add_argument('-n', '--nodes', type=argparse.FileType('r'), default='./configs/nodeslist.txt')
     parser.add_argument('-N', '--visnodes', type=argparse.FileType('r'), default='./configs/visnodes.txt')
-    parser.add_argument('-s', '--save', type=argparse.FileType('w'), default='./result/result.svg')
+    parser.add_argument('-s', '--save', default='./result')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 4.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
     parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('a'), default='./configs/error.log')

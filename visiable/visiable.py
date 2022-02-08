@@ -20,7 +20,7 @@ def vis_init():
                                             label=get_label(edge['addrto'], labels))
         edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(nodesmap[edge['addrto']], [
             (edge['transferhash'], str(edge["blocktime"]), edge["symbol"], edge["value"])])
-    return nodesmap, edgesmap
+    return
 
 
 def vismain():

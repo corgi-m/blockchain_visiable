@@ -5,7 +5,7 @@ import requests
 import time
 
 
-def req_get(url, params=None):
+def req_get(url, params=None) -> requests.models.Response or None:
     print(url, params)
     if params is None:
         params = {}
@@ -19,6 +19,6 @@ def req_get(url, params=None):
         except Exception as e:
             print("error")
             print(e)
-            print(date_transform(time.time()), url, params, file=config['log'])
+            print(date_transform(int(time.time())), url, params, file=config['log'])
             return None
     return res

@@ -2,20 +2,24 @@
 from visiable.visutils import relationformat, balanceformat, infoformat
 import graphviz as gv
 from config import config
+import os
 
 
-def graph_save(G):
-    print(G.pipe().decode('utf-8'), file=config["save"])
+def graph_save(G) -> None:
+    if not os.path.exists(config['save']):
+        os.makedirs(config['save'])
+    with open(config['save'] + '/result.svg', 'w') as result:
+        print(G.pipe().decode('utf-8'), file=result)
     return
 
 
-def graph_init():
+def graph_init() -> gv.graphs.Digraph:
     G = gv.Digraph(format='svg')
     G.graph_attr.update(ranksep='20', rankdir='LR')
     return G
 
 
-def draw_nodes(G, nodesappear):
+def draw_nodes(G, nodesappear) -> None:
     for i in range(len(nodesappear)):
         with G.subgraph(name='cluster_' + str(i)) as L:
             L.graph_attr.update(rank='same', color='green', label='layer_' + str(i), fontsize='100')
@@ -35,6 +39,7 @@ def draw_nodes(G, nodesappear):
                            tooltip=tips, shape='box')
 
 
-def draw_edges(G, edges):
+def draw_edges(G, edges) -> None:
     for edge in edges:
-        G.edge(edge.nodefrom.address, edge.nodeto.address, edgetooltip=infoformat(edge.nodefrom.address, edge.nodeto.address, edge.info), penwidth='4')
+        G.edge(edge.nodefrom.address, edge.nodeto.address,
+               edgetooltip=infoformat(edge.nodefrom.address, edge.nodeto.address, edge.info), penwidth='4')

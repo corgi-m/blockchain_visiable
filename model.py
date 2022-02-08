@@ -13,12 +13,12 @@ class Table:
         self._value = value
 
     @staticmethod
-    def sqlformat(sql, arglist):
+    def sqlformat(sql, arglist) -> str:
         sql = sql.replace('%s', '{}', len(arglist))
         sql = sql.format(*arglist)
         return sql
 
-    def save(self):
+    def save(self) -> None:
         try:
             cur = config['db'].cursor
             sql = self.sqlformat(self.__class__._sqlsave, [self.__class__._tablename] +
@@ -29,9 +29,10 @@ class Table:
         except Exception as e:
             print("sql save error:")
             print(e)
+        return
 
     @classmethod
-    def get_db(cls):
+    def get_db(cls) -> list[list[str]]:
         try:
             cur = config['db'].cursor
             cur.execute(cls.sqlformat(cls.__sqlget, [cls._tablename]))
@@ -52,7 +53,7 @@ class Label(Table):
         super().__init__([address, tag])
 
     @classmethod
-    def get(cls):
+    def get(cls) -> dict[str, str]:
         account = {}
         results = cls.get_db()
         for i in results:
@@ -69,11 +70,11 @@ class Transfer(Table):
         super().__init__([transferhash, addrfrom, addrto, symbol, value, blocktime])
 
     @classmethod
-    def get(cls):
+    def get(cls) -> list[list[str]]:
         return cls.get_db()
 
     @classmethod
-    def column(cls):
+    def column(cls) -> list[str]:
         return cls._column
 
 
@@ -86,7 +87,7 @@ class Balance(Table):
         super().__init__([address, balance])
 
     @classmethod
-    def get(cls):
+    def get(cls) -> dict[str, str]:
         res = {}
         results = cls.get_db()
         for i in results:

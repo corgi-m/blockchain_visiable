@@ -7,11 +7,11 @@ def use(_):
     ...
 
 
-def outof_list(li):
+def outof_list(li) -> str:
     return li[0] if isinstance(li, list) else li
 
 
-def date_transform(timestamp):
+def date_transform(timestamp) -> str:
     time_local = time.localtime(int(timestamp / 1000))
     datatime = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
     return datatime

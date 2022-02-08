@@ -1,5 +1,5 @@
 # coding=utf-8
-from visiable.vismodel import Balance, Edge, nodesappear
+from visiable.vismodel import Balance, Edge, nodesappear, Node
 from config import count, config
 from visiable.viscut import pre_cut, post_cut
 
@@ -22,7 +22,7 @@ def get_balance(address, balances) -> Balance:
     return res
 
 
-def get_next_nodes(node, edges_get):
+def get_next_nodes(node, edges_get) -> set[Node]:
     next_nodes = set()
 
     for edge in node.edges_generate():
@@ -41,15 +41,15 @@ def get_next_nodes(node, edges_get):
     return next_nodes
 
 
-def getedges(nodes):
+def getedges(nodes) -> list[Edge]:
     for node in nodes:
         node.relation = {node}
         count.add(node)
     edges_get: list[Edge] = []
     nodesappear.append(nodes)
 
+    # while len(nodes) != 0:
     for _ in range(config['TURN']):
-    #while len(nodes) != 0:
         next_nodes = set()
 
         for node in nodes:
