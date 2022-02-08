@@ -15,14 +15,14 @@ def graph_save(G) -> None:
 
 def graph_init() -> gv.graphs.Digraph:
     G = gv.Digraph(format='svg')
-    G.graph_attr.update(ranksep='20', rankdir='LR')
+    G.graph_attr.update(ranksep='20', rankdir='LR', nodesep='0.5')
     return G
 
 
 def draw_nodes(G, nodesappear) -> None:
     for i in range(len(nodesappear)):
         with G.subgraph(name='cluster_' + str(i)) as L:
-            L.graph_attr.update(rank='same', color='green', label='layer_' + str(i), fontsize='100')
+            L.graph_attr.update(rank='same', color='green', label='layer_' + str(i), fontsize='100', compound='true')
             for node in nodesappear[i]:
                 fontcolor = 'black' if node.relationcount <= 5 else 'white'
                 tips = relationformat(node.relation) + balanceformat(node.balance)
@@ -36,7 +36,7 @@ def draw_nodes(G, nodesappear) -> None:
                     fillcolor = 'grey{}0'.format(str(10 - node.relationcount))
                 if node.relationcount > 0:
                     L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=fontcolor,
-                           tooltip=tips, shape='box')
+                           tooltip=tips, shape='box', layer=str(i))
 
 
 def draw_edges(G, edges) -> None:
