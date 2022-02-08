@@ -28,6 +28,8 @@ class Table:
             cur.close()
         except Exception as e:
             print("sql save error:")
+            print(self.__class__._sqlsave, [self.__class__._tablename] +
+                  self.__class__._column, self._value, file=config['log'])
             print(e)
         return
 

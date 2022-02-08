@@ -15,3 +15,8 @@ def date_transform(timestamp) -> str:
     time_local = time.localtime(int(timestamp / 1000))
     datatime = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
     return datatime
+
+def date_transform2(timestamp) -> str:
+    time_local = time.localtime(int(timestamp))
+    datatime = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
+    return datatime

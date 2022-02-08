@@ -36,7 +36,8 @@ class DB:
 
     def connect_db(self) -> pymysql.connections.Connection:
         try:
-            conn = pymysql.connect(host=self.__host, port=self.__port, user=self.__user, passwd=self.__passwd)
+            conn = pymysql.connect(host=self.__host, port=self.__port, user=self.__user, passwd=self.__passwd,
+                                   charset='utf8mb4')
         except Exception:
             raise Exception
         return conn
