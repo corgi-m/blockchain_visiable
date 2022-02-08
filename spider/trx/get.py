@@ -1,10 +1,10 @@
 # coding=utf-8
 from spider.trx.cut import Edgecut, Nodecut
 
-from spider.get import ABCGet
+from spider.common.get import ABCGet
 
 from spider.save import save_balance
-from spider.net import req_get
+from net import req_get
 
 from config import config, count
 from utils import outof_list

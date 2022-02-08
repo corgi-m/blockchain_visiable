@@ -9,7 +9,7 @@ def graph_save(G) -> None:
     if not os.path.exists(config['save']):
         os.makedirs(config['save'])
     with open(config['save'] + '/result.svg', 'w') as result:
-        print(G.pipe().decode('utf-8'), file=result)
+        print(G.pipe().decode('gbk'), file=result)
     return
 
 
@@ -33,7 +33,7 @@ def draw_nodes(G, nodesappear) -> None:
                     fontcolor = 'white'
                     tips = node.label + '\n' + tips
                 else:
-                    fillcolor = 'grey{}0'.format(str(10 - node.relationcount))
+                    fillcolor = 'grey'+str(100 - 10*node.relationcount)
                 if node.relationcount > 0:
                     L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=fontcolor,
                            tooltip=tips, shape='box', layer=str(i))

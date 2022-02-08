@@ -1,5 +1,5 @@
 # coding=utf-8
-from spider.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
+from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
 
 from spider.save import save_label, save_transfer
 

@@ -1,5 +1,7 @@
 # coding=utf-8
-from utils import outof_list
+
+def outof_list(li) -> str:
+    return li[0] if isinstance(li, list) else li
 
 
 def infoformat(addrfrom, addrto, infos):
