@@ -21,7 +21,6 @@ def parse_config(path_config):
         if isinstance(value, str) and value.isdigit():
             config[key] = int(value)
     config.update({k: config['host'] + v for k, v in list(config_parser['api'].items())})
-    config['headers'] = {'x-apiKey': config['apiKey']}
     return config
 
 
@@ -41,6 +40,17 @@ def parse_nodes(file) -> list[str]:
     return nodes_res
 
 
+def parser_header(file):
+    header = {}
+    for i in file.readlines():
+        record = i.strip()
+        if record == '' or ':' not in record:
+            continue
+        temp = record.split(': ')
+        header[temp[0]] = temp[1]
+    return header
+
+
 def get_config(args: argparse.Namespace):
     parse_config(args.config)
     config["nodes"] = parse_nodes(args.nodes)
@@ -50,26 +60,18 @@ def get_config(args: argparse.Namespace):
     config['visit'] = args.visit
     config['db'].dbname = args.link
     config['db'].check_db(args.dbstruct)
-
-    if "apiKey" not in config:
-        config['apiKey'] = args.apiKey
-    if "log" not in config:
-        config['log'] = args.log
-    if "TURN" not in config:
-        config['TURN'] = args.deep
-    if "MAXN_LEN_EDGES" not in config:
-        config['MAXN_LEN_EDGES'] = args.edgelimit
-    if "MIN_TRANSFER_VALUE" not in config:
-        config['MIN_TRANSFER_VALUE'] = args.valuelimit
+    config['headers'] = parser_header(args.header)
+    config['log'] = args.log
+    config['TURN'] = args.deep
 
 
 def init():
     parser = argparse.ArgumentParser(prog='blockchain_visiable', description='developed by corgi')
     parser.add_argument('-p', '--proxy', type=str)
     parser.add_argument('-v', '--visit', action='store_true')
-    parser.add_argument('-k', '--apiKey', type=str, default="301cac89-b56c-45ab-82b4-33656d074f73")
-    parser.add_argument('-n', '--nodes', type=argparse.FileType('r'), default='./configs/nodeslist.txt')
-    parser.add_argument('-N', '--visnodes', type=argparse.FileType('r'), default='./configs/visnodes.txt')
+    parser.add_argument('-H', '--header', type=argparse.FileType('r'), default="./configs/trx/header.txt")
+    parser.add_argument('-n', '--nodes', type=argparse.FileType('r'), default='./configs/trx/nodeslist.txt')
+    parser.add_argument('-N', '--visnodes', type=argparse.FileType('r'), default='./configs/trx/visnodes.txt')
     parser.add_argument('-s', '--save', default='./result')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 4.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
