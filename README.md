@@ -19,3 +19,8 @@
 
 - 修改viscut对剪枝进行修改。
 - 修改visdraw对可视化进行修改。
+
+### todo list
+
+- 时间cut
+- 汇率转换

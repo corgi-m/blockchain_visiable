@@ -6,6 +6,13 @@ from utils import use
 count = {'from': set(), 'to': set()}
 
 
+def node_cut(node: Node, from_or_to: str):
+    hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
+    if hlen > config['MAX_OUT_DEGREE']:
+        return True
+    return False
+
+
 def pre_cut(edge: Edge):
     use(edge)
     return False
@@ -13,7 +20,8 @@ def pre_cut(edge: Edge):
 
 def post_cut(edge: Edge, node: Node, from_or_to):
     use(edge)
-    if node.to_hlen + node.from_hlen > 2 * config['MAX_OUT_DEGREE']:
+    hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
+    if hlen > config['MAX_OUT_DEGREE']:
         return True
     if node in count[from_or_to]:
         return True

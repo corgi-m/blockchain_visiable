@@ -1,7 +1,7 @@
 # coding=utf-8
 from visiable.vismodel import Balance, Edge, nodesappear, Node
 from config import config
-from visiable.viscut import pre_cut, post_cut, count
+from visiable.viscut import pre_cut, post_cut, count, node_cut
 
 
 def get_label(address, labels) -> str:
@@ -56,6 +56,8 @@ def get_edges(nodes, from_or_to) -> list[Edge]:
         next_nodes = set()
 
         for node in nodes:
+            if node_cut(node, from_or_to):
+                continue
             next_nodes |= get_next_nodes(node, edges_get, from_or_to)
 
         nodes = next_nodes - nodes
