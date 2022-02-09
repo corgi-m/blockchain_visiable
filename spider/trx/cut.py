@@ -2,8 +2,9 @@
 from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
 
 from spider.save import save_label, save_transfer
+from spider.spider import count
 
-from config import count, config
+from config import config
 from utils import outof_list, date_transform
 
 
@@ -27,7 +28,8 @@ class Edgecut(ABCEdgecut):
         if self.precut.cut():
             return True
         save_transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
-                      self.edge["to"], self.edge["symbol"], self.edge["value"], date_transform(self.edge["blocktime"]/1000))
+                      self.edge["to"], self.edge["symbol"], self.edge["value"],
+                      date_transform(self.edge["blocktime"] / 1000))
         if self.postcut.cut():
             return True
         return False

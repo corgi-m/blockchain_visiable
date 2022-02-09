@@ -5,7 +5,6 @@ import sys
 
 from db import DB
 
-count: set[any] = set()  # 计数变量
 config: dict[str, any] = {}
 
 
@@ -33,7 +32,12 @@ def parse_proxy(proxy: str) -> dict[str, str]:
 
 
 def parse_nodes(file) -> list[str]:
-    nodes_res = [i[:-1] for i in file.readlines()]
+    nodes_res = []
+    for i in file.readlines():
+        address = i.strip()
+        if address != '':
+            nodes_res.append(address)
+
     return nodes_res
 
 

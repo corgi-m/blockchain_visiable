@@ -1,8 +1,10 @@
 # coding=utf-8
-from config import config, count
+from config import config
 from model import Label
 
 import importlib
+
+count: set[any] = set()  # 计数变量
 
 
 def spidermain():

@@ -4,9 +4,11 @@ from spider.trx.cut import Edgecut, Nodecut
 from spider.common.get import ABCGet
 
 from spider.save import save_balance
+from spider.spider import count
+
 from net import req_get
 
-from config import config, count
+from config import config
 from utils import outof_list
 
 import json
