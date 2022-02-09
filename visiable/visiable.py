@@ -1,8 +1,8 @@
 # coding=utf-8
 from config import config, init
 from model import Transfer, Balance, Label
-from visiable.visget import get_to_edges, get_balance, get_label, get_from_edges
-from visiable.vismodel import Node, nodesmap, edgesmap, nodesappear_from, nodesappear_to
+from visiable.visget import get_edges, get_balance, get_label
+from visiable.vismodel import Node, nodesmap, edgesmap, nodesappear
 from visiable.visdraw import draw_nodes, draw_edges, graph_init, graph_save
 
 
@@ -18,7 +18,7 @@ def vis_init():
         if edge['addrto'] not in nodesmap:
             nodesmap[edge['addrto']] = Node(address=edge['addrto'], balance=get_balance(edge['addrto'], balances),
                                             label=get_label(edge['addrto'], labels))
-        edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_to_edge(nodesmap[edge['addrto']], [
+        edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(nodesmap[edge['addrto']], [
             (edge['transferhash'], str(edge["blocktime"]), edge["symbol"], edge["value"])])
     return
 
@@ -28,15 +28,14 @@ def vismain():
 
     G_from, G_to = graph_init()
 
-    edges_from = get_from_edges({nodesmap[node] for node in config["visnodes"]})
+    edges = {'from': get_edges({nodesmap[node] for node in config["visnodes"]}, 'from'),
+             'to': get_edges({nodesmap[node] for node in config["visnodes"]}, 'to')}
 
-    edges_to = get_to_edges({nodesmap[node] for node in config["visnodes"]})
+    draw_nodes(G_from, nodesappear['from'])
+    draw_nodes(G_to, nodesappear['to'])
 
-    draw_nodes(G_from, nodesappear_from)
-    draw_nodes(G_to, nodesappear_to)
-
-    draw_edges(G_from, edges_from)
-    draw_edges(G_to, edges_to)
+    draw_edges(G_from, edges['from'])
+    draw_edges(G_to, edges['to'])
 
     graph_save(G_from, 'result_from.svg')
     graph_save(G_to, 'result_to.svg')

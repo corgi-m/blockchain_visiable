@@ -1,7 +1,7 @@
 # coding=utf-8
-from visiable.vismodel import Balance, Edge, nodesappear_to,nodesappear_from, Node
-from config import count, config
-from visiable.viscut import pre_cut, post_cut
+from visiable.vismodel import Balance, Edge, nodesappear, Node
+from config import config
+from visiable.viscut import pre_cut, post_cut, count
 
 
 def get_label(address, labels) -> str:
@@ -22,77 +22,39 @@ def get_balance(address, balances) -> Balance:
     return res
 
 
-def get_to_next_nodes(node, edges_get) -> set[Node]:
+def get_next_nodes(node, edges_get, from_or_to) -> set[Node]:
     next_nodes = set()
 
-    for edge in node.to_edges_generate():
+    for edge in node.edges_generate(from_or_to):
 
+        remote = edge.nodeto if from_or_to == 'to' else edge.nodefrom
         if pre_cut(edge):
             continue
 
         edges_get.append(edge)
-        edge.nodeto.relation = edge.nodefrom.relation
+        remote.relation = node.relation
 
-        if post_cut(edge, edge.nodeto):
+        if post_cut(edge, remote, from_or_to):
             continue
 
-        next_nodes.add(edge.nodeto)
-        count.add(edge.nodeto)
+        next_nodes.add(remote)
+        count[from_or_to].add(remote)
     return next_nodes
 
 
-def get_from_next_nodes(node, edges_get) -> set[Node]:
-    next_nodes = set()
-
-    for edge in node.from_edges_generate():
-
-        if pre_cut(edge):
-            continue
-
-        edges_get.append(edge)
-        edge.nodefrom.relation = edge.nodeto.relation
-
-        if post_cut(edge, edge.nodefrom):
-            continue
-
-        next_nodes.add(edge.nodefrom)
-        count.add(edge.nodefrom)
-    return next_nodes
-
-
-def get_to_edges(nodes) -> list[Edge]:
+def get_edges(nodes, from_or_to) -> list[Edge]:
     for node in nodes:
         node.relation = {node}
-        count.add(node)
+        count[from_or_to].add(node)
     edges_get: list[Edge] = []
-    nodesappear_to.append(nodes)
-
+    nodesappear[from_or_to].append(nodes)
     # while len(nodes) != 0:
     for _ in range(config['TURN']):
         next_nodes = set()
 
         for node in nodes:
-            next_nodes |= get_to_next_nodes(node, edges_get)
+            next_nodes |= get_next_nodes(node, edges_get, from_or_to)
 
         nodes = next_nodes - nodes
-        nodesappear_to.append(nodes)
-    return edges_get
-
-
-def get_from_edges(nodes) -> list[Edge]:
-    for node in nodes:
-        node.relation = {node}
-        count.add(node)
-    edges_get: list[Edge] = []
-    nodesappear_from.append(nodes)
-
-    # while len(nodes) != 0:
-    for _ in range(config['TURN']):
-        next_nodes = set()
-
-        for node in nodes:
-            next_nodes |= get_from_next_nodes(node, edges_get)
-
-        nodes = next_nodes - nodes
-        nodesappear_from.append(nodes)
+        nodesappear[from_or_to].append(nodes)
     return edges_get

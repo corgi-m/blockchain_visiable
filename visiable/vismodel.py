@@ -5,44 +5,37 @@ Info = list[tuple[str, str, str, float]]
 Balance = dict[str, float]
 nodesmap: dict[str, 'Node'] = {}
 edgesmap: dict[str, 'Edge'] = {}
-nodesappear_to: list[set['Node']] = []
-nodesappear_from: list[set['Node']] = []
+nodesappear: dict[str, list[set['Node']]] = {'from': [], 'to': []}
 
 
 class Node:
-    def __init__(self, address: str, balance: Balance, relation: set['Node'] = set(), label: str = None):
-        self.__tohead: Edge = None
-        self.__fromhead: Edge = None
+    def __init__(self, address: str, balance: Balance, label: str = None):
+        self.__tohead: Edge or None = None
+        self.__fromhead: Edge or None = None
         self.__address: str = address
-        self.__relation: set['Node'] = relation
+        self.__relation: set['Node'] = set()
         self.__balance: Balance = balance
         self.__label: str = label
         self.__to_hlen: int = 0
         self.__from_hlen: int = 0
 
-    def to_edges_generate(self) -> Generator['Edge', None, None]:
-        head = self.__tohead
+    def edges_generate(self, from_or_to) -> Generator['Edge', None, None]:
+        head = self.__tohead if from_or_to == 'to' else self.__fromhead
         while head is not None:
             yield head
-            head = head.last_to_edge
+            head = head.last_to_edge if from_or_to == 'to' else head.last_from_edge
 
-    def from_edges_generate(self) -> Generator['Edge', None, None]:
-        head = self.__fromhead
-        while head is not None:
-            yield head
-            head = head.last_from_edge
-
-    def add_to_edge(self, nodeto, info) -> 'Edge':
-        for edge in self.to_edges_generate():
+    def add_edge(self, nodeto, info) -> 'Edge':
+        for edge in self.edges_generate('to'):
             if edge.nodeto == nodeto:
                 edge.add_info(info)
                 break
         else:
             self.__to_hlen += 1
-            nodeto.__from_hlen += 1
+            nodeto.from_hlen += 1
             edge = Edge(self, nodeto, info, self.__tohead, nodeto.__fromhead)
             self.__tohead = edge
-            nodeto.__fromhead = edge
+            nodeto.fromhead = edge
         return edge
 
     @property
@@ -58,20 +51,20 @@ class Node:
         return self.__label
 
     @property
-    def tohead(self) -> 'Edge':
-        return self.__tohead
-
-    @property
     def fromhead(self) -> 'Edge':
         return self.__fromhead
 
-    @property
-    def to_hlen(self) -> int:
-        return self.__to_hlen
+    @fromhead.setter
+    def fromhead(self, value):
+        self.__fromhead = value
 
     @property
     def from_hlen(self):
         return self.__from_hlen
+
+    @property
+    def to_hlen(self):
+        return self.__to_hlen
 
     @from_hlen.setter
     def from_hlen(self, value):
@@ -87,7 +80,7 @@ class Node:
 
     @relation.setter
     def relation(self, value: set['Node']):
-        self.__relation = self.__relation.union(value)
+        self.__relation |= value
 
 
 class Edge:
