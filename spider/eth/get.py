@@ -68,27 +68,26 @@ def get_nodes(address, res) -> set[str]:  # 下一级节点的集合。
     return nodesto | nodesfrom
 
 
-def get_total_transfer(address) -> int:  # 下一级节点个数
-    params = {"tokenType": "TRC20", "contractAddress": address}
-    res = req_get(config['trxtransfer'], params)
+def get_total_transfer(address, tokentype) -> int:  # 下一级节点个数
+    params = {"tokenType": tokentype}
+    res = req_get(config['ethtransfer'].format(address), params)
     return get_total(res)
 
 
 def get_total_transaction(address) -> int:  # 下一级节点个数
-    params = {"address": address}
-    res = req_get(config['trxtransaction'], params)
+    res = req_get(config['ethtransaction'].format(address))
     return get_total(res)
 
 
-def get_nodes_transfer(address, offset, limit) -> set[str]:  # 下一级节点的集合。
-    params = {"offset": offset, "limit": limit, "tokenType": "TRC20", "contractAddress": address}
-    res = req_get(config['trxtransfer'], params)
+def get_nodes_transfer(address, tokentype, offset, limit) -> set[str]:  # 下一级节点的集合。
+    params = {"offset": offset, "limit": limit, "tokenType": tokentype}
+    res = req_get(config['ethtransfer'].format(address), params)
     return get_nodes(address, res)
 
 
 def get_nodes_transaction(address, offset, limit) -> set[str]:  # 下一级节点的集合。
-    params = {"address": address, "offset": offset, "limit": limit}
-    res = req_get(config['trxtransaction'], params)
+    params = {"offset": offset, "limit": limit, "type": 2}
+    res = req_get(config['ethtransaction'].format(address), params)
     return get_nodes(address, res)
 
 

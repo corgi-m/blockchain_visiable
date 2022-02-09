@@ -153,6 +153,5 @@ cython_debug/
 /.idea/vcs.xml
 *.html
 
-result/result_from.svg
-result/result_to.svg
+result/
 *.zip

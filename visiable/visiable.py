@@ -28,11 +28,11 @@ def vismain():
 
     G_from, G_to = graph_init()
 
-    edges = {'from': get_edges({nodesmap[node] for node in config["visnodes"]}, 'from'),
-             'to': get_edges({nodesmap[node] for node in config["visnodes"]}, 'to')}
+    edges = {'from': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'from'),
+             'to': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'to')}
 
-    draw_nodes(G_from, nodesappear['from'])
-    draw_nodes(G_to, nodesappear['to'])
+    draw_nodes(G_from, nodesappear['from'], 'from')
+    draw_nodes(G_to, nodesappear['to'], 'to')
 
     draw_edges(G_from, edges['from'])
     draw_edges(G_to, edges['to'])

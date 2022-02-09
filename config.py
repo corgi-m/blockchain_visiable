@@ -63,6 +63,7 @@ def get_config(args: argparse.Namespace):
     config['headers'] = parser_header(args.header)
     config['log'] = args.log
     config['TURN'] = args.deep
+    config['white'] = parse_nodes(args.white)
 
 
 def init():
@@ -71,6 +72,7 @@ def init():
     parser.add_argument('-v', '--visit', action='store_true')
     parser.add_argument('-H', '--header', type=argparse.FileType('r'), default="./configs/trx/header.txt")
     parser.add_argument('-n', '--nodes', type=argparse.FileType('r'), default='./configs/trx/nodeslist.txt')
+    parser.add_argument('-w', '--white', type=argparse.FileType('r'), default='./configs/trx/white.txt')
     parser.add_argument('-N', '--visnodes', type=argparse.FileType('r'), default='./configs/trx/visnodes.txt')
     parser.add_argument('-s', '--save', default='./result')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 5.0')

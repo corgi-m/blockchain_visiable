@@ -21,13 +21,15 @@ def graph_init() -> gv.graphs.Digraph:
     return G_from, G_to
 
 
-def draw_nodes(G, nodesappear) -> None:
+def draw_nodes(G, nodesappear, from_or_to) -> None:
     for i in range(len(nodesappear)):
         with G.subgraph(name='cluster_' + str(i)) as L:
             L.graph_attr.update(rank='same', color='green', label='layer_' + str(i), fontsize='100', compound='true')
             for node in nodesappear[i]:
-                fontcolor = 'black' if node.relationcount <= 5 else 'white'
-                tips = relationformat(node.relation) + balanceformat(node.balance)
+                relationcount = node.to_relationcount if from_or_to == 'to' else node.from_relationcount
+                relation = node.to_relation if from_or_to == 'to' else node.from_relation
+                fontcolor = 'black' if relationcount <= 5 else 'white'
+                tips = relationformat(relation) + balanceformat(node.balance)
                 if i == 0:
                     fillcolor = 'red'
                 elif node.label != '':
@@ -35,8 +37,11 @@ def draw_nodes(G, nodesappear) -> None:
                     fontcolor = 'white'
                     tips = node.label + '\n' + tips
                 else:
-                    fillcolor = 'grey' + str(100 - 10 * node.relationcount)
-                if node.relationcount > 0:
+                    num = 100 - 10 * relationcount
+                    if num < 0:
+                        num = 0
+                    fillcolor = 'grey' + str(num)
+                if relationcount > 0:
                     L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=fontcolor,
                            tooltip=tips, shape='box', layer=str(i))
 

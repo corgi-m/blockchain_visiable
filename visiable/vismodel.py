@@ -13,7 +13,8 @@ class Node:
         self.__tohead: Edge or None = None
         self.__fromhead: Edge or None = None
         self.__address: str = address
-        self.__relation: set['Node'] = set()
+        self.__to_relation: set['Node'] = set()
+        self.__from_relation: set['Node'] = set()
         self.__balance: Balance = balance
         self.__label: str = label
         self.__to_hlen: int = 0
@@ -71,16 +72,28 @@ class Node:
         self.__from_hlen = value
 
     @property
-    def relation(self) -> set['Node']:
-        return self.__relation
+    def to_relation(self) -> set['Node']:
+        return self.__to_relation
 
     @property
-    def relationcount(self) -> int:
-        return len(self.__relation)
+    def to_relationcount(self) -> int:
+        return len(self.__to_relation)
 
-    @relation.setter
-    def relation(self, value: set['Node']):
-        self.__relation |= value
+    @to_relation.setter
+    def to_relation(self, value: set['Node']):
+        self.__to_relation |= value
+
+    @property
+    def from_relation(self) -> set['Node']:
+        return self.__from_relation
+
+    @property
+    def from_relationcount(self) -> int:
+        return len(self.__from_relation)
+
+    @from_relation.setter
+    def from_relation(self, value: set['Node']):
+        self.__from_relation |= value
 
 
 class Edge:

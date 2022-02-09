@@ -32,8 +32,10 @@ def get_next_nodes(node, edges_get, from_or_to) -> set[Node]:
             continue
 
         edges_get.append(edge)
-        remote.relation = node.relation
-
+        if from_or_to == 'to':
+            remote.to_relation = node.to_relation
+        else:
+            remote.from_relation = node.from_relation
         if post_cut(edge, remote, from_or_to):
             continue
 
@@ -44,7 +46,8 @@ def get_next_nodes(node, edges_get, from_or_to) -> set[Node]:
 
 def get_edges(nodes, from_or_to) -> list[Edge]:
     for node in nodes:
-        node.relation = {node}
+        node.to_relation = {node}
+        node.from_relation = {node}
         count[from_or_to].add(node)
     edges_get: list[Edge] = []
     nodesappear[from_or_to].append(nodes)
