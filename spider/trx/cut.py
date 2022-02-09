@@ -113,6 +113,8 @@ class Nodecut(ABCNodecut):
 
     # 节点剪枝
     def cut(self) -> bool:
+        if self.node in config['white']:
+            return False
         if self.is_outof_len():
             return True
         return False

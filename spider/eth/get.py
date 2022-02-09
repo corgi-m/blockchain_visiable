@@ -14,9 +14,9 @@ from utils import outof_list
 import json
 
 
-def get_trc(address, trc_type) -> list[dict]:  # 代币列表
+def get_erc(address, trc_type) -> list[dict]:  # 代币列表
     params = {"limit": "100"}
-    res = req_get(config['trcholder'].format(address, trc_type), params)
+    res = req_get(config['ercholder'].format(address, trc_type), params)
     if res is None:
         return []
     data = json.loads(res.text)
@@ -25,7 +25,7 @@ def get_trc(address, trc_type) -> list[dict]:  # 代币列表
     return []
 
 
-def get_trx(address) -> list[dict]:  # 代币列表
+def get_eth(address) -> list[dict]:  # 代币列表
     res = req_get(config['trxholder'].format(address))
     if res is None:
         return []

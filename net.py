@@ -10,12 +10,12 @@ def req_get(url, params=None) -> requests.models.Response or None:
     if params is None:
         params = {}
     try:
-        res = requests.get(url=url, headers=config['headers'], params=params, proxies=config['proxies'], timeout=2)
+        res = requests.get(url=url, headers=config['headers'], params=params, proxies=config['proxies'], timeout=10)
     except Exception as e:
         print("retry")
         print(e)
         try:
-            res = requests.get(url=url, headers=config['headers'], params=params, proxies=config['proxies'], timeout=2)
+            res = requests.get(url=url, headers=config['headers'], params=params, proxies=config['proxies'], timeout=10)
         except Exception as e:
             print("error")
             print(e)
@@ -33,13 +33,13 @@ def req_post(url, params=None, data=None) -> requests.models.Response or None:
         data = {}
     try:
         res = requests.post(url=url, headers=config['headers'], params=params, data=data,
-                            proxies=config['proxies'], timeout=2)
+                            proxies=config['proxies'], timeout=10)
     except Exception as e:
         print("retry")
         print(e)
         try:
             res = requests.post(url=url, headers=config['headers'], params=params, data=data,
-                                proxies=config['proxies'], timeout=2)
+                                proxies=config['proxies'], timeout=10)
         except Exception as e:
             print("error")
             print(e)
