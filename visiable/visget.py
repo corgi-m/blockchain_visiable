@@ -36,11 +36,10 @@ def get_next_nodes(node, edges_get, from_or_to) -> set[Node]:
             remote.to_relation = node.to_relation
         else:
             remote.from_relation = node.from_relation
-        next_nodes.add(remote)
 
         if post_cut(edge, remote, from_or_to):
             continue
-
+        next_nodes.add(remote)
         count[from_or_to].add(remote)
 
     return next_nodes

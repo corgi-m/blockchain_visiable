@@ -8,6 +8,10 @@ count = {'from': set(), 'to': set()}
 
 def node_cut(node: Node, from_or_to: str):
     hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
+    if node.address in config['white']:
+        return False
+    if nodes_cut(node):
+        return True
     if hlen > config['MAX_OUT_DEGREE']:
         return True
     if node.label is not None:
@@ -15,7 +19,7 @@ def node_cut(node: Node, from_or_to: str):
     return False
 
 
-def data_cut(edge: Edge):
+def date_cut(edge: Edge):
     for i in edge.info:
         if date_transform_reverse(i[1]) > config['TIME_STAMP']:
             break
@@ -25,14 +29,14 @@ def data_cut(edge: Edge):
 
 
 def nodes_cut(node: Node):
-    if node.address in ['TKY8zLtVJnaH7QewSGNwU6DALDLUDmsBKM']:
+    if node.address in config['black']:
         return True
     return False
 
 
 def pre_cut(edge: Edge, node: Node):
     use(edge)
-    '''if data_cut(edge):
+    '''if date_cut(edge):
         return True'''
 
     return False
@@ -40,11 +44,6 @@ def pre_cut(edge: Edge, node: Node):
 
 def post_cut(edge: Edge, node: Node, from_or_to):
     use(edge)
-    hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
-    if nodes_cut(node):
-        return True
-    if hlen > config['MAX_OUT_DEGREE']:
-        return True
     if node in count[from_or_to]:
         return True
     return False
