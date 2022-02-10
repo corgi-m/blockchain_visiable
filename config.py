@@ -69,6 +69,7 @@ def get_config(args: argparse.Namespace):
     config['TURN'] = args.deep
     config['white'] = parse_nodes(parser_readfile(args.white))
     config['black'] = parse_nodes(parser_readfile(args.black))
+    config['gray'] = parse_nodes(parser_readfile(args.gray))
 
 
 def init():
@@ -79,6 +80,7 @@ def init():
     parser.add_argument('-n', '--nodes', type=str, default='nodeslist.txt')
     parser.add_argument('-w', '--white', type=str, default='white.txt')
     parser.add_argument('-b', '--black', type=str, default='black.txt')
+    parser.add_argument('-g', '--gray', type=str, default='gray.txt')
     parser.add_argument('-N', '--visnodes', type=str, default='visnodes.txt')
     parser.add_argument('-s', '--save', default='./result')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 5.0')
