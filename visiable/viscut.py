@@ -24,16 +24,25 @@ def data_cut(edge: Edge):
     return False
 
 
-def pre_cut(edge: Edge):
-    use(edge)
-    if data_cut(edge):
+def nodes_cut(node: Node):
+    if node.address in ['TKY8zLtVJnaH7QewSGNwU6DALDLUDmsBKM']:
         return True
+    return False
+
+
+def pre_cut(edge: Edge, node: Node):
+    use(edge)
+    '''if data_cut(edge):
+        return True'''
+
     return False
 
 
 def post_cut(edge: Edge, node: Node, from_or_to):
     use(edge)
     hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
+    if nodes_cut(node):
+        return True
     if hlen > config['MAX_OUT_DEGREE']:
         return True
     if node in count[from_or_to]:

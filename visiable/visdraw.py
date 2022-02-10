@@ -22,7 +22,9 @@ def graph_init() -> gv.graphs.Digraph:
     return G_from, G_to
 
 
-def getcolor(node: Node, relationcount):
+def getcolor(node: Node, from_or_to):
+    hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
+    relationcount = node.to_relationcount if from_or_to == 'to' else node.from_relationcount
     if node.address in config['black']:
         fillcolor = 'yellow'
         fontcolor = 'black'
@@ -35,7 +37,9 @@ def getcolor(node: Node, relationcount):
     elif node.label is not None:
         fillcolor = 'blue'
         fontcolor = 'white'
-
+    elif hlen > config['MAX_OUT_DEGREE']:
+        fillcolor = 'deeppink'
+        fontcolor = 'white'
     else:
         fontcolor = 'black' if relationcount <= 5 else 'white'
         num = 100 - 10 * relationcount
@@ -53,7 +57,7 @@ def draw_nodes(G, nodesappear, from_or_to) -> None:
                     relationformat(node.to_relation if from_or_to == 'to' else node.from_relation) + \
                     balanceformat(node.balance)
                 fillcolor, fontcolor = \
-                    getcolor(node, node.to_relationcount if from_or_to == 'to' else node.from_relationcount)
+                    getcolor(node, from_or_to)
                 if fillcolor == 'blue':
                     tips = node.label + '\n' + tips
                 L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=fontcolor,
