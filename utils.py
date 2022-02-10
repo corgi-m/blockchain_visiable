@@ -15,3 +15,9 @@ def date_transform(timestamp) -> str:
     time_local = time.localtime(int(timestamp))
     datatime = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
     return datatime
+
+
+def date_transform_reverse(datatime) -> int:
+    time_local = time.strptime(datatime, "%Y-%m-%d %H:%M:%S")
+    timestamp = time.mktime(time_local)
+    return int(timestamp)

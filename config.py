@@ -51,29 +51,35 @@ def parser_header(file):
     return header
 
 
+def parser_readfile(path):
+    return open('./configs/' + config['db'].dbname + '/' + path, 'r')
+
+
 def get_config(args: argparse.Namespace):
     parse_config(args.config)
-    config["nodes"] = parse_nodes(args.nodes)
+    config['db'].dbname = args.link
+    config["nodes"] = parse_nodes(parser_readfile(args.nodes))
     config["save"] = args.save
-    config["visnodes"] = parse_nodes(args.visnodes)
+    config["visnodes"] = parse_nodes(parser_readfile(args.visnodes))
     config['proxies'] = parse_proxy(args.proxy)
     config['visit'] = args.visit
-    config['db'].dbname = args.link
     config['db'].check_db(args.dbstruct)
-    config['headers'] = parser_header(args.header)
+    config['headers'] = parser_header(parser_readfile(args.headers))
     config['log'] = args.log
     config['TURN'] = args.deep
-    config['white'] = parse_nodes(args.white)
+    config['white'] = parse_nodes(parser_readfile(args.white))
+    config['black'] = parse_nodes(parser_readfile(args.black))
 
 
 def init():
     parser = argparse.ArgumentParser(prog='blockchain_visiable', description='developed by corgi')
     parser.add_argument('-p', '--proxy', type=str)
     parser.add_argument('-v', '--visit', action='store_true')
-    parser.add_argument('-H', '--header', type=argparse.FileType('r'), default="./configs/trx/header.txt")
-    parser.add_argument('-n', '--nodes', type=argparse.FileType('r'), default='./configs/trx/nodeslist.txt')
-    parser.add_argument('-w', '--white', type=argparse.FileType('r'), default='./configs/trx/white.txt')
-    parser.add_argument('-N', '--visnodes', type=argparse.FileType('r'), default='./configs/trx/visnodes.txt')
+    parser.add_argument('-H', '--headers', type=str, default="headers.txt")
+    parser.add_argument('-n', '--nodes', type=str, default='nodeslist.txt')
+    parser.add_argument('-w', '--white', type=str, default='white.txt')
+    parser.add_argument('-b', '--black', type=str, default='black.txt')
+    parser.add_argument('-N', '--visnodes', type=str, default='visnodes.txt')
     parser.add_argument('-s', '--save', default='./result')
     parser.add_argument('-V', '--version', action='version', version='%(prog)s 5.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
@@ -82,7 +88,7 @@ def init():
     parser.add_argument('-d', '--deep', type=int, default=3)
     parser.add_argument('-e', '--edgelimit', type=int)
     parser.add_argument('-u', '--valuelimit', type=int)
-    parser.add_argument('-L', '--link', nargs='?', type=str, default='trx', choices=['trx'])
+    parser.add_argument('-L', '--link', nargs='?', type=str, default='trx', choices=['trx', 'eth'])
 
     args = parser.parse_args(sys.argv[1:])
 

@@ -1,5 +1,5 @@
 # coding=utf-8
-from spider.trx.cut import Edgecut, Nodecut
+from spider.eth.cut import Edgecut, Nodecut
 
 from spider.common.get import ABCGet
 
@@ -14,9 +14,9 @@ from utils import outof_list
 import json
 
 
-def get_erc(address, trc_type) -> list[dict]:  # 代币列表
-    params = {"limit": "100"}
-    res = req_get(config['ercholder'].format(address, trc_type), params)
+def get_erc(address, tokentype) -> list[dict]:  # 代币列表
+    params = {"limit": "100", 'tokenType': tokentype}
+    res = req_get(config['ercholder'].format(address), params)
     if res is None:
         return []
     data = json.loads(res.text)
@@ -35,9 +35,10 @@ def get_eth(address) -> list[dict]:  # 代币列表
 
 def get_balance(address) -> list[dict]:  # 代币列表
     balances = []
-    balances.extend(get_trc(address, "TRC20"))
-    balances.extend(get_trc(address, "TRC10"))
-    balances.extend(get_trx(address))
+    balances.extend(get_erc(address, "ERC20"))
+    balances.extend(get_erc(address, "ERC721"))
+    balances.extend(get_erc(address, "ERC1155"))
+    balances.extend(get_eth(address))
     return balances
 
 
@@ -98,10 +99,14 @@ class Get(ABCGet):
     @classmethod
     def get_next_nodes(cls, node) -> set[str]:  # 下一级节点的集合。
         # get length
-        len_edges_transfer = get_total_transfer(node)
+        len_edges_transfer_erc20 = get_total_transfer(node, 'ERC20')
+        len_edges_transfer_erc721 = get_total_transfer(node, 'ERC721')
+        len_edges_transfer_erc1155 = get_total_transfer(node, 'ERC1155')
         len_edges_transaction = get_total_transaction(node)
+        print(len_edges_transfer_erc20, len_edges_transfer_erc721, len_edges_transfer_erc1155, len_edges_transaction)
         next_nodes = set()
-        length = len_edges_transfer + len_edges_transaction
+        length = \
+            len_edges_transfer_erc20 + len_edges_transfer_erc721 + len_edges_transfer_erc1155 + len_edges_transaction
 
         # cut node
         nodecut = Nodecut(node, length)
@@ -109,8 +114,12 @@ class Get(ABCGet):
             return next_nodes
 
         # transfers
-        for page in range(0, len_edges_transfer, 100):
-            next_nodes |= get_nodes_transfer(node, page, 100)
+        for page in range(0, len_edges_transfer_erc20, 100):
+            next_nodes |= get_nodes_transfer(node, 'ERC20', page, 100)
+        for page in range(0, len_edges_transfer_erc721, 100):
+            next_nodes |= get_nodes_transfer(node, 'ERC721', page, 100)
+        for page in range(0, len_edges_transfer_erc1155, 100):
+            next_nodes |= get_nodes_transfer(node, 'ERC1155', page, 100)
         # transactions
         for page in range(0, len_edges_transaction, 100):
             next_nodes |= get_nodes_transaction(node, page, 100)

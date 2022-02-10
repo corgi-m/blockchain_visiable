@@ -1,7 +1,7 @@
 # coding=utf-8
 from typing import Generator
 
-Info = list[tuple[str, str, str, float]]
+Info = tuple[str, str, str, float]
 Balance = dict[str, float]
 nodesmap: dict[str, 'Node'] = {}
 edgesmap: dict[str, 'Edge'] = {}
@@ -34,7 +34,7 @@ class Node:
         else:
             self.__to_hlen += 1
             nodeto.from_hlen += 1
-            edge = Edge(self, nodeto, info, self.__tohead, nodeto.__fromhead)
+            edge = Edge(self, nodeto, [info], self.__tohead, nodeto.__fromhead)
             self.__tohead = edge
             nodeto.fromhead = edge
         return edge
@@ -97,11 +97,11 @@ class Node:
 
 
 class Edge:
-    def __init__(self, nodefrom: Node, nodeto: Node, info: Info,
+    def __init__(self, nodefrom: Node, nodeto: Node, info: list[Info],
                  last_to_edge: 'Edge' = None, last_from_edge: 'Edge' = None):
         self.__nodefrom: Node = nodefrom
         self.__nodeto: Node = nodeto
-        self.__info: Info = info  # transferhash, blocktime, symbol, value
+        self.__info: list[Info] = info  # transferhash, blocktime, symbol, value
         self.__last_to_edge: 'Edge' = last_to_edge
         self.__last_from_edge: 'Edge' = last_from_edge
 
@@ -109,7 +109,7 @@ class Edge:
         self.__info.append(info)
 
     @property
-    def info(self) -> Info:
+    def info(self) -> list[Info]:
         return self.__info
 
     @property

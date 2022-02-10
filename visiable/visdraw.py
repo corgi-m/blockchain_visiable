@@ -2,6 +2,7 @@
 from visiable.visutils import relationformat, balanceformat, infoformat
 import graphviz as gv
 from config import config
+from utils import date_transform_reverse
 import os
 
 
@@ -30,9 +31,11 @@ def draw_nodes(G, nodesappear, from_or_to) -> None:
                 relation = node.to_relation if from_or_to == 'to' else node.from_relation
                 fontcolor = 'black' if relationcount <= 5 else 'white'
                 tips = relationformat(relation) + balanceformat(node.balance)
-                if i == 0:
+                if node.address in config['black']:
+                    fillcolor = 'yellow'
+                elif i == 0:
                     fillcolor = 'red'
-                elif node.label != '':
+                elif node.label is not None:
                     fillcolor = 'blue'
                     fontcolor = 'white'
                     tips = node.label + '\n' + tips
@@ -48,5 +51,10 @@ def draw_nodes(G, nodesappear, from_or_to) -> None:
 
 def draw_edges(G, edges) -> None:
     for edge in edges:
+        '''for i in edge.info:
+            if date_transform_reverse(i[1]) > 1642003200:
+                break
+        else:
+            continue'''
         G.edge(edge.nodefrom.address, edge.nodeto.address,
                edgetooltip=infoformat(edge.nodefrom.address, edge.nodeto.address, edge.info), penwidth='4')

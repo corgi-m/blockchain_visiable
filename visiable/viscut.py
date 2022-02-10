@@ -10,6 +10,8 @@ def node_cut(node: Node, from_or_to: str):
     hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
     if hlen > config['MAX_OUT_DEGREE']:
         return True
+    if node.label is not None:
+        return True
     return False
 
 

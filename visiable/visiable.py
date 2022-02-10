@@ -18,8 +18,8 @@ def vis_init():
         if edge['addrto'] not in nodesmap:
             nodesmap[edge['addrto']] = Node(address=edge['addrto'], balance=get_balance(edge['addrto'], balances),
                                             label=get_label(edge['addrto'], labels))
-        edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(nodesmap[edge['addrto']], [
-            (edge['transferhash'], str(edge["blocktime"]), edge["symbol"], edge["value"])])
+        edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(nodesmap[edge['addrto']],
+            (edge['transferhash'], str(edge["blocktime"]), edge["symbol"], edge["value"]))
     return
 
 

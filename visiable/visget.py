@@ -4,9 +4,9 @@ from config import config
 from visiable.viscut import pre_cut, post_cut, count, node_cut
 
 
-def get_label(address, labels) -> str:
+def get_label(address, labels) -> str or None:
     if address not in labels:
-        return ""
+        return None
     else:
         return labels[address]
 

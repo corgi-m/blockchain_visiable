@@ -29,7 +29,7 @@ class Edgecut(ABCEdgecut):
             return True
         save_transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
                       self.edge["to"], self.edge["symbol"], self.edge["value"],
-                      date_transform(self.edge["blocktime"] / 1000))
+                      date_transform(self.edge["blocktime"]))
         if self.postcut.cut():
             return True
         return False
@@ -43,12 +43,14 @@ class Precut(ABCPrecut):
 
     #   剪掉合约
     def is_notransfer(self) -> bool:
-        if "contractType" in self.edge and 'TransferContract' not in self.edge["contractType"]:
+        if self.edge['isFromContract'] is True or self.edge["isToContract"] is True:
             return True
         return False
 
     #  剪掉零交易
     def is_novalue(self) -> bool:
+        if 'value' not in self.edge:
+            return True
         if self.edge["value"] < config['MIN_TRANSFER_VALUE']:
             return True
         return False
