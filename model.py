@@ -4,10 +4,11 @@ from config import config
 
 
 class Table:
-    _tablename = None
-    _column = None
+    _tablename: str = None
+    _column: list[str] = None
     _sqlsave = None
     __sqlget = "SELECT * FROM %s"
+    __isexist = "SELECT EXISTS(SELECT * FROM `%s` WHERE %s=%s)"
 
     def __init__(self, value):
         self._value = value
@@ -41,6 +42,18 @@ class Table:
             results = cur.fetchall()
             cur.close()
             return results
+        except Exception as e:
+            print("Error: unable to fetch data")
+            print(e)
+
+    @classmethod
+    def is_exist(cls, value) -> bool:
+        try:
+            cur = config['db'].cursor
+            cur.execute(cls.sqlformat(cls.__isexist, [cls._tablename, cls._column[0]]), value)
+            results = cur.fetchone()
+            cur.close()
+            return True if results[0] == 1 else False
         except Exception as e:
             print("Error: unable to fetch data")
             print(e)

@@ -1,4 +1,5 @@
 # coding=utf-8
+from model import Balance
 from spider.trx.cut import Edgecut, Nodecut
 
 from spider.common.get import ABCGet
@@ -35,6 +36,8 @@ def get_trx(address) -> list[dict]:  # 代币列表
 
 def get_balance(address) -> list[dict]:  # 代币列表
     balances = []
+    if Balance.is_exist(address):
+        return balances
     balances.extend(get_trc(address, "TRC20"))
     balances.extend(get_trc(address, "TRC10"))
     balances.extend(get_trx(address))
@@ -122,7 +125,7 @@ class Get(ABCGet):
         for address in count:
             balances = get_balance(address)
             bals = []
-            if balances is not None:
+            if balances:
                 for i in balances:
                     bals.append(i["symbol"] + ',' + str(i["value"]))
                 save_balance(address, ';'.join(bals))

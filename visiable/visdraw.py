@@ -1,6 +1,6 @@
 # coding=utf-8
 from visiable.vismodel import Node
-from visiable.visutils import relationformat, balanceformat, infoformat
+from visiable.visutils import relationformat, balanceformat, infoformat, tip_filter
 import graphviz as gv
 from config import config
 import os
@@ -53,13 +53,12 @@ def draw_nodes(G, nodesappear, from_or_to) -> None:
         with G.subgraph(name='cluster_' + str(i)) as L:
             L.graph_attr.update(rank='same', color='green', label='layer_' + str(i), fontsize='100', compound='true')
             for node in nodesappear[i]:
-                tips = \
-                    relationformat(node.to_relation if from_or_to == 'to' else node.from_relation) + \
-                    balanceformat(node.balance)
-                fillcolor, fontcolor = \
-                    getcolor(node, from_or_to)
+                relation = node.to_relation if from_or_to == 'to' else node.from_relation
+                tips = relationformat(relation) + balanceformat(node.balance)
+                fillcolor, fontcolor = getcolor(node, from_or_to)
                 if fillcolor == 'blue':
                     tips = node.label + '\n' + tips
+                tips = tip_filter(tips)
                 L.node(node.address, style='filled', fillcolor=fillcolor, fontcolor=fontcolor,
                        tooltip=tips, shape='box', layer=str(i))
 

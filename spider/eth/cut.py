@@ -1,4 +1,5 @@
 # coding=utf-8
+from model import Transfer
 from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
 
 from spider.save import save_label, save_transfer
@@ -27,9 +28,10 @@ class Edgecut(ABCEdgecut):
     def cut(self) -> bool:
         if self.precut.cut():
             return True
-        save_transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
-                      self.edge["to"], self.edge["symbol"], self.edge["value"],
-                      date_transform(self.edge["blocktime"]))
+        if not Transfer.is_exist(self.edge["txhash"]):
+            save_transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
+                          self.edge["to"], self.edge["symbol"], self.edge["value"],
+                          date_transform(self.edge["blocktime"]))
         if self.postcut.cut():
             return True
         return False

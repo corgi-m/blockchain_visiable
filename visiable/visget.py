@@ -18,6 +18,8 @@ def get_balance(address, balances) -> Balance:
     balance = balances[address]
     for balan in balance.split(';'):
         temp = balan.split(',')
+        if len(temp) != 2:
+            continue
         res[temp[0]] = float(temp[1])
     return res
 
