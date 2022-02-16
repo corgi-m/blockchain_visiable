@@ -2,7 +2,7 @@
 from config import config, init
 from model import Transfer, Balance, Label
 from visiable.visdraw import graph_init, draw_nodes, draw_edges, graph_save
-# from visiable.visecharts import setnodes, setedges, drawecharts
+from visiable.visecharts import setnodes, setedges, drawecharts
 from visiable.visget import get_edges, get_balance, get_label
 from visiable.vismodel import Node, nodesmap, edgesmap, nodesappear
 
@@ -32,22 +32,22 @@ def vis_init():
 def vismain():
     vis_init()
 
-    G_from, G_to = graph_init()
+    # G_from, G_to = graph_init()
 
     edges = {'from': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'from'),
              'to': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'to')}
 
-    '''nodes = setnodes(nodesappear['to'], 'to')
+    nodes = setnodes(nodesappear['to'], 'to')
     edges = setedges(edges['to'], 'to')
-    drawecharts(nodes, edges)'''
-    draw_nodes(G_from, nodesappear['from'], 'from')
+    drawecharts(nodes, edges)
+    '''draw_nodes(G_from, nodesappear['from'], 'from')
     draw_nodes(G_to, nodesappear['to'], 'to')
 
     draw_edges(G_from, edges['from'])
     draw_edges(G_to, edges['to'])
 
     graph_save(G_from, 'result_from.svg')
-    graph_save(G_to, 'result_to.svg')
+    graph_save(G_to, 'result_to.svg')'''
 
 
 if __name__ == "__main__":
