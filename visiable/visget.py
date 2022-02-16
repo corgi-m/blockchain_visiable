@@ -83,7 +83,7 @@ def get_node_tips(node, from_or_to, color):
 
 def get_edge_tips(edge: Edge):
     res = "{0} -> {1}<br>".format(edge.nodefrom.address, edge.nodeto.address)
-    form = "{{transferhash: {0}, blocktime: {1}, symbol: {2}, value: {3}}}<br>"
+    form = "{{{1}, {2}: {3}, transferhash: {0}}}<br>"
     for info in edge.info:
         info = outof_list(info)
         res += form.format(info[0], info[1], tip_filter(info[2]), info[3])

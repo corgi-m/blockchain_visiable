@@ -8,7 +8,7 @@ def outof_list(li) -> str:
 
 def balanceformat(balance):
     res = ""
-    form = "{{symbol: {0}, value: {1}}}<br>"
+    form = "{{{0}: {1}}}<br>"
     for balan in balance.items():
         res += form.format(balan[0], balan[1])
     return res

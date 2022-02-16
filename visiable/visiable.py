@@ -6,9 +6,6 @@ from visiable.visget import get_edges, get_balance, get_label
 from visiable.vismodel import Node, nodesmap, edgesmap, nodesappear
 
 
-# from visiable.visdraw import draw_nodes, draw_edges, graph_init, graph_save
-
-
 def vis_init():
     edges_init: list[any] = Transfer.get()
     balances = Balance.get()
@@ -31,22 +28,15 @@ def vis_init():
 def vismain():
     vis_init()
 
-    # G_from, G_to = graph_init()
-
     edges = {'from': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'from'),
              'to': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'to')}
 
-    nodes = setnodes(nodesappear['to'], 'to')
-    edges = setedges(edges['to'])
-    drawecharts(nodes, edges)
-    '''draw_nodes(G_from, nodesappear['from'], 'from')
-    draw_nodes(G_to, nodesappear['to'], 'to')
-
-    draw_edges(G_from, edges['from'])
-    draw_edges(G_to, edges['to'])
-
-    graph_save(G_from, 'result_from.svg')
-    graph_save(G_to, 'result_to.svg')'''
+    nodes_to = setnodes(nodesappear['to'], 'to')
+    nodes_from = setnodes(nodesappear['from'], 'from')
+    edges_to = setedges(edges['to'])
+    edges_from = setedges(edges['from'])
+    drawecharts(nodes_to, edges_to, 'to')
+    drawecharts(nodes_from, edges_from, 'from')
 
 
 if __name__ == "__main__":
