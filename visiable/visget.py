@@ -2,6 +2,7 @@
 from visiable.vismodel import Balance, Edge, nodesappear, Node
 from config import config
 from visiable.viscut import pre_cut, post_cut, count, node_cut
+from visiable.visutils import relationformat, balanceformat, tip_filter, outof_list
 
 
 def get_label(address, labels) -> str or None:
@@ -69,3 +70,53 @@ def get_edges(nodes, from_or_to) -> list[Edge]:
         node_exits |= nodes
         nodesappear[from_or_to].append(nodes)
     return edges_get
+
+
+def get_node_tips(node, from_or_to, color):
+    relation = node.to_relation if from_or_to == 'to' else node.from_relation
+    tips = relationformat(relation) + balanceformat(node.balance)
+    if color == 'blue':
+        tips = node.label + '<br>' + tips
+    tips = tip_filter(tips)
+    return tips
+
+
+def get_edge_tips(edge: Edge):
+    res = "{0} -> {1}<br>".format(edge.nodefrom.address, edge.nodeto.address)
+    form = "{{transferhash: {0}, blocktime: {1}, symbol: {2}, value: {3}}}<br>"
+    for info in edge.info:
+        info = outof_list(info)
+        res += form.format(info[0], info[1], tip_filter(info[2]), info[3])
+    return res
+
+
+def get_node_color(node: Node, from_or_to):
+    hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
+    if node.address in config['black']:
+        fillcolor = 'yellow'
+    elif node.address in config['gray']:
+        fillcolor = 'green'
+    elif node.address in config['visnodes']:
+        fillcolor = 'red'
+    elif node.label is not None:
+        fillcolor = 'blue'
+    elif hlen > config['MAX_OUT_DEGREE']:
+        fillcolor = 'deeppink'
+    else:
+        fillcolor = 'black'
+    return fillcolor
+
+
+def get_edge_color(edge: Edge):
+    value = 0
+    count = 0
+    fillcolor = 'black'
+    for i in edge.info:
+        if i[2] == 'USDT':
+            count += 1
+            value += i[3]
+    if value > config['THRESHOLD_OF_VALUE']:
+        fillcolor = 'red'
+    elif len(edge.info) > config['THRESHOLD_OF_COUNT']:
+        fillcolor = 'yellow'
+    return fillcolor

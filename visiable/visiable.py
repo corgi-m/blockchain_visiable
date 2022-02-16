@@ -1,7 +1,6 @@
 # coding=utf-8
 from config import config, init
 from model import Transfer, Balance, Label
-from visiable.visdraw import graph_init, draw_nodes, draw_edges, graph_save
 from visiable.visecharts import setnodes, setedges, drawecharts
 from visiable.visget import get_edges, get_balance, get_label
 from visiable.vismodel import Node, nodesmap, edgesmap, nodesappear
@@ -38,7 +37,7 @@ def vismain():
              'to': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'to')}
 
     nodes = setnodes(nodesappear['to'], 'to')
-    edges = setedges(edges['to'], 'to')
+    edges = setedges(edges['to'])
     drawecharts(nodes, edges)
     '''draw_nodes(G_from, nodesappear['from'], 'from')
     draw_nodes(G_to, nodesappear['to'], 'to')
