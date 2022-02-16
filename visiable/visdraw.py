@@ -1,5 +1,5 @@
 # coding=utf-8
-from visiable.vismodel import Node
+from visiable.vismodel import Node, Edge
 from visiable.visutils import relationformat, balanceformat, infoformat, tip_filter
 import graphviz as gv
 from config import config
@@ -22,7 +22,7 @@ def graph_init() -> gv.graphs.Digraph:
     return G_from, G_to
 
 
-def getcolor(node: Node, from_or_to):
+def getnodecolor(node: Node, from_or_to):
     hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
     relationcount = node.to_relationcount if from_or_to == 'to' else node.from_relationcount
     if node.address in config['black']:
@@ -48,6 +48,21 @@ def getcolor(node: Node, from_or_to):
     return fillcolor, fontcolor
 
 
+def getedgecolor(edge: Edge):
+    value = 0
+    count = 0
+    fillcolor = 'black'
+    for i in edge.info:
+        if i[2] == 'USDT':
+            count += 1
+            value += i[3]
+    if value > config['THRESHOLD_OF_VALUE']:
+        fillcolor = 'red'
+    elif len(edge.info) > config['THRESHOLD_OF_COUNT']:
+        fillcolor = 'yellow'
+    return fillcolor
+
+
 def draw_nodes(G, nodesappear, from_or_to) -> None:
     for i in range(len(nodesappear)):
         with G.subgraph(name='cluster_' + str(i)) as L:
@@ -55,7 +70,7 @@ def draw_nodes(G, nodesappear, from_or_to) -> None:
             for node in nodesappear[i]:
                 relation = node.to_relation if from_or_to == 'to' else node.from_relation
                 tips = relationformat(relation) + balanceformat(node.balance)
-                fillcolor, fontcolor = getcolor(node, from_or_to)
+                fillcolor, fontcolor = getnodecolor(node, from_or_to)
                 if fillcolor == 'blue':
                     tips = node.label + '\n' + tips
                 tips = tip_filter(tips)
@@ -65,5 +80,6 @@ def draw_nodes(G, nodesappear, from_or_to) -> None:
 
 def draw_edges(G, edges) -> None:
     for edge in edges:
-        G.edge(edge.nodefrom.address, edge.nodeto.address,
-               edgetooltip=infoformat(edge.nodefrom.address, edge.nodeto.address, edge.info), penwidth='4')
+        tips = infoformat(edge.nodefrom.address, edge.nodeto.address, edge.info)
+        fillcolor = getedgecolor(edge)
+        G.edge(edge.nodefrom.address, edge.nodeto.address, edgetooltip=tips, color=fillcolor, penwidth='4')
