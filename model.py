@@ -8,7 +8,7 @@ class Table:
     _column: list[str] = None
     _sqlsave = None
     __sqlget = "SELECT * FROM %s"
-    __isexist = "SELECT EXISTS(SELECT * FROM `%s` WHERE %s=%s)"
+    __isexist = "SELECT EXISTS(SELECT * FROM %s WHERE %s=%s)"
 
     def __init__(self, value):
         self._value = value

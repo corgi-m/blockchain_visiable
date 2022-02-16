@@ -1,5 +1,5 @@
 from pyecharts.charts.basic_charts.graph import Graph
-from pyecharts.options.global_options import TitleOpts, InitOpts
+from pyecharts.options.global_options import TitleOpts, InitOpts, AnimationOpts
 from pyecharts.options.series_options import LineStyleOpts
 
 from visiable.visget import get_node_tips, get_node_color, get_edge_color, get_edge_tips
@@ -22,6 +22,7 @@ def setnodes(nodes, from_or_to):
                 "label": {
                     "fontSize": 10
                 },
+                "enterable": True,
                 "tooltip": {
                     "textStyle": {
                         "align": 'center',
@@ -46,6 +47,7 @@ def setedges(edges):
                 'color': color,
                 'width': 2,
             },
+            "enterable": True,
             "label": {
                 "fontSize": 15
             },
@@ -63,22 +65,28 @@ def setedges(edges):
 def drawecharts(nodes, edges, from_or_to):
     G = Graph(
         init_opts=InitOpts(
+            animation_opts=AnimationOpts(
+                animation=False,
+            ),
             renderer='svg',
             width='8000px',
             height='4000px'
-        )
+        ),
     )
     G.add(
         "",
         nodes,
         edges,
-        repulsion=8000,
-        edge_length=1,
+        repulsion=80,
         layout='force',
         edge_symbol=[''],
         linestyle_opts=LineStyleOpts(
             curve=0.1
         ),
     )
-    G.set_global_opts(title_opts=TitleOpts(title="Graph-" + from_or_to))
+    G.set_global_opts(
+        title_opts=TitleOpts(
+            title="Graph-" + from_or_to
+        ),
+    )
     G.render("./result/graph_" + from_or_to + ".html")

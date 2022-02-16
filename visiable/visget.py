@@ -82,12 +82,12 @@ def get_node_tips(node, from_or_to, color):
 
 
 def get_edge_tips(edge: Edge):
-    res = "{0} -> {1}<br>".format(edge.nodefrom.address, edge.nodeto.address)
+    tips = "{0} -> {1}<br>".format(edge.nodefrom.address, edge.nodeto.address)
     form = "{{{1}, {2}: {3}, transferhash: {0}}}<br>"
     for info in edge.info:
         info = outof_list(info)
-        res += form.format(info[0], info[1], tip_filter(info[2]), info[3])
-    return res
+        tips += form.format(info[0], info[1], tip_filter(info[2]), info[3])
+    return tips
 
 
 def get_node_color(node: Node, from_or_to):
@@ -117,6 +117,6 @@ def get_edge_color(edge: Edge):
             value += i[3]
     if value > config['THRESHOLD_OF_VALUE']:
         fillcolor = 'red'
-    elif len(edge.info) > config['THRESHOLD_OF_COUNT']:
+    elif count > config['THRESHOLD_OF_COUNT']:
         fillcolor = 'yellow'
     return fillcolor

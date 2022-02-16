@@ -13,23 +13,51 @@ def vis_init():
     for edge in edges_init:
         edge = dict(zip(Transfer.column(), edge))
         if edge['addrfrom'] not in nodesmap:
-            nodesmap[edge['addrfrom']] = Node(address=edge['addrfrom'], balance=get_balance(edge['addrfrom'], balances),
-                                              label=get_label(edge['addrfrom'], labels))
+            nodesmap[edge['addrfrom']] = \
+                Node(
+                    address=edge['addrfrom'],
+                    balance=get_balance(
+                        edge['addrfrom'],
+                        balances
+                    ),
+                    label=get_label(
+                        edge['addrfrom'],
+                        labels
+                    )
+                )
         if edge['addrto'] not in nodesmap:
-            nodesmap[edge['addrto']] = Node(address=edge['addrto'], balance=get_balance(edge['addrto'], balances),
-                                            label=get_label(edge['addrto'], labels))
-        edgesmap[edge['transferhash']] = nodesmap[edge['addrfrom']].add_edge(nodesmap[edge['addrto']],
-                                                                             (edge['transferhash'],
-                                                                              str(edge["blocktime"]), edge["symbol"],
-                                                                              edge["value"]))
+            nodesmap[edge['addrto']] = \
+                Node(
+                    address=edge['addrto'],
+                    balance=get_balance(
+                        edge['addrto'],
+                        balances
+                    ),
+                    label=get_label(
+                        edge['addrto'],
+                        labels
+                    )
+                )
+        edgesmap[edge['transferhash']] = \
+            nodesmap[edge['addrfrom']].add_edge(
+                nodesmap[edge['addrto']],
+                (
+                    edge['transferhash'],
+                    str(edge["blocktime"]),
+                    edge["symbol"],
+                    edge["value"]
+                )
+            )
     return
 
 
 def vismain():
     vis_init()
 
-    edges = {'from': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'from'),
-             'to': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'to')}
+    edges = {
+        'from': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'from'),
+        'to': get_edges({nodesmap[node] for node in config["visnodes"] if node in nodesmap}, 'to')
+    }
 
     nodes_to = setnodes(nodesappear['to'], 'to')
     nodes_from = setnodes(nodesappear['from'], 'from')
