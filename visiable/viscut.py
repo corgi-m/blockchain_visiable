@@ -21,7 +21,7 @@ def node_cut(node: Node, from_or_to: str):
 
 def date_cut(edge: Edge):
     for i in edge.info:
-        if date_transform_reverse(i[1]) > config['TIME_STAMP']:
+        if date_transform_reverse(i[1][1]) > config['TIME_STAMP']:
             return False
     return True
 

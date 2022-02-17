@@ -47,7 +47,10 @@ def get_balance(address) -> list[dict]:  # 代币列表
 def get_total(res) -> int:  # 下一级节点个数
     if res is None:
         return 0
-    data = json.loads(res.text)
+    try:
+        data = json.loads(res.text)
+    except Exception as e:
+        return 0
     return data['data']['total']
 
 
@@ -120,6 +123,9 @@ class Get(ABCGet):
         # transactions
         for page in range(0, len_edges_transaction, 100):
             next_nodes |= get_nodes_transaction(node, page, 100)
+        if len(next_nodes) != 0:
+            with open('test.txt', 'a') as f:
+                print(len(next_nodes), node, file=f)
         return next_nodes
 
     @classmethod

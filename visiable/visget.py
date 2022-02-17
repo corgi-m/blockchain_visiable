@@ -1,4 +1,6 @@
 # coding=utf-8
+import heapq
+
 from visiable.vismodel import Balance, Edge, nodesappear, Node
 from config import config
 from visiable.viscut import pre_cut, post_cut, count, node_cut
@@ -85,8 +87,8 @@ def get_node_tips(node, from_or_to, color):
 def get_edge_tips(edge: Edge):
     tips = "{0} -> {1}<br>".format(edge.nodefrom.address, edge.nodeto.address)
     form = "{{{1}, {2}: {3}, transferhash: {0}}}<br>"
-    for info in edge.info:
-        info = outof_list(info)
+    for info in sorted(edge.info):
+        info = outof_list(info[1])
         tips += form.format(info[0], info[1], tip_filter(info[2]), info[3])
     return tips
 
@@ -100,6 +102,7 @@ def get_node_color(node: Node, from_or_to):
     elif node.address in config['visnodes']:
         fillcolor = 'red'
     elif node.label is not None:
+        print(node.address)
         fillcolor = 'blue'
     elif hlen > config['MAX_OUT_DEGREE']:
         fillcolor = 'deeppink'
@@ -113,10 +116,11 @@ def get_edge_color(edge: Edge):
     tokendict = {}
     tokens = ['USDT', 'DLW', 'POSCHE', 'TRX']
     for i in edge.info:
-        if i[2] in tokendict:
-            tokendict[i[2]] += i[3]
+        info = i[1]
+        if info[2] in tokendict:
+            tokendict[info[2]] += info[3]
         else:
-            tokendict[i[2]] = i[3]
+            tokendict[info[2]] = info[3]
     for k, v in tokendict.items():
         if k in tokens and v > config['THRESHOLD_OF_VALUE']:
             fillcolor = 'red'
