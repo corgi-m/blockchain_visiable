@@ -74,7 +74,8 @@ def get_edges(nodes, from_or_to) -> list[Edge]:
 
 def get_node_tips(node, from_or_to, color):
     relation = node.to_relation if from_or_to == 'to' else node.from_relation
-    tips = relationformat(relation) + balanceformat(node.balance)
+    tips = node.address + '<br>'
+    tips += relationformat(relation) + balanceformat(node.balance)
     if color == 'blue':
         tips = node.label + '<br>' + tips
     tips = tip_filter(tips)
@@ -108,15 +109,19 @@ def get_node_color(node: Node, from_or_to):
 
 
 def get_edge_color(edge: Edge):
-    value = 0
-    count = 0
     fillcolor = 'black'
+    tokendict = {}
+    tokens = ['USDT', 'DLW', 'POSCHE', 'TRX']
     for i in edge.info:
-        if i[2] == 'USDT':
-            count += 1
-            value += i[3]
-    if value > config['THRESHOLD_OF_VALUE']:
-        fillcolor = 'red'
-    elif count > config['THRESHOLD_OF_COUNT']:
-        fillcolor = 'yellow'
+        if i[2] in tokendict:
+            tokendict[i[2]] += i[3]
+        else:
+            tokendict[i[2]] = i[3]
+    for k, v in tokendict.items():
+        if k in tokens and v > config['THRESHOLD_OF_VALUE']:
+            fillcolor = 'red'
+            break
+    else:
+        if len(edge.info) > config['THRESHOLD_OF_COUNT']:
+            fillcolor = 'yellow'
     return fillcolor

@@ -15,7 +15,7 @@ def setnodes(nodes, from_or_to):
             tips = get_node_tips(node, from_or_to, nodecolor)
             enodes.append({
                 "name": node.address,
-                "symbolSize": (5 - i) * 20,
+                "symbolSize": (5 - i) * 10,
                 "itemStyle": {
                     'color': nodecolor
                 },

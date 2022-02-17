@@ -51,7 +51,7 @@ class Precut(ABCPrecut):
 
     #  剪掉零交易
     def is_novalue(self) -> bool:
-        if self.edge["value"] < config['MIN_TRANSFER_VALUE']:
+        if self.edge["value"] <= config['MIN_TRANSFER_VALUE']:
             return True
         return False
 

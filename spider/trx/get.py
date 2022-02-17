@@ -55,6 +55,8 @@ def get_nodes(address, res) -> set[str]:  # 下一级节点的集合。
     if res is None:
         return set()
     data = json.loads(res.text)
+    if data["code"] != 0:
+        return set()
     hits = data["data"]["hits"]
     nodesto = set()
     nodesfrom = set()
