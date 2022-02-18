@@ -2,12 +2,11 @@
 import base64
 from random import randint
 from config import config
-import requests
 import time
 import grequests
 
 
-def greq_get(url, params=None) -> requests.models.Response or None:
+def greq_get(url, params=None) -> list[grequests.AsyncRequest]:
     # print(url, params)
     if params is None:
         params = {}

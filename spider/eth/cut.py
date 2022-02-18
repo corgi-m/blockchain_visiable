@@ -28,9 +28,11 @@ class Edgecut(ABCEdgecut):
     def cut(self) -> bool:
         if self.precut.cut():
             return True
-        if not Transfer.is_exist(self.edge["txhash"]):
-            save_transfer(self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"], self.edge["from"],
-                          self.edge["to"], self.edge["symbol"], self.edge["value"],
+        txhash = self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"]
+        symbol = self.edge["symbol"] if "symbol" in self.edge else "ETH"
+        if not Transfer.is_exist(txhash):
+            print(self.edge)
+            save_transfer(txhash, self.edge["from"], self.edge["to"], symbol, self.edge["value"],
                           date_transform(self.edge["blocktime"]))
         if self.postcut.cut():
             return True

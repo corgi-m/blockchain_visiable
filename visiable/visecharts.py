@@ -9,7 +9,6 @@ def setnodes(nodes, from_or_to):
     enodes = []
     i = 0
     for layer in nodes:
-        i += 1
         for node in layer:
             nodecolor = get_node_color(node, from_or_to)
             tips = get_node_tips(node, from_or_to, nodecolor)
@@ -31,6 +30,7 @@ def setnodes(nodes, from_or_to):
                     "formatter": tips
                 }
             })
+        i += 1
     return enodes
 
 

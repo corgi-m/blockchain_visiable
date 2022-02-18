@@ -17,25 +17,26 @@ from utils import outof_list
 import json
 
 
-def get_trc(address, trc_type) -> list[dict]:  # 代币列表
+def get_trc(address) -> list[grequests.AsyncRequest]:  # 代币列表
     params = {"limit": "100"}
-    return greq_get(config['trcholder'].format(address, trc_type), params)
+    return greq_get(config['trcholder'].format(address, 'TRC20'), params)
 
 
+# noinspection DuplicatedCode
 def get_balance_trc(res):
     if res is None:
         return []
-    print(res.url, res.text)
     try:
         data = json.loads(res.text)
-    except:
+    except Exception as e:
+        print(e, file=config['log'])
         return []
     if "hits" in data["data"] and data["data"]["hits"] is not None:
         return [i["symbol"] + ',' + str(i["value"]) for i in data["data"]["hits"]]
     return []
 
 
-def get_trx(address) -> list[dict]:  # 代币列表
+def get_trx(address) -> list[grequests.AsyncRequest]:  # 代币列表
     return greq_get(config['trxholder'].format(address))
 
 
@@ -44,18 +45,20 @@ def get_balance_trx(res):
         return []
     try:
         data = json.loads(res.text)
-    except:
+    except Exception as e:
+        print(e, file=config['log'])
         return []
     return ["TRX," + str(data["data"]["balance"])]
 
 
-def get_total(res) -> int:  # 下一级节点个数
+# noinspection DuplicatedCode
+def get_total(res) -> int:
     if res is None:
         return 0
-    print(res.url, res.text)
     try:
         data = json.loads(res.text)
-    except:
+    except Exception as e:
+        print(e, file=config['log'])
         return 0
     if data["code"] != 0:
         return 0
@@ -65,10 +68,10 @@ def get_total(res) -> int:  # 下一级节点个数
 def get_nodes(address, res) -> set[str]:  # 下一级节点的集合。
     if res is None:
         return set()
-    print(res.url, res.text)
     try:
         data = json.loads(res.text)
-    except:
+    except Exception as e:
+        print(e, file=config['log'])
         return set()
     if data["code"] != 0:
         return set()
@@ -87,90 +90,128 @@ def get_nodes(address, res) -> set[str]:  # 下一级节点的集合。
     return nodesto | nodesfrom
 
 
-def get_total_transfer(address) -> int:  # 下一级节点个数
+def get_total_transfer(address) -> list[grequests.AsyncRequest]:  # 下一级节点个数
     params = {"tokenType": "TRC20", "contractAddress": address}
     return greq_get(config['trxtransfer'], params)
 
 
-def get_total_transaction(address) -> int:  # 下一级节点个数
+def get_total_transaction(address) -> list[grequests.AsyncRequest]:  # 下一级节点个数
     params = {"address": address}
     return greq_get(config['trxtransaction'], params)
 
 
-def get_nodes_transfer(address, offset, limit) -> set[str]:  # 下一级节点的集合。
+def get_nodes_transfer(address, offset, limit) -> list[grequests.AsyncRequest]:  # 下一级节点的集合。
     params = {"offset": offset, "limit": limit, "tokenType": "TRC20", "contractAddress": address,
-              "sort": "blocktime,desc"}
+              "sort": "blocktime,asc"}
     return greq_get(config['trxtransfer'], params)
 
 
-def get_nodes_transaction(address, offset, limit) -> set[str]:  # 下一级节点的集合。
+def get_nodes_transaction(address, offset, limit) -> list[grequests.AsyncRequest]:  # 下一级节点的集合。
     params = {"address": address, "offset": offset, "limit": limit}
     return greq_get(config['trxtransaction'], params)
+
+
+# noinspection DuplicatedCode
+def get_next_nodes_req(nodes, len_edges_transaction, len_edges_transfer, node_addr):
+    flag = 0
+    next_nodes_req = []
+
+    for i in range(len(nodes)):
+
+        nodecut = Nodecut(nodes[i], max(len_edges_transaction[i], len_edges_transfer[i]))
+
+        if not nodecut.cut():
+
+            for page in range(0, len_edges_transfer[i], 100):
+                next_nodes_req.append(get_nodes_transfer(nodes[i], page, 100))
+                node_addr.append(nodes[i])
+                flag += 1
+                if len(next_nodes_req) >= 8000:
+                    yield next_nodes_req
+                    flag = 0
+                    next_nodes_req = []
+
+            for page in range(0, len_edges_transaction[i], 100):
+                next_nodes_req.append(get_nodes_transaction(nodes[i], page, 100))
+                node_addr.append(nodes[i])
+                flag += 1
+                if len(next_nodes_req) >= 8000:
+                    yield next_nodes_req
+                    flag = 0
+                    next_nodes_req = []
+
+    yield next_nodes_req
 
 
 class Get(ABCGet):
     def __init__(self):
         ...
 
+    # noinspection DuplicatedCode
     @classmethod
     def get_next_nodes(cls, nodes):
+        # 获取节点长度
         len_edges_transfer_req = []
         len_edges_transfer = []
         len_edges_transaction_req = []
         len_edges_transaction = []
+
         for node in nodes:
             len_edges_transfer_req.append(get_total_transfer(node))
         print('start get len')
         len_edges_transfer_res = grequests.map(len_edges_transfer_req)
         print("get len over")
+
         for node in nodes:
             len_edges_transaction_req.append(get_total_transaction(node))
         print('start get len')
         len_edges_transaction_res = grequests.map(len_edges_transaction_req)
         print("get len over")
+        # 获取下一轮节点
         for i in len_edges_transfer_res:
             len_edges_transfer.append(get_total(i))
         for i in len_edges_transaction_res:
             len_edges_transaction.append(get_total(i))
-        next_nodes_req = []
+
         node_addr = []
-        for i in range(len(nodes)):
-            nodecut = Nodecut(nodes[i], max(len_edges_transaction[i], len_edges_transfer[i]))
-            if nodecut.cut():
-                continue
-            else:
-                for page in range(0, len_edges_transfer[i], 100):
-                    next_nodes_req.append(get_nodes_transfer(nodes[i], page, 100))
-                    node_addr.append(nodes[i])
-                for page in range(0, len_edges_transfer[i], 100):
-                    next_nodes_req.append(get_nodes_transfer(nodes[i], page, 100))
-                    node_addr.append(nodes[i])
-        print('start get res')
-        next_nodes_res = grequests.map(next_nodes_req)
-        print("get res over")
+        next_nodes_res = []
+
+        for next_nodes_req in get_next_nodes_req(nodes, len_edges_transaction, len_edges_transfer, node_addr):
+            print('start get res')
+            next_nodes_res.extend(grequests.map(next_nodes_req))
+            print("get res over")
 
         next_nodes = set()
+
         for i in range(len(next_nodes_res)):
             next_nodes |= get_nodes(node_addr[i], next_nodes_res[i])
 
-        print(len(next_nodes))
+        print(next_nodes)
+
         return list(next_nodes)
 
     @classmethod
     def get_info(cls) -> None:  # 保存balance等
+
         print("save balance")
+
         trc_req = []
         trx_req = []
         nodes = []
+
         for address in count:
             if not Balance.is_exist(address):
-                trc_req.append(get_trc(address, "TRC20"))
+                trc_req.append(get_trc(address))
                 nodes.append(address)
+
         trc_res = grequests.map(trc_req)
+
         for address in nodes:
             if not Balance.is_exist(address):
                 trx_req.append(get_trx(address))
+
         trx_res = grequests.map(trx_req)
+
         for i in range(len(nodes)):
             balances = []
             trc = get_balance_trc(trc_res[i])
@@ -178,4 +219,5 @@ class Get(ABCGet):
             balances.extend(trc)
             balances.extend(trx)
             save_balance(nodes[i], ';'.join(balances))
+
         return
