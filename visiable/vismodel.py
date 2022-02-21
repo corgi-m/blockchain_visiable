@@ -1,7 +1,7 @@
 # coding=utf-8
-from typing import Generator
-
 from utils import Date
+
+import typing
 
 Info = tuple[str, str, str, float]
 Balance = dict[str, float]
@@ -22,7 +22,7 @@ class Node:
         self.__to_hlen: int = 0
         self.__from_hlen: int = 0
 
-    def edges_generate(self, from_or_to) -> Generator['Edge', None, None]:
+    def edges_generate(self, from_or_to) -> typing.Generator['Edge', None, None]:
         head = self.__tohead if from_or_to == 'to' else self.__fromhead
         while head is not None:
             yield head

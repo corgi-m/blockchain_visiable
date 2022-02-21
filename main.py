@@ -1,7 +1,10 @@
 # coding=utf-8
-from config import config, init
-from spider.spider import spidermain
 from visiable.visiable import vismain
+
+from spider.spider import spidermain
+
+from config import config, init
+
 
 if __name__ == "__main__":
     init()

@@ -3,8 +3,8 @@ from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
 from spider.save import Save
 from spider.spider import count
 
-from model import Transfer
 from config import config
+from model import Transfer
 from utils import Utils, Date
 
 

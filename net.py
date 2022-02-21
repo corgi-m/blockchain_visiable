@@ -1,8 +1,8 @@
 # coding=utf-8
-
-import grequests
 from config import config
 from utils import Utils
+
+import grequests
 
 
 class Net:

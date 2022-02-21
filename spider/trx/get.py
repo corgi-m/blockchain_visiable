@@ -5,10 +5,10 @@ from spider.common.get import ABCGet
 from spider.save import Save
 from spider.spider import count
 
-from net import Net
 from config import config
 from utils import Utils, Json
 from model import Balance
+from net import Net
 
 
 def get_trc(address) -> list[Net.AsyncRequest]:  # 代币列表
@@ -104,7 +104,7 @@ def get_next_nodes_req(nodes, len_edges_transaction, len_edges_transfer, node_ad
     for i in range(len(nodes)):
         nodecut = Nodecut(nodes[i], max(len_edges_transaction[i], len_edges_transfer[i]))
         if not nodecut.cut():
-            for page in range(0, len_edges_transfer[i], 100):
+            for page in range(0, min(len_edges_transfer[i], 9900), 100):
                 next_nodes_req.append(get_nodes_transfer(nodes[i], page, 100))
                 node_addr.append(nodes[i])
                 flag += 1
@@ -112,7 +112,7 @@ def get_next_nodes_req(nodes, len_edges_transaction, len_edges_transfer, node_ad
                     yield next_nodes_req
                     flag = 0
                     next_nodes_req = []
-            for page in range(0, len_edges_transaction[i], 100):
+            for page in range(0, min(len_edges_transaction[i], 9900), 100):
                 next_nodes_req.append(get_nodes_transaction(nodes[i], page, 100))
                 node_addr.append(nodes[i])
                 flag += 1

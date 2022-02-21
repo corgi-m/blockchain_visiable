@@ -1,3 +1,4 @@
+# coding=utf-8
 from pyecharts.charts.basic_charts.graph import Graph
 from pyecharts.options.global_options import TitleOpts, InitOpts, AnimationOpts
 from pyecharts.options.series_options import LineStyleOpts

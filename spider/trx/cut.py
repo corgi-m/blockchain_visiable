@@ -1,11 +1,10 @@
 # coding=utf-8
-from model import Transfer
 from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
-
 from spider.save import Save
 from spider.spider import count
 
 from config import config
+from model import Transfer
 from utils import Utils, Date
 
 
@@ -58,7 +57,7 @@ class Precut(ABCPrecut):
     def is_novalue(self) -> bool:
         if 'value' not in self.edge:
             return True
-        if self.edge["value"] <= config['MIN_TRANSFER_VALUE']:
+        if self.edge["value"] < config['MIN_TRANSFER_VALUE']:
             return True
         return False
 

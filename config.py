@@ -1,9 +1,10 @@
 # coding=utf-8
+from db import DB
+
 import configparser
 import argparse
 import sys
 
-from db import DB
 
 config: dict[str, any] = {}
 
@@ -15,7 +16,7 @@ def parse_config(path_config):
     config_parser.read(path_config, encoding='utf-8')
 
     config['db'] = DB(host=config_parser['mysql']['host'], port=int(config_parser['mysql']['port']),
-                      user=config_parser['mysql']['user'], passwd=config_parser['mysql']['passwd'], )
+                      user=config_parser['mysql']['user'], passwd=config_parser['mysql']['passwd'])
     config.update(config_parser['common'])
     for key, value in config.items():
         if isinstance(value, str) and value.isdigit():
@@ -36,7 +37,6 @@ def parse_nodes(file) -> list[str]:
         address = i.strip()
         if address != '':
             nodes_res.append(address)
-
     return nodes_res
 
 

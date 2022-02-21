@@ -1,10 +1,10 @@
 # coding=utf-8
-from config import config, init
-from model import Transfer, Balance, Label
 from visiable.visecharts import setnodes, setedges, drawecharts
 from visiable.visget import get_edges, get_balance, get_label
 from visiable.vismodel import Node, nodesmap, edgesmap, nodesappear
 
+from config import config, init
+from model import Transfer, Balance, Label
 
 def vis_init():
     edges_init: list[any] = Transfer.get()
