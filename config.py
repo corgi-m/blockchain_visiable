@@ -83,7 +83,7 @@ def init():
     parser.add_argument('-g', '--gray', type=str, default='gray.txt')
     parser.add_argument('-N', '--visnodes', type=str, default='visnodes.txt')
     parser.add_argument('-s', '--save', default='./result')
-    parser.add_argument('-V', '--version', action='version', version='%(prog)s 5.0')
+    parser.add_argument('-V', '--version', action='version', version='%(prog)s 7.0')
     parser.add_argument('-c', '--config', nargs='?', type=str, default='./configs/config.ini')
     parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('a'), default='./configs/error.log')
     parser.add_argument('-m', '--dbstruct', type=argparse.FileType('r'), default='./configs/db.sql')

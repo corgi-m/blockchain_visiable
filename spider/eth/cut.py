@@ -1,12 +1,11 @@
 # coding=utf-8
-from model import Transfer
 from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
-
-from spider.save import save_label, save_transfer
+from spider.save import Save
 from spider.spider import count
 
+from model import Transfer
 from config import config
-from utils import outof_list, date_transform
+from utils import Utils, Date
 
 
 class Edgecut(ABCEdgecut):
@@ -20,8 +19,8 @@ class Edgecut(ABCEdgecut):
     # 边初始化
     @staticmethod
     def init_edge(edge) -> dict[str, any]:
-        edge["from"] = outof_list(edge["from"])
-        edge["to"] = outof_list(edge["to"])
+        edge["from"] = Utils.outof_list(edge["from"])
+        edge["to"] = Utils.outof_list(edge["to"])
         return edge
 
     # 边剪枝
@@ -30,10 +29,9 @@ class Edgecut(ABCEdgecut):
             return True
         txhash = self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"]
         symbol = self.edge["symbol"] if "symbol" in self.edge else "ETH"
+        datetime = Date.date_transform(self.edge["blocktime"])
         if not Transfer.is_exist(txhash):
-            print(self.edge)
-            save_transfer(txhash, self.edge["from"], self.edge["to"], symbol, self.edge["value"],
-                          date_transform(self.edge["blocktime"]))
+            Save.save_transfer(txhash, self.edge["from"], self.edge["to"], symbol, self.edge["value"], datetime)
         if self.postcut.cut():
             return True
         return False
@@ -47,7 +45,11 @@ class Precut(ABCPrecut):
 
     #   剪掉合约
     def is_notransfer(self) -> bool:
-        if self.edge['isFromContract'] is True or self.edge["isToContract"] is True:
+        if "contractType" in self.edge and 'TransferContract' not in self.edge["contractType"]:
+            return True
+        if "isFromContract" in self.edge and self.edge['isFromContract'] is True:
+            return True
+        if "isToContract" in self.edge and self.edge['isToContract'] is True:
             return True
         return False
 
@@ -91,7 +93,7 @@ class Postcut(ABCPostcut):
     def is_tag(self) -> bool:
         if self.from_or_to + "Tag" in self.edge and len(self.edge[self.from_or_to + "Tag"]) > 0:
             config['account'][self.node] = self.edge[self.from_or_to + "Tag"]
-            save_label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
+            Save.save_label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
             return True
         return False
 

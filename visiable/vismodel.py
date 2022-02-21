@@ -1,7 +1,7 @@
 # coding=utf-8
 from typing import Generator
 
-from utils import date_transform_reverse
+from utils import Date
 
 Info = tuple[str, str, str, float]
 Balance = dict[str, float]
@@ -36,7 +36,7 @@ class Node:
         else:
             self.__to_hlen += 1
             nodeto.from_hlen += 1
-            edge = Edge(self, nodeto,self.__tohead, nodeto.__fromhead)
+            edge = Edge(self, nodeto, self.__tohead, nodeto.__fromhead)
             edge.add_info(info)
             self.__tohead = edge
             nodeto.fromhead = edge
@@ -109,7 +109,7 @@ class Edge:
         self.__last_from_edge: 'Edge' = last_from_edge
 
     def add_info(self, info):
-        self.__info.append((date_transform_reverse(info[1]), info))
+        self.__info.append((Date.date_transform_reverse(info[1]), info))
 
     @property
     def info(self) -> list[tuple[int, Info]]:

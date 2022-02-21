@@ -1,7 +1,7 @@
 # coding=utf-8
 from visiable.vismodel import Edge, Node
 from config import config
-from utils import use, date_transform_reverse
+from utils import Utils, Date
 
 count = {'from': set(), 'to': set()}
 
@@ -21,7 +21,7 @@ def node_cut(node: Node, from_or_to: str):
 
 def date_cut(edge: Edge):
     for i in edge.info:
-        if date_transform_reverse(i[1][1]) > config['TIME_STAMP']:
+        if Date.date_transform_reverse(i[1][1]) > config['TIME_STAMP']:
             return False
     return True
 
@@ -33,8 +33,8 @@ def nodes_cut(node: Node):
 
 
 def pre_cut(edge: Edge, node: Node):
-    use(edge)
-    use(node)
+    Utils.use(edge)
+    Utils.use(node)
     '''if date_cut(edge):
         return True'''
 
@@ -42,7 +42,7 @@ def pre_cut(edge: Edge, node: Node):
 
 
 def post_cut(edge: Edge, node: Node, from_or_to):
-    use(edge)
+    Utils.use(edge)
     if node in count[from_or_to]:
         return True
     return False

@@ -1,10 +1,9 @@
 # coding=utf-8
-import heapq
-
 from visiable.vismodel import Balance, Edge, nodesappear, Node
 from config import config
 from visiable.viscut import pre_cut, post_cut, count, node_cut
 from visiable.visutils import relationformat, balanceformat, tip_filter, outof_list
+from utils import Date
 
 
 def get_label(address, labels) -> str or None:
@@ -121,6 +120,8 @@ def get_edge_color(edge: Edge):
             tokendict[info[2]] += info[3]
         else:
             tokendict[info[2]] = info[3]
+        if Date.date_transform_reverse(info[1]) > config['TIME_STAMP']:
+            return 'blue'
     for k, v in tokendict.items():
         if k in tokens and v > config['THRESHOLD_OF_VALUE']:
             fillcolor = 'red'
