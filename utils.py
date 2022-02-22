@@ -1,5 +1,5 @@
 # coding=utf-8
-
+import re
 import time
 import json
 import config
@@ -18,6 +18,12 @@ class Utils:
     @staticmethod
     def outof_list(li) -> str:
         return li[0] if isinstance(li, list) else li
+
+    @staticmethod
+    def tip_filter(tips):
+        tips = re.sub(u"[\x00-\x08\x0b-\x0c\x0e-\x1f]+", u"", tips)
+        tips = re.sub('[^\x00-\x7F]', '', tips)
+        return tips
 
     @staticmethod
     def get_x_apikey():

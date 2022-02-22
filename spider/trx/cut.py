@@ -4,7 +4,7 @@ from spider.save import Save
 from spider.spider import count
 
 from config import config
-from model import Transfer
+from model import Transfer, Label
 from utils import Utils, Date
 
 
@@ -85,14 +85,13 @@ class Postcut(ABCPostcut):
 
     #  剪掉tag
     def is_inaccount(self) -> bool:
-        if self.node in config['account']:
+        if not Label.get(self.node):
             return True
         return False
 
     #  剪掉tag
     def is_tag(self) -> bool:
         if self.from_or_to + "Tag" in self.edge and len(self.edge[self.from_or_to + "Tag"]) > 0:
-            config['account'][self.node] = self.edge[self.from_or_to + "Tag"]
             Save.save_label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
             return True
         return False

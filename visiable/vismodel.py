@@ -2,6 +2,7 @@
 from utils import Date
 
 import typing
+import model
 
 Info = tuple[str, str, str, float]
 Balance = dict[str, float]
@@ -11,16 +12,37 @@ nodesappear: dict[str, list[set['Node']]] = {'from': [], 'to': []}
 
 
 class Node:
-    def __init__(self, address: str, balance: Balance, label: str = None):
+    def __init__(self, address: str):
         self.__tohead: Edge or None = None
         self.__fromhead: Edge or None = None
         self.__address: str = address
         self.__to_relation: set['Node'] = set()
         self.__from_relation: set['Node'] = set()
-        self.__balance: Balance = balance
-        self.__label: str = label
+        self.__balance: Balance = self.get_balance(address)
+        self.__label: str = self.get_label(address)
         self.__to_hlen: int = 0
         self.__from_hlen: int = 0
+
+    @staticmethod
+    def get_label(address) -> str or None:
+        label = model.Label.get(address)
+        if not label:
+            return None
+        return label[0][0]
+
+    @staticmethod
+    def get_balance(address) -> Balance:
+        res = {}
+        balance = model.Balance.get(address)
+        if not balance:
+            return res
+        balance = balance[0][0]
+        for balan in balance.split(';'):
+            temp = balan.split(',')
+            if len(temp) != 2:
+                continue
+            res[temp[0]] = float(temp[1])
+        return res
 
     def edges_generate(self, from_or_to) -> typing.Generator['Edge', None, None]:
         head = self.__tohead if from_or_to == 'to' else self.__fromhead

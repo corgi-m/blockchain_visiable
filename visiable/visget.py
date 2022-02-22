@@ -1,29 +1,24 @@
 # coding=utf-8
-from visiable.vismodel import Balance, Edge, nodesappear, Node
+from visiable.vismodel import Edge, nodesappear, Node
 from visiable.viscut import pre_cut, post_cut, count, node_cut
-from visiable.visutils import relationformat, balanceformat, tip_filter, outof_list
 
 from config import config
-from utils import Date
+from utils import Date, Utils
 
 
-def get_label(address, labels) -> str or None:
-    if address not in labels:
-        return None
-    else:
-        return labels[address]
+def balanceformat(balance):
+    res = ""
+    form = "{{{0}: {1}}}<br>"
+    for balan in balance.items():
+        res += form.format(balan[0], balan[1])
+    return res
 
 
-def get_balance(address, balances) -> Balance:
-    res = {}
-    if address not in balances:
-        return res
-    balance = balances[address]
-    for balan in balance.split(';'):
-        temp = balan.split(',')
-        if len(temp) != 2:
-            continue
-        res[temp[0]] = float(temp[1])
+def relationformat(relation):
+    res = str(len(relation)) + '<br>'
+    res += "from:<br>"
+    for relat in relation:
+        res += relat.address + '<br>'
     return res
 
 
@@ -50,11 +45,13 @@ def get_next_nodes(node, edges_get, from_or_to) -> set[Node]:
     return next_nodes
 
 
-def get_edges(nodes, from_or_to) -> list[Edge]:
+def get_edges(nodes_ori, from_or_to) -> list[Edge]:
+    nodes = nodes_ori.copy()
     for node in nodes:
         node.to_relation = {node}
         node.from_relation = {node}
         count[from_or_to].add(node)
+
     edges_get: list[Edge] = []
     nodesappear[from_or_to].append(nodes)
     node_exits = set()
@@ -80,7 +77,7 @@ def get_node_tips(node, from_or_to, color):
     tips += relationformat(relation) + balanceformat(node.balance)
     if color == 'blue':
         tips = node.label + '<br>' + tips
-    tips = tip_filter(tips)
+    tips = Utils.tip_filter(tips)
     return tips
 
 
@@ -88,8 +85,8 @@ def get_edge_tips(edge: Edge):
     tips = "{0} -> {1}<br>".format(edge.nodefrom.address, edge.nodeto.address)
     form = "{{{1}, {2}: {3}, transferhash: {0}}}<br>"
     for info in sorted(edge.info):
-        info = outof_list(info[1])
-        tips += form.format(info[0], info[1], tip_filter(info[2]), info[3])
+        info = Utils.outof_list(info[1])
+        tips += form.format(info[0], info[1], Utils.tip_filter(info[2]), info[3])
     return tips
 
 
@@ -102,7 +99,6 @@ def get_node_color(node: Node, from_or_to):
     elif node.address in config['visnodes']:
         fillcolor = 'red'
     elif node.label is not None:
-        print(node.address)
         fillcolor = 'blue'
     elif hlen > config['MAX_OUT_DEGREE']:
         fillcolor = 'deeppink'
