@@ -75,9 +75,10 @@ class Format:
 class Get:
     @staticmethod
     def get_nodes_set():
-        ori = set(config["visnodes"])
+        ori = set(config.visnodes)
         addresses = ori.copy()
-        for _ in range(config['TURN']):
+        for _ in range(config.TURN):
+            print(addresses)
             res = Transfer.get_address(addresses)
             for i in res:
                 address = i[0]
@@ -136,7 +137,7 @@ class Get:
         node_exits = set()
         node_exits |= nodes
         # while len(nodes) != 0:
-        for _ in range(config['TURN']):
+        for _ in range(config.TURN):
             next_nodes = set()
 
             for node in nodes:
@@ -159,15 +160,15 @@ class Nodeinfo:
         self.color = None
 
     def get_node_color(self):
-        if self.node.address in config['black']:
+        if self.node.address in config.black:
             self.color = 'yellow'
-        elif self.node.address in config['gray']:
+        elif self.node.address in config.gray:
             self.color = 'green'
-        elif self.node.address in config['visnodes']:
+        elif self.node.address in config.visnodes:
             self.color = 'red'
         elif self.node.label is not None:
             self.color = 'blue'
-        elif self.hlen > config['MAX_OUT_DEGREE']:
+        elif self.hlen > config.MAX_OUT_DEGREE:
             self.color = 'deeppink'
         else:
             self.color = 'black'
@@ -204,13 +205,13 @@ class Edgeinfo:
                 tokendict[info[2]] += info[3]
             else:
                 tokendict[info[2]] = info[3]
-            if Date.date_transform_reverse(info[1]) > config['TIME_STAMP']:
+            if Date.date_transform_reverse(info[1]) > config.TIME_STAMP:
                 return 'blue'
         for k, v in tokendict.items():
-            if k in tokens and v > config['THRESHOLD_OF_VALUE']:
+            if k in tokens and v > config.THRESHOLD_OF_VALUE:
                 fillcolor = 'red'
                 break
         else:
-            if len(self.edge.info) > config['THRESHOLD_OF_COUNT']:
+            if len(self.edge.info) > config.THRESHOLD_OF_COUNT:
                 fillcolor = 'yellow'
         return fillcolor

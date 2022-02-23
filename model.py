@@ -29,23 +29,23 @@ class Table:
 
     def save(self) -> None:
         try:
-            cur = config['db'].cursor
+            cur = config.db.cursor
             sql = self.sqlformat(self.__class__._sqlsave, [self.__class__._tablename] +
                                  self.__class__._column)
             cur.execute(sql, self._value)
-            config['db'].commit()
+            config.db.commit()
             cur.close()
         except Exception as e:
             print("sql save error:")
             print(self.__class__._sqlsave, [self.__class__._tablename] +
-                  self.__class__._column, self._value, file=config['log'])
+                  self.__class__._column, self._value, file=config.log)
             print(e)
         return
 
     @staticmethod
     def query(sql, params):
         try:
-            cur = config['db'].cursor
+            cur = config.db.cursor
             cur.execute(sql, params)
             result = cur.fetchall()
             cur.close()
@@ -57,7 +57,7 @@ class Table:
     @classmethod
     def get_db(cls) -> list[list[str]]:
         try:
-            cur = config['db'].cursor
+            cur = config.db.cursor
             cur.execute(cls.sqlformat(cls.__sqlget, [cls._tablename]))
             results = cur.fetchall()
             cur.close()
@@ -69,7 +69,7 @@ class Table:
     @classmethod
     def is_exist(cls, value) -> bool:
         try:
-            cur = config['db'].cursor
+            cur = config.db.cursor
             cur.execute(cls.sqlformat(cls.__isexist, [cls._tablename, cls._column[0]]), value)
             results = cur.fetchone()
             cur.close()

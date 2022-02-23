@@ -14,7 +14,7 @@ class Net:
     def greq_get(url, params=None) -> list[grequests.AsyncRequest]:
         if params is None:
             params = {}
-        return grequests.get(url=url, headers={'x-apiKey': Utils.get_x_apikey()}, params=params, proxies=config['proxies'],
+        return grequests.get(url=url, headers={'x-apiKey': Utils.get_x_apikey()}, params=params, proxies=config.proxies,
                              timeout=10)
 
     @staticmethod

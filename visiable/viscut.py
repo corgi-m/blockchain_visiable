@@ -27,7 +27,7 @@ class Nodecut:
 
     @staticmethod
     def is_white(address: str) -> bool:
-        if address in config['white']:
+        if address in config.white:
             return True
         return False
 
@@ -39,13 +39,13 @@ class Nodecut:
 
     @staticmethod
     def is_outof_len(length: int) -> bool:
-        if length > config['MAX_OUT_DEGREE']:
+        if length > config.MAX_OUT_DEGREE:
             return True
         return False
 
     @staticmethod
     def is_black(address: str) -> bool:
-        if address in config['black']:
+        if address in config.black:
             return True
         return False
 
@@ -58,7 +58,7 @@ class Precut:
     @staticmethod
     def is_outof_date(info: Info) -> bool:
         for i in info:
-            if Date.date_transform_reverse(i[1][1]) > config['TIME_STAMP']:
+            if Date.date_transform_reverse(i[1][1]) > config.TIME_STAMP:
                 return True
         return False
 

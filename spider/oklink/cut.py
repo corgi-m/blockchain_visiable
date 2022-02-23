@@ -57,7 +57,7 @@ class OKPrecut(ABCPrecut):
     def is_novalue(self) -> bool:
         if 'value' not in self.edge:
             return True
-        if self.edge["value"] < config['MIN_TRANSFER_VALUE']:
+        if self.edge["value"] < config.MIN_TRANSFER_VALUE:
             return True
         return False
 
@@ -82,7 +82,7 @@ class OKPostcut(ABCPostcut):
         return False
 
     def is_inaccount(self) -> bool:
-        if not Label.get(self.node):
+        if Label.get(self.node):
             return True
         return False
 
@@ -109,13 +109,13 @@ class OKNodecut(ABCNodecut):
 
     #  剪掉出度超过阈值
     def is_outof_len(self) -> bool:
-        if self.len_edges > config['MAXN_LEN_EDGES']:
+        if self.len_edges > config.MAXN_LEN_EDGES:
             return True
         return False
 
     # 节点剪枝
     def cut(self) -> bool:
-        if self.node in config['white']:
+        if self.node in config.white:
             return False
         if self.is_outof_len():
             return True

@@ -80,6 +80,6 @@ class Json:
         try:
             data = json.loads(res)
         except Exception as e:
-            print(e, file=config.config['log'])
+            print(e, file=config.config.log)
             return None
         return data

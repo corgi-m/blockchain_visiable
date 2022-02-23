@@ -101,20 +101,20 @@ class OKlink(ABC):
     def get_next_nodes_req(cls, nodes, len_edges_transaction, len_edges_transfer, node_addr) -> list[Net.AsyncRequest]:
         flag = 0
         next_nodes_req = []
-        for i in range(len(nodes)):
-            nodecut = OKNodecut(nodes[i], max(len_edges_transaction[i], len_edges_transfer[i]))
+        for i, node in enumerate(nodes):
+            nodecut = OKNodecut(node, max(len_edges_transaction[i], len_edges_transfer[i]))
             if not nodecut.cut():
                 for page in range(0, min(len_edges_transfer[i], 9900), 100):
-                    next_nodes_req.append(cls.get_nodes_transfer(nodes[i], page, 100))
-                    node_addr.append(nodes[i])
+                    next_nodes_req.append(cls.get_nodes_transfer(node, page, 100))
+                    node_addr.append(node)
                     flag += 1
                     if len(next_nodes_req) >= 8000:
                         yield next_nodes_req
                         flag = 0
                         next_nodes_req = []
                 for page in range(0, min(len_edges_transaction[i], 9900), 100):
-                    next_nodes_req.append(cls.get_nodes_transaction(nodes[i], page, 100))
-                    node_addr.append(nodes[i])
+                    next_nodes_req.append(cls.get_nodes_transaction(node, page, 100))
+                    node_addr.append(node)
                     flag += 1
                     if len(next_nodes_req) >= 8000:
                         yield next_nodes_req
@@ -153,7 +153,6 @@ class OKGet(ABCGet):
         next_nodes = set()
         for i in range(len(next_nodes_res)):
             next_nodes |= self.Link.get_nodes(node_addr[i], next_nodes_res[i])
-        print(next_nodes)
         return next_nodes
 
     def get_info(self) -> None:

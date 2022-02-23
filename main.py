@@ -9,7 +9,7 @@ from config import config, init
 
 if __name__ == "__main__":
     init()
-    if not config['visit']:
+    if not config.visit:
         spidermain()
     else:
         vismain()
