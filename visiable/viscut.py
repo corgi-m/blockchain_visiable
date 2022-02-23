@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from visiable.vismodel import Edge, Node, Info
 
 from config import config
@@ -7,60 +8,81 @@ from utils import Utils, Date
 count = {'from': set(), 'to': set()}
 
 
-def node_cut(node: Node, from_or_to: str):
-    if white_cut(node.address):
-        return False
-    if black_cut(node.address):
-        return True
-    if len_cut(node.to_hlen if from_or_to == 'to' else node.from_hlen):
-        return True
-    if label_cut(node.label):
-        return True
-    return False
+class Nodecut:
+    def __init__(self, node: Node, from_or_to: str):
+        self.address: str = node.address
+        self.label: str or None = node.label
+        self.length: int = node.to_hlen if from_or_to == 'to' else node.from_hlen
 
-
-def white_cut(address: str):
-    if address in config['white']:
-        return True
-    return False
-
-
-def date_cut(info: Info):
-    for i in info:
-        if Date.date_transform_reverse(i[1][1]) > config['TIME_STAMP']:
+    def cut(self) -> bool:
+        if self.is_white(self.address):
             return False
-    return True
+        if self.is_black(self.address):
+            return True
+        if self.is_outof_len(self.length):
+            return True
+        if self.is_label(self.label):
+            return True
+        return False
+
+    @staticmethod
+    def is_white(address: str) -> bool:
+        if address in config['white']:
+            return True
+        return False
+
+    @staticmethod
+    def is_label(label: str or None) -> bool:
+        if label is not None:
+            return True
+        return False
+
+    @staticmethod
+    def is_outof_len(length: int) -> bool:
+        if length > config['MAX_OUT_DEGREE']:
+            return True
+        return False
+
+    @staticmethod
+    def is_black(address: str) -> bool:
+        if address in config['black']:
+            return True
+        return False
 
 
-def label_cut(label: str or None):
-    if label is not None:
-        return True
-    return False
+class Precut:
+    def __init__(self, edge: Edge, from_or_to: str):
+        self.edge: Edge = edge
+        self.from_or_to: str = from_or_to
+
+    @staticmethod
+    def is_outof_date(info: Info) -> bool:
+        for i in info:
+            if Date.date_transform_reverse(i[1][1]) > config['TIME_STAMP']:
+                return True
+        return False
+
+    def cut(self) -> bool:
+        Utils.use(self)
+        # if self.is_outof_date(self.edge.info):
+        #    return True
+        return False
 
 
-def len_cut(length: int):
-    if length > config['MAX_OUT_DEGREE']:
-        return True
-    return False
+class Postcut:
+    def __init__(self, edge: Edge, from_or_to: str):
+        self.edge: Edge = edge
+        self.from_or_to: str = from_or_to
+        self.node: Node = edge.nodeto if from_or_to == 'to' else edge.nodefrom
+        self.count: set[Node] = count[from_or_to]
 
+    @staticmethod
+    def is_count(node: Node, nodes: set[Node]) -> bool:
+        if node in nodes:
+            return True
+        return False
 
-def black_cut(address: str):
-    if address in config['black']:
-        return True
-    return False
-
-
-def pre_cut(edge: Edge, node: Node):
-    Utils.use(edge)
-    Utils.use(node)
-    '''if date_cut(edge.info):
-        return True'''
-
-    return False
-
-
-def post_cut(edge: Edge, node: Node, from_or_to):
-    Utils.use(edge)
-    if node in count[from_or_to]:
-        return True
-    return False
+    def cut(self) -> bool:
+        if self.is_count(self.node, self.count):
+            return True
+        return False

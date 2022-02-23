@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
 from spider.save import Save
 from spider.spider import count
@@ -8,28 +9,28 @@ from model import Transfer, Label
 from utils import Utils, Date
 
 
-class Edgecut(ABCEdgecut):
+class OKEdgecut(ABCEdgecut):
+
     def __init__(self, edge, from_or_to):
         self.edge = self.init_edge(edge)
         self.node = edge[from_or_to]
         self.from_or_to = from_or_to
-        self.precut = Precut(self.edge, self.node, self.from_or_to)
-        self.postcut = Postcut(self.edge, self.node, self.from_or_to)
+        self.precut = OKPrecut(self.edge, self.node, self.from_or_to)
+        self.postcut = OKPostcut(self.edge, self.node, self.from_or_to)
 
-    # 边初始化
     @staticmethod
     def init_edge(edge) -> dict[str, any]:
         edge["from"] = Utils.outof_list(edge["from"])
         edge["to"] = Utils.outof_list(edge["to"])
         return edge
 
-    # 边剪枝
     def cut(self) -> bool:
         if self.precut.cut():
             return True
         txhash = self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"]
         symbol = self.edge["symbol"] if "symbol" in self.edge else "TRX"
-        datetime = Date.date_transform(self.edge["blocktime"] / 1000)
+        blocktime = self.edge["blocktime"] / 1000 if self.edge["blocktime"] > 2000000000 else self.edge["blocktime"]
+        datetime = Date.date_transform(blocktime)
         if not Transfer.is_exist(txhash):
             Save.save_transfer(txhash, self.edge["from"], self.edge["to"], symbol, self.edge["value"], datetime)
         if self.postcut.cut():
@@ -37,13 +38,13 @@ class Edgecut(ABCEdgecut):
         return False
 
 
-class Precut(ABCPrecut):
+class OKPrecut(ABCPrecut):
+
     def __init__(self, edge, node, from_or_to):
         self.edge = edge
         self.node = node
         self.from_or_to = from_or_to
 
-    #   剪掉合约
     def is_notransfer(self) -> bool:
         if "contractType" in self.edge and 'TransferContract' not in self.edge["contractType"]:
             return True
@@ -53,7 +54,6 @@ class Precut(ABCPrecut):
             return True
         return False
 
-    #  剪掉零交易
     def is_novalue(self) -> bool:
         if 'value' not in self.edge:
             return True
@@ -61,7 +61,6 @@ class Precut(ABCPrecut):
             return True
         return False
 
-    # 边预剪枝
     def cut(self) -> bool:
         if self.is_notransfer():
             return True
@@ -70,33 +69,29 @@ class Precut(ABCPrecut):
         return False
 
 
-class Postcut(ABCPostcut):
+class OKPostcut(ABCPostcut):
     def __init__(self, edge, node, from_or_to):
         self.edge = edge
         self.node = node
         self.from_or_to = from_or_to
 
-    #  剪掉重复
     def is_count(self) -> bool:  # 是否出现过，减少重复
         if self.node in count:
             return True
         count.add(self.node)
         return False
 
-    #  剪掉tag
     def is_inaccount(self) -> bool:
         if not Label.get(self.node):
             return True
         return False
 
-    #  剪掉tag
     def is_tag(self) -> bool:
         if self.from_or_to + "Tag" in self.edge and len(self.edge[self.from_or_to + "Tag"]) > 0:
             Save.save_label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
             return True
         return False
 
-    # 边后剪枝
     def cut(self) -> bool:
         if self.is_count():
             return True
@@ -107,7 +102,7 @@ class Postcut(ABCPostcut):
         return False
 
 
-class Nodecut(ABCNodecut):
+class OKNodecut(ABCNodecut):
     def __init__(self, node, len_edges):
         self.node = node
         self.len_edges = len_edges

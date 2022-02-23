@@ -1,93 +1,45 @@
 # coding=utf-8
-from pyecharts.charts.basic_charts.graph import Graph
-from pyecharts.options.global_options import TitleOpts, InitOpts, AnimationOpts
+
+from pyecharts.options.global_options import InitOpts, AnimationOpts
 from pyecharts.options.series_options import LineStyleOpts
+from pyecharts.charts.basic_charts.graph import Graph
 
-from visiable.visget import get_node_tips, get_node_color, get_edge_color, get_edge_tips
+from visiable.visget import Nodeinfo, Edgeinfo, Format
+from visiable.vismodel import Node, Edge
 
-
-def setnodes(nodes, from_or_to):
-    enodes = []
-    i = 0
-    for layer in nodes:
-        for node in layer:
-            nodecolor = get_node_color(node, from_or_to)
-            tips = get_node_tips(node, from_or_to, nodecolor)
-            enodes.append({
-                "name": node.address,
-                "symbolSize": (5 - i) * 10,
-                "itemStyle": {
-                    'color': nodecolor
-                },
-                "label": {
-                    "fontSize": 10
-                },
-                "enterable": True,
-                "tooltip": {
-                    "textStyle": {
-                        "align": 'center',
-                        "fontSize": 15
-                    },
-                    "formatter": tips
-                }
-            })
-        i += 1
-    return enodes
+Initdict = list[dict[str, any]]
 
 
-def setedges(edges):
-    eedges = []
-    for edge in edges:
-        color = get_edge_color(edge)
-        tips = get_edge_tips(edge)
-        eedges.append({
-            "source": edge.nodefrom.address,
-            "target": edge.nodeto.address,
-            "symbol": [None, "arrow"],
-            "lineStyle": {
-                'color': color,
-                'width': 2,
-            },
-            "enterable": True,
-            "label": {
-                "fontSize": 15
-            },
-            "tooltip": {
-                "textStyle": {
-                    "align": 'center',
-                    "fontSize": 15
-                },
-                "formatter": tips
-            }
-        })
-    return eedges
+class Echarts:
+    def __init__(self, nodes, edges, from_or_to):
+        self.nodes = self.setnodes(nodes, from_or_to)
+        self.edges = self.setedges(edges)
+        self.from_or_to = from_or_to
 
+    @staticmethod
+    def setnodes(nodes: list[list[Node]], from_or_to: str) -> Initdict:
+        enodes = []
+        for i, layer in enumerate(nodes):
+            for node in layer:
+                nodeinfo = Nodeinfo(node, from_or_to)
+                enodes.append(Format.nodeformat(node.address, i, nodeinfo.get_node_color(), nodeinfo.get_node_tips()))
+        return enodes
 
-def drawecharts(nodes, edges, from_or_to):
-    G = Graph(
-        init_opts=InitOpts(
-            animation_opts=AnimationOpts(
-                animation=False,
-            ),
-            renderer='svg',
-            width='8000px',
-            height='4000px'
-        ),
-    )
-    G.add(
-        "",
-        nodes,
-        edges,
-        repulsion=80,
-        layout='force',
-        edge_symbol=[''],
-        linestyle_opts=LineStyleOpts(
-            curve=0.1
-        ),
-    )
-    G.set_global_opts(
-        title_opts=TitleOpts(
-            title="Graph-" + from_or_to
-        ),
-    )
-    G.render("./result/graph_" + from_or_to + ".html")
+    @staticmethod
+    def setedges(edges: list[Edge]) -> Initdict:
+        eedges = []
+        for edge in edges:
+            edgeinfo = Edgeinfo(edge)
+            eedges.append(Format.edgeformat(edge.nodefrom.address, edge.nodeto.address, edgeinfo.get_edge_color(),
+                                            edgeinfo.get_edge_tips()))
+        return eedges
+
+    def drawecharts(self) -> None:
+        animation_opts = AnimationOpts(animation=False)
+        linestyle_opts = LineStyleOpts(curve=0.1)
+        init_opts = InitOpts(animation_opts=animation_opts, renderer='svg', width='8000px', height='4000px')
+        G = Graph(init_opts=init_opts)
+        G.add("", nodes=self.nodes, links=self.edges, repulsion=80, layout='force', edge_symbol=[''],
+              linestyle_opts=linestyle_opts)
+        G.render("./result/graph_" + self.from_or_to + ".html")
+        return

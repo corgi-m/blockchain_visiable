@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from model import Balance, Label, Transfer
 
 
@@ -7,16 +8,19 @@ class Save:
         ...
 
     @staticmethod
-    def save_balance(address, balance):
+    def save_balance(address, balance) -> None:
         balance = Balance(address, balance)
         balance.save()
+        return
 
     @staticmethod
-    def save_label(address, tag):
+    def save_label(address, tag) -> None:
         label = Label(address, tag)
         label.save()
+        return
 
     @staticmethod
-    def save_transfer(transferhash, addrfrom, addrto, symbol, value, blocktime):
+    def save_transfer(transferhash, addrfrom, addrto, symbol, value, blocktime) -> None:
         transfer = Transfer(transferhash, addrfrom, addrto, symbol, value, blocktime)
         transfer.save()
+        return

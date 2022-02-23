@@ -1,10 +1,10 @@
 # coding=utf-8
+
 from db import DB
 
 import configparser
 import argparse
 import sys
-
 
 config: dict[str, any] = {}
 

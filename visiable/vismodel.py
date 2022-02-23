@@ -1,4 +1,5 @@
 # coding=utf-8
+
 from utils import Date
 
 import typing
@@ -6,9 +7,6 @@ import model
 
 Info = tuple[str, str, str, float]
 Balance = dict[str, float]
-nodesmap: dict[str, 'Node'] = {}
-edgesmap: dict[str, 'Edge'] = {}
-nodesappear: dict[str, list[set['Node']]] = {'from': [], 'to': []}
 
 
 class Node:

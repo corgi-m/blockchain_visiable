@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 08/02/2022 16:14:17
+ Date: 22/02/2022 14:21:15
 */
 
 SET NAMES utf8mb4;
@@ -48,7 +48,9 @@ CREATE TABLE `transfers`  (
   `symbol` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `value` double(255, 0) NULL DEFAULT NULL,
   `blocktime` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`transferhash`) USING BTREE
+  PRIMARY KEY (`transferhash`) USING BTREE,
+  INDEX `index_addrfrom`(`addrfrom`) USING BTREE,
+  INDEX `index_addrto`(`addrto`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
