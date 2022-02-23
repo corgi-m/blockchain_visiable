@@ -3,7 +3,16 @@
 from abc import ABC, abstractmethod
 
 
-class ABCEdgecut(ABC):
+class ABCCut(ABC):
+    @abstractmethod
+    def cut(self) -> bool:
+        # 预剪枝
+        # 保存交易
+        # 后剪枝
+        ...
+
+
+class ABCEdgecut(ABCCut):
 
     @abstractmethod
     def cut(self) -> bool:
@@ -13,7 +22,7 @@ class ABCEdgecut(ABC):
         ...
 
 
-class ABCPrecut(ABC):
+class ABCPrecut(ABCCut):
 
     @abstractmethod
     def is_notransfer(self) -> bool:
@@ -25,14 +34,8 @@ class ABCPrecut(ABC):
         # 剪掉零交易
         ...
 
-    @abstractmethod
-    def cut(self) -> bool:
-        # 边预剪枝
-        # 枚举所有方法
-        ...
 
-
-class ABCPostcut(ABC):
+class ABCPostcut(ABCCut):
 
     @abstractmethod
     def is_count(self) -> bool:
@@ -49,22 +52,10 @@ class ABCPostcut(ABC):
         #  剪掉新出现的tag
         ...
 
-    @abstractmethod
-    def cut(self) -> bool:
-        # 边后剪枝
-        # 枚举所有方法
-        ...
 
-
-class ABCNodecut(ABC):
+class ABCNodecut(ABCCut):
 
     @abstractmethod
     def is_outof_len(self) -> bool:
         # 剪掉出度超过阈值
-        ...
-
-    @abstractmethod
-    def cut(self) -> bool:
-        # 节点剪枝
-        # 枚举所有方法
         ...

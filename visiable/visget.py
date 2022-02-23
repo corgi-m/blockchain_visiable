@@ -11,21 +11,6 @@ nodesappear: dict[str, list[set[Node]]] = {'from': [], 'to': []}
 
 
 class Format:
-    @staticmethod
-    def balanceformat(balance):
-        res = ""
-        form = "{{{0}: {1}}}<br>"
-        for balan in balance.items():
-            res += form.format(balan[0], balan[1])
-        return res
-
-    @staticmethod
-    def relationformat(relation):
-        res = str(len(relation)) + '<br>'
-        res += "from:<br>"
-        for relat in relation:
-            res += relat.address + '<br>'
-        return res
 
     @staticmethod
     def nodeformat(address, size, color, tips):
@@ -159,6 +144,22 @@ class Nodeinfo:
         self.relation = node.to_relation if from_or_to == 'to' else node.from_relation
         self.color = None
 
+    @staticmethod
+    def balanceformat(balance):
+        res = ""
+        form = "{{{0}: {1}}}<br>"
+        for balan in balance.items():
+            res += form.format(balan[0], balan[1])
+        return res
+
+    @staticmethod
+    def relationformat(relation):
+        res = str(len(relation)) + '<br>'
+        res += "from:<br>"
+        for relat in relation:
+            res += relat.address + '<br>'
+        return res
+
     def get_node_color(self):
         if self.node.address in config.black:
             self.color = 'yellow'
@@ -176,7 +177,7 @@ class Nodeinfo:
 
     def get_node_tips(self):
         tips = self.node.address + '<br>'
-        tips += Format.relationformat(self.relation) + Format.balanceformat(self.node.balance)
+        tips += self.relationformat(self.relation) + self.balanceformat(self.node.balance)
         if self.color == 'blue':
             tips = self.node.label + '<br>' + tips
         tips = Utils.tip_filter(tips)
