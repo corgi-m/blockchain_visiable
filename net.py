@@ -10,6 +10,7 @@ class Net:
     def __init__(self):
         self.__AsyncRequest = grequests.AsyncRequest
 
+    # 添加进请求池
     @staticmethod
     def greq_get(url, params=None) -> list[grequests.AsyncRequest]:
         if params is None:
@@ -17,10 +18,11 @@ class Net:
         return grequests.get(url=url, headers={'x-apiKey': Utils.get_x_apikey()}, params=params, proxies=config.proxies,
                              timeout=10)
 
+    # 进行请求哦
     @staticmethod
-    def greq_map(urls):
+    def greq_map(urls) -> list[grequests.AsyncRequest]:
         return grequests.map(urls)
 
     @property
-    def AsyncRequest(self):
+    def AsyncRequest(self) -> type:
         return self.__AsyncRequest

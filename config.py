@@ -2,11 +2,13 @@
 
 from db import DB
 
+from typing.io import TextIO
 import configparser
 import argparse
 import sys
 
 
+# Config 单例，通过重写getattr、setattr等魔术方法实现动态添加属性
 class Config:
     def __init__(self):
         ...
@@ -30,6 +32,7 @@ class Config:
     def __str__(self):
         return str(self.__dict__)
 
+    # 解析config.ini文件
     @staticmethod
     def parse_config(path_config):
         cfg = Config()
@@ -45,12 +48,14 @@ class Config:
         cfg.update({k: cfg.host + v for k, v in config_parser['api'].items()})
         return cfg
 
+    # 解析proxy代理格式
     @staticmethod
     def parse_proxy(proxy: str) -> dict[str, str]:
         if proxy is None:
             return {}
         return {"http": proxy, "https": proxy}
 
+    # 解析节点列表文件
     @staticmethod
     def parse_nodes(file) -> list[str]:
         nodes_res = []
@@ -60,8 +65,9 @@ class Config:
                 nodes_res.append(address)
         return nodes_res
 
+    # 解析请求头
     @staticmethod
-    def parser_header(file):
+    def parser_header(file) -> dict[str, str]:
         header = {}
         for i in file.readlines():
             record = i.strip()
@@ -71,11 +77,13 @@ class Config:
             header[temp[0]] = temp[1]
         return header
 
-    def parser_readfile(self, path):
+    # 读取文件对象
+    def parser_readfile(self, path) -> TextIO:
         return open('./configs/' + self.db.dbname + '/' + path, 'r')
 
+    # 解析命令行参数
     @staticmethod
-    def create_config(args: argparse.Namespace):
+    def create_config(args: argparse.Namespace) -> 'Config':
         cfg = Config()
         cfg.update(Config.parse_config(args.config)())
         cfg.db.dbname = args.link
@@ -94,9 +102,11 @@ class Config:
         return cfg
 
 
+# Config单例
 config: Config = Config()
 
 
+# 解析config.ini参数及命令行参数
 def parser_init():
     parser = argparse.ArgumentParser(prog='blockchain_visiable', description='developed by corgi')
     parser.add_argument('-p', '--proxy', type=str)

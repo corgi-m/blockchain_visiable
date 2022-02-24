@@ -10,60 +10,13 @@ from utils import Date, Utils
 nodesappear: dict[str, list[set[Node]]] = {'from': [], 'to': []}
 
 
-class Format:
-
-    @staticmethod
-    def nodeformat(address, size, color, tips):
-        return {
-            "name": address,
-            "symbolSize": (5 - size) * 10,
-            "itemStyle": {
-                'color': color
-            },
-            "label": {
-                "fontSize": 10
-            },
-            "enterable": True,
-            "tooltip": {
-                "textStyle": {
-                    "align": 'center',
-                    "fontSize": 15
-                },
-                "formatter": tips
-            }
-        }
-
-    @staticmethod
-    def edgeformat(addrfrom, addrto, color, tips):
-        return {
-            "source": addrfrom,
-            "target": addrto,
-            "symbol": [None, "arrow"],
-            "lineStyle": {
-                'color': color,
-                'width': 2,
-            },
-            "enterable": True,
-            "label": {
-                "fontSize": 15
-            },
-            "tooltip": {
-                "textStyle": {
-                    "align": 'center',
-                    "fontSize": 15
-                },
-                "formatter": tips
-            }
-        }
-
-
 class Get:
+    # 从数据库获取相关交易记录
     @staticmethod
-    def get_nodes_set():
+    def get_nodes_set() -> set[str]:
         ori = set(config.visnodes)
         addresses = ori.copy()
         for _ in range(config.TURN):
-            print(addresses)
             res = Transfer.get_address(addresses)
             for i in res:
                 address = i[0]
@@ -83,6 +36,7 @@ class Get:
             nodes[edge['addrfrom']].add_edge(nodes[edge['addrto']], info)
         return {v for k, v in nodes.items() if k in ori}
 
+    # 爬取下一级节点集合
     @staticmethod
     def get_next_nodes(node, edges_get, from_or_to) -> set[Node]:
         next_nodes = set()
@@ -109,6 +63,7 @@ class Get:
 
         return next_nodes
 
+    # 爬取指定层数 获取所有边的集合
     @staticmethod
     def get_edges(nodes_ori, from_or_to) -> list[Edge]:
         nodes = nodes_ori.copy()
@@ -144,23 +99,26 @@ class Nodeinfo:
         self.relation = node.to_relation if from_or_to == 'to' else node.from_relation
         self.color = None
 
+    # tips中balance格式化
     @staticmethod
-    def balanceformat(balance):
+    def balanceformat(balance) -> str:
         res = ""
         form = "{{{0}: {1}}}<br>"
         for balan in balance.items():
             res += form.format(balan[0], balan[1])
         return res
 
+    # tips中relation格式化
     @staticmethod
-    def relationformat(relation):
+    def relationformat(relation) -> str:
         res = str(len(relation)) + '<br>'
         res += "from:<br>"
         for relat in relation:
             res += relat.address + '<br>'
         return res
 
-    def get_node_color(self):
+    # 获取节点颜色
+    def get_node_color(self) -> str:
         if self.node.address in config.black:
             self.color = 'yellow'
         elif self.node.address in config.gray:
@@ -175,7 +133,8 @@ class Nodeinfo:
             self.color = 'black'
         return self.color
 
-    def get_node_tips(self):
+    # 获取节点tips
+    def get_node_tips(self) -> str:
         tips = self.node.address + '<br>'
         tips += self.relationformat(self.relation) + self.balanceformat(self.node.balance)
         if self.color == 'blue':
@@ -188,15 +147,8 @@ class Edgeinfo:
     def __init__(self, edge):
         self.edge = edge
 
-    def get_edge_tips(self):
-        tips = "{0} -> {1}<br>".format(self.edge.nodefrom.address, self.edge.nodeto.address)
-        form = "{{{1}, {2}: {3}, transferhash: {0}}}<br>"
-        for info in sorted(self.edge.info):
-            info = Utils.outof_list(info[1])
-            tips += form.format(info[0], info[1], Utils.tip_filter(info[2]), info[3])
-        return tips
-
-    def get_edge_color(self):
+    # 获取边颜色
+    def get_edge_color(self) -> str:
         fillcolor = 'black'
         tokendict = {}
         tokens = ['USDT', 'DLW', 'POSCHE', 'TRX']
@@ -216,3 +168,12 @@ class Edgeinfo:
             if len(self.edge.info) > config.THRESHOLD_OF_COUNT:
                 fillcolor = 'yellow'
         return fillcolor
+
+    # 获取边tips
+    def get_edge_tips(self) -> str:
+        tips = "{0} -> {1}<br>".format(self.edge.nodefrom.address, self.edge.nodeto.address)
+        form = "{{{1}, {2}: {3}, transferhash: {0}}}<br>"
+        for info in sorted(self.edge.info):
+            info = Utils.outof_list(info[1])
+            tips += form.format(info[0], info[1], Utils.tip_filter(info[2]), info[3])
+        return tips

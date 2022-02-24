@@ -3,6 +3,7 @@
 import pymysql
 
 
+# 封装数据库类
 class DB:
     def __init__(self, host, port, user, passwd):
         self.__host = host
@@ -44,6 +45,7 @@ class DB:
             raise Exception
         return conn
 
+    # 创建数据库
     def create_db(self, dbstruct) -> None:
         createsql = "CREATE DATABASE {}".format(self.dbname)
         try:
@@ -63,6 +65,7 @@ class DB:
             raise Exception
         return
 
+    # 使用该数据库
     def use_db(self) -> None:
         usesql = "USE {}".format(self.dbname)
         try:
@@ -73,6 +76,7 @@ class DB:
             raise Exception
         return
 
+    # 检查数据库是否存在
     def check_db(self, dbstruct) -> None:
         checksql = "SHOW DATABASES LIKE %s"
         try:

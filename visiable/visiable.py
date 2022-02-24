@@ -4,6 +4,7 @@ from visiable.visecharts import Echarts
 from visiable.visget import Get, nodesappear
 
 
+# 可视化main函数
 def vismain():
     print("start get nodes set")
     ori = Get.get_nodes_set()

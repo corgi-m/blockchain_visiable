@@ -12,76 +12,88 @@ from utils import Utils, Json
 from net import Net
 
 
+# Oklink父类
 class OKlink(ABC):
     __linkname = 'OKlink'
 
+    # 获取其他代币
     @staticmethod
     @abstractmethod
-    def get_other(address) -> list[Net.AsyncRequest]:  # 代币列表
+    def get_other(address) -> list[Net.AsyncRequest]:
         ...
 
+    # 获取主链代币
     @staticmethod
     @abstractmethod
-    def get_main(address) -> list[Net.AsyncRequest]:  # 代币列表
+    def get_main(address) -> list[Net.AsyncRequest]:
         ...
 
+    # 获取交易数量
     @staticmethod
     @abstractmethod
     def get_total_transfer(address) -> list[Net.AsyncRequest]:
         ...
 
+    # 同上
     @staticmethod
     @abstractmethod
     def get_total_transaction(address) -> list[Net.AsyncRequest]:
         ...
 
+    # 获取交易记录
     @staticmethod
     @abstractmethod
     def get_nodes_transfer(address, offset, limit) -> list[Net.AsyncRequest]:
         ...
 
+    # 同上
     @staticmethod
     @abstractmethod
     def get_nodes_transaction(address, offset, limit) -> list[Net.AsyncRequest]:
         ...
 
+    # 解析其他代币数量
     @staticmethod
     def get_balance_other(res) -> list[str]:
         if res is None:
             return []
         data = Json.loads(res.text)
-        if data is None:
+        if not data:
+            print(res.text)
             return []
         if "hits" in data["data"] and data["data"]["hits"] is not None:
             return [i["symbol"] + ',' + str(i["value"]) for i in data["data"]["hits"]]
         return []
 
+    # 解析主链代笔数量
     @classmethod
     def get_balance_main(cls, res) -> list[str]:
         if res is None:
             return []
         data = Json.loads(res.text)
-        if data is None:
+        if not data:
             print(res.text)
             return []
         return [cls.__linkname + "," + str(data["data"]["balance"])]
 
+    # 解析交易数量
     @staticmethod
     def get_total(res) -> int:
         if res is None:
             return 0
         data = Json.loads(res.text)
-        if data is None or data["code"] != 0:
+        if not data or data["code"] != 0:
             print(res.text)
             return 0
         return data['data']['total']
 
+    # 解析交易内容
     @staticmethod
     def get_nodes(address, res) -> set[str]:  # 下一级节点的集合。
         if res is None:
             return set()
         data = Json.loads(res.text)
-        if data is None or data["code"] != 0:
+        if not data or data["code"] != 0:
             return set()
         hits = data["data"]["hits"]
         nodesto = set()
@@ -97,6 +109,7 @@ class OKlink(ABC):
                     nodesfrom.add(i["from"])
         return nodesto | nodesfrom
 
+    # 获取下一级节点的请求列表
     @classmethod
     def get_next_nodes_req(cls, nodes, len_edges_transaction, len_edges_transfer, node_addr) -> list[Net.AsyncRequest]:
         flag = 0

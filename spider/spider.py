@@ -5,6 +5,7 @@ from config import config
 count: set[any] = set()  # 计数变量
 
 
+# 爬虫main函数
 def spidermain() -> None:
     Get = __import__('spider.' + config.db.dbname + '.get', fromlist=['Get']).Get()
     global count

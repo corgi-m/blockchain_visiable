@@ -3,6 +3,7 @@
 from config import config
 
 
+# 类属性访问
 class classproperty:
     def __init__(self, method):
         self.method = method
@@ -11,6 +12,7 @@ class classproperty:
         return self.method(owner)
 
 
+# 表父类
 class Table:
     _tablename: str = None
     _column: list[str] = None
@@ -21,12 +23,14 @@ class Table:
     def __init__(self, value):
         self._value = value
 
+    # sql查询语句格式化
     @staticmethod
     def sqlformat(sql, arglist) -> str:
         sql = sql.replace('%s', '{}', len(arglist))
         sql = sql.format(*arglist)
         return sql
 
+    # 保存记录
     def save(self) -> None:
         try:
             cur = config.db.cursor
@@ -42,6 +46,7 @@ class Table:
             print(e)
         return
 
+    # 查询sql语句
     @staticmethod
     def query(sql, params):
         try:
@@ -53,7 +58,9 @@ class Table:
         except Exception as e:
             print("Error: unable to fetch data")
             print(e)
+            return ()
 
+    # 获取整表记录（已弃用）
     @classmethod
     def get_db(cls) -> list[list[str]]:
         try:
@@ -66,6 +73,7 @@ class Table:
             print("Error: unable to fetch data")
             print(e)
 
+    # 查询某主键是否存在
     @classmethod
     def is_exist(cls, value) -> bool:
         try:
@@ -79,6 +87,7 @@ class Table:
             print(e)
 
 
+# 标签类
 class Label(Table):
     _tablename = "labels"
     _column = ["address", "tag"]
@@ -88,13 +97,15 @@ class Label(Table):
     def __init__(self, address, tag):
         super().__init__([address, tag])
 
+    # 获取地址标签
     @classmethod
-    def get(cls, address) -> tuple[tuple]:
+    def get(cls, address) -> tuple[tuple[str]]:
         sql = cls.__sqlget
         params = (address,)
         return super().query(sql, params)
 
 
+# 交易类
 class Transfer(Table):
     _tablename = "transfers"
     _column = ["transferhash", "addrfrom", "addrto", "symbol", "value", "blocktime"]
@@ -106,23 +117,27 @@ class Transfer(Table):
     def __init__(self, transferhash, addrfrom, addrto, symbol, value, blocktime):
         super().__init__([transferhash, addrfrom, addrto, symbol, value, blocktime])
 
+    # 获取相关地址（爬虫）
     @classmethod
-    def get_address(cls, addresses):
+    def get_address(cls, addresses) -> tuple[tuple[str]]:
         sql = cls.__sqlget_address
         params = (addresses, addresses,)
         return super().query(sql, params)
 
+    # 获取某地址交易记录
     @classmethod
-    def get_transfer(cls, addresses):
+    def get_transfer(cls, addresses) -> tuple[tuple[str]]:
         sql = cls.__sqlget_transfer
         params = (addresses, addresses,)
         return super().query(sql, params)
 
+    # 获取表中列名
     @classproperty
     def column(self) -> list[str]:
         return self._column
 
 
+# 持币类
 class Balance(Table):
     _tablename = "balances"
     _column = ["address", "balance"]
@@ -132,8 +147,9 @@ class Balance(Table):
     def __init__(self, address, balance):
         super().__init__([address, balance])
 
+    # 获取地址持币
     @classmethod
-    def get(cls, address) -> tuple[tuple]:
+    def get(cls, address) -> tuple[tuple[str]]:
         sql = cls.__sqlget
         params = (address,)
         return super().query(sql, params)

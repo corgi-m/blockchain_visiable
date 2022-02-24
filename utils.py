@@ -8,24 +8,27 @@ import base64
 import random
 
 
+# 工具类
 class Utils:
-    def __init__(self):
-        ...
 
+    # 占位函数
     @staticmethod
     def use(_):
         ...
 
+    # 将列表中的值取出
     @staticmethod
     def outof_list(li) -> str:
         return li[0] if isinstance(li, list) else li
 
+    # 过滤echarts无法显示字符
     @staticmethod
     def tip_filter(tips):
         tips = re.sub(u"[\x00-\x08\x0b-\x0c\x0e-\x1f]+", u"", tips)
         tips = re.sub('[^\x00-\x7F]', '', tips)
         return tips
 
+    # 获取OKlink的x-apiKey
     @staticmethod
     def get_x_apikey():
         # API_KEY固定字符串
@@ -54,16 +57,19 @@ class Utils:
         return str(x_apiKey, encoding='utf8')
 
 
+# 时间转换类
 class Date:
     def __init__(self):
         ...
 
+    # 时间戳转时间
     @staticmethod
     def date_transform(timestamp) -> str:
         time_local = time.localtime(int(timestamp))
         datatime = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
         return datatime
 
+    # 时间转时间戳
     @staticmethod
     def date_transform_reverse(datatime) -> int:
         time_local = time.strptime(datatime, "%Y-%m-%d %H:%M:%S")
@@ -71,15 +77,17 @@ class Date:
         return int(timestamp)
 
 
+# 封装json格式化类
 class Json:
     def __init__(self):
         ...
 
+    # 重写loads类
     @staticmethod
-    def loads(res):
+    def loads(res) -> dict[str, any]:
         try:
             data = json.loads(res)
         except Exception as e:
             print(e, file=config.config.log)
-            return None
+            return {}
         return data

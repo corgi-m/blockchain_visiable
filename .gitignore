@@ -152,3 +152,4 @@ cython_debug/
 *.html
 result/
 *.zip
+/.idea/encodings.xml
