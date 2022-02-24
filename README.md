@@ -23,7 +23,7 @@
 - graph_from.html 爬取资金来源
 - graph_to.html 爬取资金流向
 
-## 三、节点设置
+## 四、节点设置
 
 - black.txt 黄色节点 设为黑名单，用于找寻其他节点与各黑客节点的关系，作图时不在此节点上继续扩展
 - gray.txt 绿色节点 设为灰名单，用于标记可疑节点
@@ -33,13 +33,13 @@
 - 红色节点 根节点（起始节点）会被以上节点颜色覆盖
 - 注 ： 节点颜色可以在visget.py中通过修改Nodeinfo类的get_node_color方法来修改
 
-## 四、边设置
+## 五、边设置
 
 - TIME_STAMP 蓝色 存在在某个时间戳以后的交易
 - THRESHOLD_OF_VALUE 红色 存在大额交易
 - THRESHOLD_OF_COUNT 黄色 存在多笔交易
 
-## 五、快速入门
+## 六、快速入门
 
 ```shell
 $ python main.py # 爬取configs/trx/nodeslist.txt中的所有地址三层。
@@ -49,7 +49,7 @@ $ python main.py # 爬取configs/trx/nodeslist.txt中的所有地址三层。
 $ python main.py -v # 以configs/trx/visnodes.txt中的所有地址从数据库作图。
 ```
 
-## 六、二次开发
+## 七、二次开发
 
 ### 爬虫部分
 

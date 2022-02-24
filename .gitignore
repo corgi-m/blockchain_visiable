@@ -113,7 +113,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+/venv
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -145,14 +145,10 @@ cython_debug/
 /blockchain_visiable_v3.zip
 /blockchain_visiable_v4.zip
 /.idea/dataSources.xml
-/configs/file.svg
 /.idea/misc.xml
 /.idea/modules.xml
 /.idea/inspectionProfiles/profiles_settings.xml
-/configs/pygraphviz-1.7-cp310-cp310-win_amd64.whl
 /.idea/vcs.xml
 *.html
-/configs/eth/*
-/configs/trx/*
 result/
 *.zip
