@@ -25,7 +25,7 @@ class Nodecut:
     # label标签剪枝
     @staticmethod
     def is_label(label: str) -> bool:
-        if not label:
+        if label:
             return True
         return False
 

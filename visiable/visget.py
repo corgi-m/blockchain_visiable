@@ -125,7 +125,7 @@ class Nodeinfo:
             self.color = 'green'
         elif self.node.address in config.visnodes:
             self.color = 'red'
-        elif self.node.label is not None:
+        elif self.node.label:
             self.color = 'blue'
         elif self.hlen > config.MAX_OUT_DEGREE:
             self.color = 'deeppink'
