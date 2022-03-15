@@ -56,8 +56,10 @@ class Table:
             cur.close()
             return result
         except Exception as e:
-            print("Error: unable to fetch data")
+            print("Error: unable to fetch data: query")
             print(e)
+            print(params)
+            print(sql)
             return ()
 
     # 获取整表记录（已弃用）
@@ -70,7 +72,7 @@ class Table:
             cur.close()
             return results
         except Exception as e:
-            print("Error: unable to fetch data")
+            print("Error: unable to fetch data: get_db")
             print(e)
 
     # 查询某主键是否存在
@@ -83,7 +85,7 @@ class Table:
             cur.close()
             return True if results[0] == 1 else False
         except Exception as e:
-            print("Error: unable to fetch data")
+            print("Error: unable to fetch data: is_exist")
             print(e)
 
 

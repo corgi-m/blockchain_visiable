@@ -59,6 +59,7 @@ class OKlink(ABC):
             return []
         data = Json.loads(res.text)
         if not data:
+            print("get_balance_other")
             print(res.text)
             return []
         if "hits" in data["data"] and data["data"]["hits"] is not None:
@@ -71,7 +72,8 @@ class OKlink(ABC):
         if res is None:
             return []
         data = Json.loads(res.text)
-        if not data:
+        if data is None or "data" not in data or "balance" not in data["data"]:
+            print("get_balance_main")
             print(res.text)
             return []
         return [cls.__linkname + "," + str(data["data"]["balance"])]
@@ -82,7 +84,8 @@ class OKlink(ABC):
         if res is None:
             return 0
         data = Json.loads(res.text)
-        if not data or data["code"] != 0:
+        if data is None or "code" in data and data["code"] != 0 or "status" in data and data["status"] == 404:
+            print("get_total")
             print(res.text)
             return 0
         return data['data']['total']

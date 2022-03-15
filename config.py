@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from db import DB
+from utils import Date
 
 from typing.io import TextIO
 import configparser
@@ -86,6 +87,8 @@ class Config:
     def create_config(args: argparse.Namespace) -> 'Config':
         cfg = Config()
         cfg.update(Config.parse_config(args.config)())
+        cfg.MIN_TIME_STAMP = Date.date_transform_reverse(cfg.MIN_TIME_STAMP)
+        cfg.MAX_TIME_STAMP = Date.date_transform_reverse(cfg.MAX_TIME_STAMP)
         cfg.db.dbname = args.link
         cfg.nodes = Config.parse_nodes(cfg.parser_readfile(args.nodes))
         cfg.save = args.save
@@ -125,7 +128,7 @@ def parser_init():
     parser.add_argument('-d', '--deep', type=int, default=3)
     parser.add_argument('-e', '--edgelimit', type=int)
     parser.add_argument('-u', '--valuelimit', type=int)
-    parser.add_argument('-L', '--link', nargs='?', type=str, default='trx', choices=['trx', 'eth'])
+    parser.add_argument('-L', '--link', nargs='?', type=str, default='trx', choices=['trx', 'eth', 'bnb'])
 
     args = parser.parse_args(sys.argv[1:])
     global config

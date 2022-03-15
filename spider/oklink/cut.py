@@ -28,8 +28,11 @@ class OKEdgecut(ABCEdgecut):
         if self.precut.cut():
             return True
         txhash = self.edge["txhash"] if "txhash" in self.edge else self.edge["hash"]
-        symbol = self.edge["symbol"] if "symbol" in self.edge else "TRX"
-        blocktime = self.edge["blocktime"] / 1000 if self.edge["blocktime"] > 2000000000 else self.edge["blocktime"]
+        symbol = self.edge["symbol"] if "symbol" in self.edge else config.db.dbname.upper()
+        if "blocktime" in self.edge:
+            blocktime = self.edge["blocktime"] / 1000 if self.edge["blocktime"] > 2000000000 else self.edge["blocktime"]
+        else:
+            blocktime = 2000000000
         datetime = Date.date_transform(blocktime)
         if not Transfer.is_exist(txhash):
             Save.save_transfer(txhash, self.edge["from"], self.edge["to"], symbol, self.edge["value"], datetime)
@@ -117,6 +120,8 @@ class OKNodecut(ABCNodecut):
     def cut(self) -> bool:
         if self.node in config.white:
             return False
+        if self.node in config.black:
+            return True
         if self.is_outof_len():
             return True
         return False

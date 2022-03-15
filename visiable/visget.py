@@ -158,7 +158,7 @@ class Edgeinfo:
                 tokendict[info[2]] += info[3]
             else:
                 tokendict[info[2]] = info[3]
-            if Date.date_transform_reverse(info[1]) > config.TIME_STAMP:
+            if config.MAX_TIME_STAMP > Date.date_transform_reverse(info[1]) > config.MIN_TIME_STAMP:
                 return 'blue'
         for k, v in tokendict.items():
             if k in tokens and v > config.THRESHOLD_OF_VALUE:

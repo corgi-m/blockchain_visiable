@@ -4,6 +4,7 @@ from pyecharts.options.global_options import InitOpts, AnimationOpts
 from pyecharts.options.series_options import LineStyleOpts
 from pyecharts.charts.basic_charts.graph import Graph
 
+from config import Config
 from visiable.visget import Nodeinfo, Edgeinfo
 from visiable.vismodel import Node, Edge
 
@@ -92,5 +93,5 @@ class Echarts:
         G = Graph(init_opts=init_opts)
         G.add("", nodes=self.nodes, links=self.edges, repulsion=80, layout='force', edge_symbol=[''],
               linestyle_opts=linestyle_opts)
-        G.render("./result/graph_" + self.from_or_to + ".html")
+        G.render("./result/"+Config.db.dbname+"/graph_" + self.from_or_to + ".html")
         return
