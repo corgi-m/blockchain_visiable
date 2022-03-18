@@ -1,9 +1,9 @@
 # coding=utf-8
 
-from utils import Date
-
 import typing
+
 import model
+from utils import Date
 
 Info = tuple[str, str, str, float]
 
@@ -16,6 +16,7 @@ class Node:
         self.__to_relation: set['Node'] = set()
         self.__from_relation: set['Node'] = set()
         self.__balance: dict[str, float] = self.get_balance(address)
+        self.__internal: list[tuple[int, str, str, float, str, float]] = self.get_internal(address)
         self.__label: str = self.get_label(address)
         self.__to_hlen: int = 0
         self.__from_hlen: int = 0
@@ -41,6 +42,17 @@ class Node:
             if len(temp) != 2:
                 continue
             res[temp[0]] = float(temp[1])
+        return res
+
+    # 设置internal
+    @staticmethod
+    def get_internal(address) -> list[tuple[int, str, str, float, str, float]]:
+        res = []
+        internal = model.Internal.get(address)
+        if not internal:
+            return res
+        for i in internal:
+            res.append((Date.date_transform_reverse(str(i[6])), i[0], i[6], i[3], i[2], i[5], i[4]))
         return res
 
     # 边生成器
@@ -72,6 +84,10 @@ class Node:
     @property
     def balance(self) -> dict[str, float]:
         return self.__balance
+
+    @property
+    def internal(self) -> list[tuple[str, str, float, str, float]]:
+        return self.__internal
 
     @property
     def label(self) -> str:

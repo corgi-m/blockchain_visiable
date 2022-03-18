@@ -107,6 +107,24 @@ class Label(Table):
         return super().query(sql, params)
 
 
+# 内部交易类
+class Internal(Table):
+    _tablename = "internal"
+    _column = ["transferhash", "address", "fromtoken", "fromvalue", "totoken", "tovalue", "blocktime"]
+    _sqlsave = "REPLACE INTO %s (%s,%s,%s,%s,%s,%s,%s)  VALUES(%s,%s,%s,%s,%s,%s,%s)"
+    __sqlget = "SELECT * FROM internal where address=%s"
+
+    def __init__(self, transferhash, address, fromtoken, fromvalue, totoken, tovalue, blocktime):
+        super().__init__([transferhash, address, fromtoken, fromvalue, totoken, tovalue, blocktime])
+
+    # 获取地址标签
+    @classmethod
+    def get(cls, address) -> tuple[tuple[str]]:
+        sql = cls.__sqlget
+        params = (address,)
+        return super().query(sql, params)
+
+
 # 交易类
 class Transfer(Table):
     _tablename = "transfers"

@@ -1,11 +1,10 @@
 # coding=utf-8
 
-from model import Transfer, Balance, Label
-from visiable.vismodel import Edge, Node
-from visiable.viscut import Postcut, Precut, count, Nodecut
-
 from config import config
+from model import Transfer, Balance, Label
 from utils import Date, Utils
+from visiable.viscut import Postcut, Precut, count, Nodecut
+from visiable.vismodel import Edge, Node
 
 nodesappear: dict[str, list[set[Node]]] = {'from': [], 'to': []}
 
@@ -93,6 +92,8 @@ class Get:
 
 
 class Nodeinfo:
+    __categories = {}
+
     def __init__(self, node, from_or_to):
         self.node = node
         self.hlen = node.to_hlen if from_or_to == 'to' else node.from_hlen
@@ -103,9 +104,20 @@ class Nodeinfo:
     @staticmethod
     def balanceformat(balance) -> str:
         res = ""
-        form = "{{{0}: {1}}}<br>"
-        for balan in balance.items():
+        form = "{{{0}: {1}}}"
+        for i, balan in enumerate(balance.items()):
             res += form.format(balan[0], balan[1])
+            if (i + 1) % 5 == 0:
+                res += "<br>"
+        return res
+
+    # tips中internal格式化
+    @staticmethod
+    def internalformat(internal) -> str:
+        res = ""
+        form = "{{transferhash: {0} time: {1}  {2} {3} -> {4} {5}}}<br>"
+        for i, inter in enumerate(internal):
+            res += form.format(inter[1], inter[2], inter[3], inter[4], inter[5], inter[6])
         return res
 
     # tips中relation格式化
@@ -117,26 +129,46 @@ class Nodeinfo:
             res += relat.address + '<br>'
         return res
 
+    # 获取categories字典
+    @classmethod
+    def get_categories(cls):
+        return cls.__categories
+
+    def get_label(self):
+        return self.node.label
+
     # 获取节点颜色
-    def get_node_color(self) -> str:
+    def get_node_category(self) -> int:
         if self.node.address in config.black:
-            self.color = 'yellow'
+            color = 'yellow'
+            name = '黑名单'
         elif self.node.address in config.gray:
-            self.color = 'green'
+            color = 'green'
+            name = '特殊标注'
         elif self.node.address in config.visnodes:
-            self.color = 'red'
+            color = 'red'
+            name = '起始节点'
         elif self.node.label:
-            self.color = 'blue'
+            color = 'blue'
+            name = '交易所'
         elif self.hlen > config.MAX_OUT_DEGREE:
-            self.color = 'deeppink'
+            color = 'deeppink'
+            name = '大量交易节点'
         else:
-            self.color = 'black'
-        return self.color
+            color = 'black'
+            name = '普通节点'
+        if color not in self.__categories:
+            index = len(self.__categories)
+            self.__categories[color] = (index, name, color)
+        self.color = color
+        return self.__categories[color][0]
 
     # 获取节点tips
     def get_node_tips(self) -> str:
         tips = self.node.address + '<br>'
-        tips += self.relationformat(self.relation) + self.balanceformat(self.node.balance)
+        tips += self.relationformat(self.relation) + \
+                self.balanceformat(self.node.balance) + \
+                self.internalformat(sorted(self.node.internal))
         if self.color == 'blue':
             tips = self.node.label + '<br>' + tips
         tips = Utils.tip_filter(tips)

@@ -1,9 +1,8 @@
 # coding=utf-8
 
-from spider.oklink.get import OKlink, OKGet
-
 from config import config
 from net import Net
+from spider.oklink.get import OKlink, OKGet
 
 
 class BNB(OKlink):
