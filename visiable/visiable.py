@@ -1,23 +1,14 @@
 # coding=utf-8
-
+from config import config
 from visiable.visecharts import Echarts
-from visiable.visget import Get, nodesappear
+from visiable.visget import Get
 
 
 # 可视化main函数
 def vismain():
-    print("start get nodes set")
-    ori = Get.get_nodes_set()
-
-    print("start get edges")
-    edges = {
-        'from': Get.get_edges(ori, 'from'),
-        'to': Get.get_edges(ori, 'to')
-    }
-
-    print("start draw")
-    graph_to = Echarts(nodesappear['to'], edges['to'], 'to')
-    graph_from = Echarts(nodesappear['from'], edges['from'], 'from')
-    graph_to.drawecharts()
-    graph_from.drawecharts()
+    for from_or_to in config.from_or_to:
+        nodes, edges = Get.get_nodes_edges(from_or_to)
+        graph = Echarts(nodes, edges, from_or_to)
+        print("draw graph")
+        graph.drawecharts()
     print("end")

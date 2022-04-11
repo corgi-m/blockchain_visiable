@@ -130,31 +130,22 @@ class Transfer(Table):
     _tablename = "transfers"
     _column = ["transferhash", "addrfrom", "addrto", "symbol", "value", "blocktime"]
     _sqlsave = "REPLACE INTO %s (%s, %s, %s, %s, %s, %s)  VALUES(%s, %s, %s, %s, %s, %s)"
-    __sqlget_address = "SELECT DISTINCT addrfrom FROM transfers WHERE addrto IN %s " \
-                       "UNION SELECT DISTINCT addrto FROM transfers WHERE addrfrom IN %s"
-    __sqlget_transfer = "SELECT * FROM transfers WHERE addrfrom IN %s OR addrto IN %s"
+    __sqlget_transfer = {"from": "SELECT * FROM transfers WHERE addrto IN %s",
+                         "to": "SELECT * FROM transfers WHERE addrfrom IN %s"}
 
     def __init__(self, transferhash, addrfrom, addrto, symbol, value, blocktime):
         super().__init__([transferhash, addrfrom, addrto, symbol, value, blocktime])
-
-    # 获取相关地址（爬虫）
-    @classmethod
-    def get_address(cls, addresses) -> tuple[tuple[str]]:
-        sql = cls.__sqlget_address
-        params = (addresses, addresses,)
-        return super().query(sql, params)
-
-    # 获取某地址交易记录
-    @classmethod
-    def get_transfer(cls, addresses) -> tuple[tuple[str]]:
-        sql = cls.__sqlget_transfer
-        params = (addresses, addresses,)
-        return super().query(sql, params)
 
     # 获取表中列名
     @classproperty
     def column(self) -> list[str]:
         return self._column
+
+    @classmethod
+    def get_transfer(cls, next_node, from_or_to):
+        sql = cls.__sqlget_transfer[from_or_to]
+        params = (next_node,)
+        return super().query(sql, params)
 
 
 # 持币类

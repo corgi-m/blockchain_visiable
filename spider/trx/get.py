@@ -39,6 +39,26 @@ class TRX(OKlink):
         params = {"address": address, "offset": offset, "limit": limit}
         return Net.greq_get(config.trxtransaction, params)
 
+    @staticmethod
+    def get_total_internal(address) -> list[Net.AsyncRequest]:  # 下一级节点个数
+        params = {'address': address}
+        return Net.greq_get(config.trxinternaltransfer, params)
+
+    @staticmethod
+    def get_internal_transfer(address, offset, limit) -> list[Net.AsyncRequest]:
+        params = {"offset": offset, "limit": limit, 'address': address}
+        return Net.greq_get(config.trxinternaltransfer, params)
+
+    @staticmethod
+    def get_internal_main(offset, limit, tranHash) -> list[Net.AsyncRequest]:
+        params = {"offset": offset, "limit": limit, "tranHash": tranHash}
+        return Net.greq_get(config.trxinternal, params)
+
+    @staticmethod
+    def get_internal_other(offset, limit, tranHash) -> list[Net.AsyncRequest]:
+        params = {"offset": offset, "limit": limit, "tranHash": tranHash, 'tokenType': 'TRC20'}
+        return Net.greq_get(config.trcinternal, params)
+
 
 class Get(OKGet):
     def __init__(self):

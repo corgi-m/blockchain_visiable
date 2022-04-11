@@ -16,7 +16,7 @@ class Net:
         if params is None:
             params = {}
         return grequests.get(url=url, headers={'x-apiKey': Utils.get_x_apikey()}, params=params, proxies=config.proxies,
-                             timeout=10)
+                             )
 
     # 进行请求哦
     @staticmethod

@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 
 from config import config
-from model import Balance
+from model import Label
 from net import Net
 from spider.common.get import ABCGet
 from spider.oklink.cut import OKEdgecut, OKNodecut
@@ -76,9 +76,8 @@ class OKlink(ABC):
         if res is None:
             return []
         data = Json.loads(res.text)
-        if data is None or data["code"] != 0:
+        if data is None or "code" not in data or data["code"] != 0:
             print("get_balance_other")
-            print(res.text)
             return []
         if "hits" in data["data"] and data["data"]["hits"] is not None:
             return [i["symbol"] + ',' + str(i["value"]) for i in data["data"]["hits"]]
@@ -92,7 +91,6 @@ class OKlink(ABC):
         data = Json.loads(res.text)
         if data is None or "data" not in data or "balance" not in data["data"]:
             print("get_balance_main")
-            print(res.text)
             return []
         return [cls.__linkname + "," + str(data["data"]["balance"])]
 
@@ -104,31 +102,25 @@ class OKlink(ABC):
         data = Json.loads(res.text)
         if data is None or "code" in data and data["code"] != 0 or "status" in data and data["status"] == 404:
             print("get_total")
-            print(res.text)
             return 0
         return data['data']['total']
 
     # 解析交易内容
     @staticmethod
-    def parse_nodes(address, res) -> set[str]:  # 下一级节点的集合。
+    def parse_nodes(address, res, from_or_to) -> set[str]:  # 下一级节点的集合。
         if res is None:
             return set()
         data = Json.loads(res.text)
-        if data is None or data["code"] != 0:
+        if data is None or "code"not in data or data["code"] != 0 or "hits" not in data["data"]:
             return set()
         hits = data["data"]["hits"]
-        nodesto = set()
-        nodesfrom = set()
+        nodes = set()
         for i in hits:
-            if Utils.outof_list(i['from']) == address:
-                edgecut = OKEdgecut(i, "to")
+            if Utils.outof_list(i[from_or_to]) != address:
+                edgecut = OKEdgecut(i, from_or_to)
                 if not edgecut.cut():
-                    nodesto.add(i["to"])
-            else:
-                edgecut = OKEdgecut(i, "from")
-                if not edgecut.cut():
-                    nodesfrom.add(i["from"])
-        return nodesto | nodesfrom
+                    nodes.add(i[from_or_to])
+        return nodes
 
     @staticmethod
     def parse_internal_transfer(address, res):
@@ -138,7 +130,7 @@ class OKlink(ABC):
         if data is None or data["code"] != 0:
             return set()
         hits = data["data"]["hits"]
-        return [(i["txhash"], address, Date.date_transform(i["blocktime"])) for i in hits]
+        return [(i["txhash"], address, Date.date_transform(i["blocktime"]/100)) for i in hits]
 
     @staticmethod
     def parse_internal_value(address, internal_main_res, internal_other_res):
@@ -168,7 +160,7 @@ class OKlink(ABC):
         flag = 0
         internal_req = []
         for i, node in enumerate(nodes):
-            for page in range(0, min(len_edges_internal[i], 9900), 100):
+            for page in range(0, min(len_edges_internal[i], 1), 100):
                 internal_req.append(cls.get_internal_transfer(node, page, 100))
                 node_addr.append(node)
                 flag += 1
@@ -230,103 +222,123 @@ class OKlink(ABC):
 
 class OKGet(ABCGet):
 
-    def __init__(self, Link):
-        self.Link = Link
+    def __init__(self, link):
+        self.__link = link
+        self.__nodeslist = None
 
-    def get_next_nodes(self, nodes) -> set[str]:
-        print('start get len')
+    def get_len_edges(self, nodes):
         len_edges_transfer_req = []
-        len_edges_transfer = []
         len_edges_transaction_req = []
+        len_edges_transfer = []
         len_edges_transaction = []
-
         for node in nodes:
-            len_edges_transfer_req.append(self.Link.get_total_transfer(node))
+            len_edges_transfer_req.append(self.__link.get_total_transfer(node))
+            len_edges_transaction_req.append(self.__link.get_total_transaction(node))
+            if len(len_edges_transfer_req) >= 2000:
+                len_edges_transfer_res = Net.greq_map(len_edges_transfer_req)
+                len_edges_transaction_res = Net.greq_map(len_edges_transaction_req)
+                len_edges_transfer_req = []
+                len_edges_transaction_req = []
+                for i in len_edges_transfer_res:
+                    len_edges_transfer.append(self.__link.parse_total(i))
+                for i in len_edges_transaction_res:
+                    len_edges_transaction.append(self.__link.parse_total(i))
         len_edges_transfer_res = Net.greq_map(len_edges_transfer_req)
-        for node in nodes:
-            len_edges_transaction_req.append(self.Link.get_total_transaction(node))
         len_edges_transaction_res = Net.greq_map(len_edges_transaction_req)
-
         for i in len_edges_transfer_res:
-            len_edges_transfer.append(self.Link.parse_total(i))
+            len_edges_transfer.append(self.__link.parse_total(i))
         for i in len_edges_transaction_res:
-            len_edges_transaction.append(self.Link.parse_total(i))
+            len_edges_transaction.append(self.__link.parse_total(i))
+        return [len_edges_transfer, len_edges_transaction]
 
+    def get_next_nodes(self, nodes, from_or_to) -> set[str]:
+        print('start get len')
+        len_edges = self.get_len_edges(nodes)
         print('start get res')
         node_addr = []
         next_nodes_res = []
-        len_edge = [len_edges_transaction, len_edges_transfer]
-        for next_nodes_req in self.Link.get_next_nodes_req(nodes, len_edge, node_addr):
+        for next_nodes_req in self.__link.get_next_nodes_req(nodes, len_edges, node_addr):
             next_nodes_res.extend(Net.greq_map(next_nodes_req))
         next_nodes = set()
         for i in range(len(next_nodes_res)):
-            next_nodes |= self.Link.parse_nodes(node_addr[i], next_nodes_res[i])
+            next_nodes |= self.__link.parse_nodes(node_addr[i], next_nodes_res[i], from_or_to)
         return next_nodes
 
     def save_balance(self):
         print("get balance")
         other_req = []
         main_req = []
-        nodes = []
-        for address in count:
-            if not Balance.is_exist(address):
-                other_req.append(self.Link.get_other(address))
-                nodes.append(address)
-        other_res = Net.greq_map(other_req)
-        for address in count:
-            if not Balance.is_exist(address):
-                main_req.append(self.Link.get_main(address))
-        main_res = Net.greq_map(main_req)
+        other_res = []
+        main_res = []
+        for address in self.__nodeslist:
+            other_req.append(self.__link.get_other(address))
+            main_req.append(self.__link.get_main(address))
+            if len(other_req) > 2000:
+                other_res.extend(Net.greq_map(other_req))
+                main_res.extend(Net.greq_map(main_req))
+                other_req = []
+                main_req = []
+
+        other_res.extend(Net.greq_map(other_req))
+        main_res.extend(Net.greq_map(main_req))
 
         print("save balance")
-        for i in range(len(nodes)):
+        for i in range(len(self.__nodeslist)):
             balances = []
-            erc = self.Link.parse_balance_other(other_res[i])
-            eth = self.Link.parse_balance_main(main_res[i])
+            erc = self.__link.parse_balance_other(other_res[i])
+            eth = self.__link.parse_balance_main(main_res[i])
             balances.extend(erc)
             balances.extend(eth)
-            Save.save_balance(nodes[i], ';'.join(balances))
+            Save.save_balance(self.__nodeslist[i], ';'.join(balances))
         return
 
-    def save_internal(self):
-        print("get internal")
+    def get_len_edges_internal(self):
         len_edges_internal_req = []
         len_edges_internal = []
-        nodes = list(count)
 
-        internal_res = []
-        internal_main_res = []
-        internal_other_res = []
-
-        for node in nodes:
-            len_edges_internal_req.append(self.Link.get_total_internal(node))
+        for node in self.__nodeslist:
+            len_edges_internal_req.append(self.__link.get_total_internal(node))
         len_edges_internal_res = Net.greq_map(len_edges_internal_req)
 
         for i in len_edges_internal_res:
-            len_edges_internal.append(self.Link.parse_total(i))
+            len_edges_internal.append(self.__link.parse_total(i))
+        return len_edges_internal
 
+    def get_info_iternal(self, len_edges_internal):
+        internal_res = []
         node_addr = []
-
-        # 获取每个节点及其内部交易
-        for internal_req in self.Link.get_internal_req(nodes, len_edges_internal, node_addr):
+        for internal_req in self.__link.get_internal_req(self.__nodeslist, len_edges_internal, node_addr):
             internal_res.extend(Net.greq_map(internal_req))
-
         info = []  # transferhash, address, blocktime
         for i, res in enumerate(internal_res):
-            for j in self.Link.parse_internal_transfer(node_addr[i], res):
+            for j in self.__link.parse_internal_transfer(node_addr[i], res):
                 info.append(j)
+        return info
 
-        for internal_main_req, internal_other_req in self.Link.get_internal_value_req(info):
+    def get_iternal(self, info_internal):
+        internal_main_res = []
+        internal_other_res = []
+        for internal_main_req, internal_other_req in self.__link.get_internal_value_req(info_internal):
             internal_main_res.extend(Net.greq_map(internal_main_req))
             internal_other_res.extend(Net.greq_map(internal_other_req))
 
-        print("save internal")
-        for i in range(len(info)):
+        for i in range(len(info_internal)):
             fromtoken, fromvalue, totoken, tovalue = \
-                self.Link.parse_internal_value(info[i][1], internal_main_res[i], internal_other_res[i])
+                self.__link.parse_internal_value(info_internal[i][1], internal_main_res[i], internal_other_res[i])
             if fromtoken and fromvalue and totoken and tovalue:
-                Save.save_internal(info[i][0], info[i][1], fromtoken, fromvalue, totoken, tovalue, info[i][2])
+                yield info_internal[i][0], info_internal[i][1], fromtoken, fromvalue, totoken, tovalue, \
+                      info_internal[i][2]
+
+    def save_internal(self):
+        print("get internal")
+        len_edges_internal = self.get_len_edges_internal()
+        info_internal = self.get_info_iternal(len_edges_internal)
+        print("save internal")
+        for transferhash, address, fromtoken, fromvalue, totoken, tovalue, blocktime in self.get_iternal(info_internal):
+            Save.save_internal(transferhash, address, fromtoken, fromvalue, totoken, tovalue, blocktime)
 
     def get_info(self) -> None:
+        self.__nodeslist = [i for i in count['from'] | count['to'] if not Label.get(i)]
+        print('total nodes count: ' + str(len(self.__nodeslist)))
         self.save_balance()
-        self.save_internal()
+        #self.save_internal()

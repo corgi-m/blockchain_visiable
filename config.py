@@ -1,12 +1,13 @@
 # coding=utf-8
 
-from db import DB
-from utils import Date
+import argparse
+import configparser
+import sys
 
 from typing.io import TextIO
-import configparser
-import argparse
-import sys
+
+from db import DB
+from utils import Date
 
 
 # Config 单例，通过重写getattr、setattr等魔术方法实现动态添加属性
@@ -90,7 +91,8 @@ class Config:
         cfg.MIN_TIME_STAMP = Date.date_transform_reverse(cfg.MIN_TIME_STAMP)
         cfg.MAX_TIME_STAMP = Date.date_transform_reverse(cfg.MAX_TIME_STAMP)
         cfg.db.dbname = args.link
-        cfg.nodes = Config.parse_nodes(cfg.parser_readfile(args.nodes))
+        cfg.from_or_to = args.direction
+        cfg.nodes = set(Config.parse_nodes(cfg.parser_readfile(args.nodes)))
         cfg.save = args.save
         cfg.visnodes = Config.parse_nodes(cfg.parser_readfile(args.visnodes))
         cfg.proxies = Config.parse_proxy(args.proxy)
@@ -129,6 +131,7 @@ def parser_init():
     parser.add_argument('-e', '--edgelimit', type=int)
     parser.add_argument('-u', '--valuelimit', type=int)
     parser.add_argument('-L', '--link', nargs='?', type=str, default='trx', choices=['trx', 'eth', 'bnb'])
+    parser.add_argument('-D', '--direction', nargs='+', type=str, default=['from', 'to'], choices=['from', 'to'])
 
     args = parser.parse_args(sys.argv[1:])
     global config

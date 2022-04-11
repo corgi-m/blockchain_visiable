@@ -1,11 +1,10 @@
 # coding=utf-8
 
+from config import config
+from model import Transfer, Label
 from spider.common.cut import ABCPrecut, ABCPostcut, ABCEdgecut, ABCNodecut
 from spider.save import Save
 from spider.spider import count
-
-from config import config
-from model import Transfer, Label
 from utils import Utils, Date
 
 
@@ -81,7 +80,7 @@ class OKPostcut(ABCPostcut):
     def is_count(self) -> bool:  # 是否出现过，减少重复
         if self.node in count:
             return True
-        count.add(self.node)
+        count[self.from_or_to].add(self.node)
         return False
 
     def is_inaccount(self) -> bool:
@@ -92,6 +91,9 @@ class OKPostcut(ABCPostcut):
     def is_tag(self) -> bool:
         if self.from_or_to + "Tag" in self.edge and len(self.edge[self.from_or_to + "Tag"]) > 0:
             Save.save_label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
+            return True
+        if self.from_or_to + "EntityTag" in self.edge:
+            Save.save_label(self.node, self.edge[self.from_or_to + "EntityTag"])
             return True
         return False
 

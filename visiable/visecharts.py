@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from pyecharts.charts.basic_charts.graph import Graph
+from pyecharts.charts.basic_charts.tree import Tree
 from pyecharts.options.global_options import InitOpts, AnimationOpts
 from pyecharts.options.series_options import LineStyleOpts
 
@@ -83,18 +84,18 @@ class Echarts:
 
     def __init__(self, nodes, edges, from_or_to):
         self.categories = []
-        self.nodes = self.setnodes(nodes, from_or_to)
+        self.nodes = self.setnodes(nodes)
         self.edges = self.setedges(edges)
         self.categories = self.setcategories(Nodeinfo.get_categories())
         self.from_or_to = from_or_to
 
     # 设置节点列表
     @staticmethod
-    def setnodes(nodes: list[list[Node]], from_or_to: str) -> list[dict[str, any]]:
+    def setnodes(nodes: list[list[Node]]) -> list[dict[str, any]]:
         enodes = []
         for i, layer in enumerate(nodes):
-            for node in layer:
-                nodeinfo = Nodeinfo(node, from_or_to)
+            for node in set(layer):
+                nodeinfo = Nodeinfo(node)
                 enodes.append(
                     Format.nodeformat(node.address, i, nodeinfo.get_node_category(), nodeinfo.get_node_tips(),
                                       nodeinfo.get_label()))
@@ -106,7 +107,7 @@ class Echarts:
         eedges = []
         for edge in edges:
             edgeinfo = Edgeinfo(edge)
-            eedges.append(Format.edgeformat(edge.nodefrom.address, edge.nodeto.address, edgeinfo.get_edge_color(),
+            eedges.append(Format.edgeformat(edge.nodefrom, edge.nodeto, edgeinfo.get_edge_color(),
                                             edgeinfo.get_edge_tips()))
         return eedges
 
@@ -123,9 +124,10 @@ class Echarts:
         animation_opts = AnimationOpts(animation=False)
         linestyle_opts = LineStyleOpts(curve=0.1)
         init_opts = InitOpts(chart_id='chart', animation_opts=animation_opts, renderer='svg', width="100%",
-                             height="1000%")
+                             height="1470%")
         G = Graph(init_opts=init_opts)
         G.add_js_funcs(self.JSCODE)
+        print(len(self.nodes))
         G.add("", nodes=self.nodes, links=self.edges, categories=self.categories, repulsion=80, layout='force',
               edge_symbol=[''], linestyle_opts=linestyle_opts)
         G.render("./result/" + config.db.dbname + "/graph_" + self.from_or_to + ".html")
