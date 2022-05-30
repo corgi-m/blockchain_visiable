@@ -7,11 +7,19 @@
 
 </head>
 <body>
-    <div id="56b6b4729e0743969212d1048aa02d4f" class="chart-container" style="width:8000px; height:4000px;"></div>
+    <div id="chart" class="chart-container" style="width:100%; height:1470%;"></div>
     <script>
-        var chart_56b6b4729e0743969212d1048aa02d4f = echarts.init(
-            document.getElementById('56b6b4729e0743969212d1048aa02d4f'), 'white', {renderer: 'svg'});
-        var option_56b6b4729e0743969212d1048aa02d4f = {
+        var chart_chart = echarts.init(
+            document.getElementById('chart'), 'white', {renderer: 'svg'});
+            
+            var test = function(){
+                chart_chart.on('click',function(params){
+                    console.log(params.data.tooltip.formatter.replace(/<br>/g,'\n'));
+                });
+            }
+            test();
+        
+        var option_chart = {
     "animation": false,
     "animationThreshold": 2000,
     "animationDuration": 1000,
@@ -76,94 +84,100 @@
             "focusNodeAdjacency": true,
             "data": [
                 {
-                    "name": "0x9eee6862b78fb6f9627d7d5a908d2114814fcecd",
+                    "name": "0x48c94305bddfd80c6f4076963866d968cac27d79",
                     "symbolSize": 50,
+                    "label": {
+                        "fontSize": 10,
+                        "formatter": "0x48c94305bddfd80c6f4076963866d968cac27d79"
+                    },
+                    "category": 0,
+                    "enterable": true,
+                    "tooltip": {
+                        "trigger": "item",
+                        "triggerOn": "click",
+                        "textStyle": {
+                            "align": "center",
+                            "fontSize": 15
+                        },
+                        "formatter": "0x48c94305bddfd80c6f4076963866d968cac27d79<br>{Cake: 13999.559591727548}{IDO: 475.0}{APPLE: 8888.0}{DMC: 1.88888}{CVC: 927.2}<br>{IRENA: 1014.0}{DPT: 15.130866880031554}{RUN: 520.0}{Weird: 777.0}{ZNS: 0.93}<br>{BCHB: 555.0}{EBT: 9999.0}{TIGER: 555.0}{EBCC: 9499.05}{WMW: 1000.0}<br>{aBNBc: 5e-06}{EPS: 100.0}{NINJA: 1800.0}{RUNDOGE: 6534.64}{TT: 2.000828056}<br>{MBF: 1780.0}{MiniCat: 666.0}{IOTN: 9.8}{WEB3: 123.0}{VTN: 1000000.0}<br>{RTC: 843.6}{Moon: 888.0}{SINU: 17600.0}{TALK: 1000000.0}{MOVE: 166.0}<br>{Weenie: 69.0}{SWCAT: 1.0}{RKT: 8888.0}{WOLF: 0.95}{Pups: 9.5}<br>{CNFT: 2100.0}{GKF: 1000.0}{CHEESE: 1.0}{KBP: 1000.0}{APE: 1000.0}<br>{Apple: 10342.65}{BUSD: 8.6392225865e-08}{Pml: 1010.0}{KAZAMA: 0.88}{Milk: 950.0}<br>{oscar: 2.0}{Shibking: 0.88}{COMT: 0.960000000000001}{TXS: 0.9}{BUFFSHIBA: 1.0}<br>{SuperCat: 0.95}{LEASHG: 14250118180000.0}{BDN: 3400000000000.0}{SHIBG: 380000000000.0}{MODOG: 92000023552.00307}<br>{XMAS: 58013557180.0}{PPO: 20140438576.228848}{Swap7.org: 1427248638.0}{BUFFUNI: 1381627422.25}{MLG: 1000000000.0}<br>{FLAG: 1000000000.0}{RACAS: 425896090.65183353}{WNFT: 121609245.021931}{MGAME: 100000000.0}{DOGE: 51300000.0}<br>{Doge King Fund: 50000000.0}{DIVIDEND_TRACKER: 50000000.0}{MVR: 44000000.0}{Open: 37489014.9071141}{PEZ: 10000000.0}<br>{MAU: 10000000.0}{LOOK: 9965249.598891}{BabyTiger: 6684427.0}{MGOD: 5152408.0}{NSKS: 2598554.819765}<br>{VRLD: 2565865.0}{WOD: 2151532.0}{MST: 1000000.0}{META: 890000.0186900002}{Dex88.org: 800000.0}<br>{EFinance: 500000.0}{H3X: 392456.0}{Bittt.io: 268551.0}{ASL: 248579.0}{GAMBLING: 95000.0}<br>{SLX: 88888.0}{LGX: 64000.0}{TTOKEN: 42000.0}{GREEN: 10224.384926577459}{Lord: 10000.0}<br>{SCAMINA: 10000.0}{GalaxyArk: 9700.0}{MLWT: 8900.0}{MOONBIRDS: 7788.0}{RPAY: 5284.0}<br>{Ape Coin: 4735.327958641771}{EDC: 2500.0}{BSRT: 1401.0}{OKlink: 15541.14886357629}"
+                    }
+                },
+                {
+                    "name": "0x44cc771fbe10dea3836f37918cf89368589b6316",
+                    "symbolSize": 50,
+                    "label": {
+                        "fontSize": 10,
+                        "formatter": "0x44cc771fbe10dea3836f37918cf89368589b6316"
+                    },
+                    "category": 0,
+                    "enterable": true,
+                    "tooltip": {
+                        "trigger": "item",
+                        "triggerOn": "click",
+                        "textStyle": {
+                            "align": "center",
+                            "fontSize": 15
+                        },
+                        "formatter": "0x44cc771fbe10dea3836f37918cf89368589b6316<br>{USDT: 1.16666}{CATGIRL: 0.006079402}{METACOIN: 21717444141.963387}{Swap7.org: 2140872957.0}{FLOKIMUSK: 592942501.143359}<br>{METABOOK: 219350823.50128704}{ABOYS: 18000000.0}{renBTC: 1e-08}{OKlink: 4.9847177}"
+                    }
+                },
+                {
+                    "name": "0x4967ec98748efb98490663a65b16698069a1eb35",
+                    "symbolSize": 50,
+                    "label": {
+                        "fontSize": 10,
+                        "formatter": "0x4967ec98748efb98490663a65b16698069a1eb35"
+                    },
+                    "category": 0,
+                    "enterable": true,
+                    "tooltip": {
+                        "trigger": "item",
+                        "triggerOn": "click",
+                        "textStyle": {
+                            "align": "center",
+                            "fontSize": 15
+                        },
+                        "formatter": "0x4967ec98748efb98490663a65b16698069a1eb35<br>{Dex88.org: 800000.0}{BabyTiger: 0.00098}{OKlink: 4.98837581}"
+                    }
+                },
+                {
+                    "name": "0x0000000000000000000000000000000000000000",
+                    "symbolSize": 40,
+                    "label": {
+                        "fontSize": 10,
+                        "formatter": "0x0000000000000000000000000000000000000000"
+                    },
+                    "category": 1,
+                    "enterable": true,
+                    "tooltip": {
+                        "trigger": "item",
+                        "triggerOn": "click",
+                        "textStyle": {
+                            "align": "center",
+                            "fontSize": 15
+                        },
+                        "formatter": "0x0000000000000000000000000000000000000000<br>{OKlink: 1040.5786533018495}"
+                    }
+                }
+            ],
+            "categories": [
+                {
                     "itemStyle": {
                         "color": "red"
                     },
-                    "label": {
-                        "fontSize": 10
-                    },
-                    "enterable": true,
-                    "tooltip": {
-                        "textStyle": {
-                            "align": "center",
-                            "fontSize": 15
-                        },
-                        "formatter": "0x9eee6862b78fb6f9627d7d5a908d2114814fcecd<br>1<br>from:<br>0x9eee6862b78fb6f9627d7d5a908d2114814fcecd<br>{OKlink: 0.0}<br>"
-                    }
+                    "name": "\u8d77\u59cb\u8282\u70b9"
                 },
                 {
-                    "name": "0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd",
-                    "symbolSize": 40,
                     "itemStyle": {
                         "color": "black"
                     },
-                    "label": {
-                        "fontSize": 10
-                    },
-                    "enterable": true,
-                    "tooltip": {
-                        "textStyle": {
-                            "align": "center",
-                            "fontSize": 15
-                        },
-                        "formatter": "0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd<br>1<br>from:<br>0x9eee6862b78fb6f9627d7d5a908d2114814fcecd<br>{SQUID2: 295970628358725.3}<br>{EVER: 2200000000000.0}<br>{SLIM: 1596639417313.1907}<br>{POLO: 987321221264.0}<br>{LIKE: 804172743740.0}<br>{HAKA: 778870211053.0}<br>{REGEN: 777397599699.0}<br>{BACON: 679509793136.0}<br>{DAISY: 639447997738.0}<br>{DPX: 631530446861.0}<br>{DVF: 630041213688.0}<br>{GAFI: 615038734114.0}<br>{SLRS: 554635729085.0}<br>{GLMR: 543658628029.0}<br>{HMT: 534881310495.0}<br>{EFI: 528544722868.7857}<br>{LITH: 528165606248.0}<br>{AST: 519877633759.00006}<br>{VENT: 518132449542.0}<br>{CERE: 500997464193.0}<br>{ADS: 496871839663.0}<br>{SWASH: 490767408961.0}<br>{PERA: 485227106625.69214}<br>{BTRST: 454635086889.0}<br>{PLACE: 450245186125.0}<br>{PBX: 449653950790.0}<br>{YLD: 433645427844.0}<br>{ANGEL: 422839540822.0}<br>{SCA: 412570188136.0}<br>{SKT: 411505077482.0}<br>{FINA: 409876452531.0}<br>{SOLR: 409033824281.0}<br>{BLOK: 403328682311.0}<br>{$HEART: 402389660461.0}<br>{DAL: 401000937012.0}<br>{MPAD: 399407246336.0}<br>{CHNG: 390468446221.99994}<br>{NABOX: 389699189228.958}<br>{FANT: 387256908850.0}<br>{CPD: 384927421512.0}<br>{BEER: 373748205378.0}<br>{HDV: 364773625777.0}<br>{ACK: 363431066807.0}<br>{FTL: 363408845076.0}<br>{TOYDOGE: 359094608862.0}<br>{KFT: 357702416224.0}<br>{AURORA: 357158201103.0}<br>{SNK: 355929340522.0}<br>{CITY: 355167205361.0}<br>{DMLG: 353143630598.0}<br>{PNDR: 353116627866.0}<br>{GOG: 352603922353.0}<br>{MOT: 352391239345.0}<br>{BRKL: 351249377544.0}<br>{H2O: 351196252552.0}<br>{DES: 351147576913.0}<br>{WAFERSE: 349139323419.0}<br>{LARIX: 348111560944.0}<br>{GZONE: 347904589564.0}<br>{GOFX: 346199376400.0}<br>{VR: 345047115878.0}<br>{XRUNE: 344525846118.0}<br>{FIWA: 344068806288.0}<br>{BATH: 343256999663.0}<br>{BIT: 341521874006.0}<br>{$CRDN: 341351521814.0}<br>{1ART: 334211768581.0}<br>{TRADE: 333112700430.0}<br>{HERO: 332187150654.0}<br>{LUMERIN: 331555888987.0}<br>{CTR: 329274213513.0}<br>{GAN: 328190670068.0}<br>{PORT: 327957548539.0}<br>{WNCG: 326669983809.0}<br>{SHOE: 325371522474.0}<br>{DEHR: 325203704437.0}<br>{ORARE: 324991522512.0}<br>{BLOCK: 320540338390.0}<br>{KLO: 317735655679.0}<br>{B2M: 316907042415.0}<br>{HE: 315343291325.0}<br>{IDIA: 314380893077.0}<br>{LKT: 312982812517.0}<br>{CITIZEN: 312460375352.0}<br>{KMON: 312032741264.0}<br>{DNFT: 310287611530.0}<br>{CLNY: 309327745986.0}<br>{GOLD: 308887701939.0}<br>{SIS: 305136968613.0}<br>{KABY: 304255492783.0}<br>{AHOUSE: 303754664674.0}<br>{FAN: 302001715548.0}<br>{BRIGHT: 299741274299.0}<br>{XPRESS: 299610993344.0}<br>{DTO: 298656752373.0}<br>{CPOOL: 296779948973.0}<br>{PLSPAD: 293874035867.0}<br>{RPG: 290569170625.0}<br>{NUM: 289357775621.0}<br>{DREAMS: 289227065596.0}<br>{OKlink: 0.0003480835}<br>"
-                    }
+                    "name": "\u666e\u901a\u8282\u70b9"
                 },
                 {
-                    "name": "0x70dcf33ca09bd87bb2a301280331406ebd32c8a0",
-                    "symbolSize": 40,
                     "itemStyle": {
-                        "color": "black"
+                        "color": "blue"
                     },
-                    "label": {
-                        "fontSize": 10
-                    },
-                    "enterable": true,
-                    "tooltip": {
-                        "textStyle": {
-                            "align": "center",
-                            "fontSize": 15
-                        },
-                        "formatter": "0x70dcf33ca09bd87bb2a301280331406ebd32c8a0<br>1<br>from:<br>0x9eee6862b78fb6f9627d7d5a908d2114814fcecd<br>{JulD: 10987893.901548022}<br>{FINE: 1352721.707494773}<br>{Cake: 6080.877766099556}<br>{DPT: 25.463233471655233}<br>{SINU: 17600.0}<br>{APIDAI: 1300.0}<br>{CVC: 927.2}<br>{TT: 2.000827155}<br>{EPS: 100.0}<br>{CHEESE: 1.0}<br>{RKT: 8888.0}<br>{Pups: 9.5}<br>{CNFT: 2100.0}<br>{Apple: 10342.65}<br>{GKF: 1000.0}<br>{KBP: 1000.0}<br>{Pml: 1010.0}<br>{SuperCat: 0.95}<br>{SHIBG: 380000000000.0}<br>{TPDAO: 100000000.0}<br>{MGAME: 100000000.0}<br>{BEM: 32924227.71776919}<br>{DOGE: 3800000.0}<br>{RYL1.0: 543622.0}<br>{TY: 100000.0}<br>{SLX: 88888.0}<br>{C98: 84215.34881545576}<br>{COCOV2: 9700.000194}<br>{GalaxyArk: 9700.0}<br>{AVAX: 8311.597710116317}<br>{NEAR: 7510.194367231058}<br>{DODO: 4744.65837362292}<br>{Defrag: 1632.0}<br>{USSR: 1000.0}<br>{RTC: 843.6}<br>{METASPORT: 500.0}<br>{ZINU: 500.0}<br>{Grimace: 189.0}<br>{CFM: 112.0}<br>{BWTB: 100.0}<br>{CREDIT: 88.0}<br>{LiangXi: 83.6}<br>{NRG: 72.8}<br>{VVVT: 50.0}<br>{TTNT: 10.000000000000002}<br>{H2O: 10.0}<br>{XEL: 10.0}<br>{WEA: 8.0}<br>{LBP: 1.0}<br>{HSF: 1.0}<br>{VITE: 1.0}<br>{Shibmama: 1.0}<br>{WSNFT: 1.0}<br>{INDI: 1.0}<br>{ALPINE: 1.0}<br>{CD: 1.0}<br>{METAFLIX: 1.0}<br>{XHUNTER: 1.0}<br>{ROAR: 0.87}<br>{MPC: 0.8}<br>{MC: 0.27}<br>{ELS: 0.1}<br>{MER: 0.0006354896516846}<br>{OKlink: 1570.0508563357603}<br>"
-                    }
-                },
-                {
-                    "name": "0x2c6900b24221de2b4a45c8c89482fff96ffb7e55",
-                    "symbolSize": 30,
-                    "itemStyle": {
-                        "color": "black"
-                    },
-                    "label": {
-                        "fontSize": 10
-                    },
-                    "enterable": true,
-                    "tooltip": {
-                        "textStyle": {
-                            "align": "center",
-                            "fontSize": 15
-                        },
-                        "formatter": "0x2c6900b24221de2b4a45c8c89482fff96ffb7e55<br>1<br>from:<br>0x9eee6862b78fb6f9627d7d5a908d2114814fcecd<br>{FMN: 0.0088}<br>{OKlink: 0.0}<br>"
-                    }
-                },
-                {
-                    "name": "0xdc1c37ba039f06e4ba721834b505911376329eba",
-                    "symbolSize": 20,
-                    "itemStyle": {
-                        "color": "black"
-                    },
-                    "label": {
-                        "fontSize": 10
-                    },
-                    "enterable": true,
-                    "tooltip": {
-                        "textStyle": {
-                            "align": "center",
-                            "fontSize": 15
-                        },
-                        "formatter": "0xdc1c37ba039f06e4ba721834b505911376329eba<br>1<br>from:<br>0x9eee6862b78fb6f9627d7d5a908d2114814fcecd<br>{OKlink: 0.0}<br>"
-                    }
+                    "name": "\u4ea4\u6613\u6240"
                 }
             ],
             "edgeLabel": {
@@ -177,14 +191,14 @@
             "edgeSymbolSize": 10,
             "links": [
                 {
-                    "source": "0x9eee6862b78fb6f9627d7d5a908d2114814fcecd",
-                    "target": "0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd",
+                    "source": "0x44cc771fbe10dea3836f37918cf89368589b6316",
+                    "target": "0x0000000000000000000000000000000000000000",
                     "symbol": [
                         null,
                         "arrow"
                     ],
                     "lineStyle": {
-                        "color": "black",
+                        "color": "yellow",
                         "width": 2
                     },
                     "enterable": true,
@@ -196,18 +210,18 @@
                             "align": "center",
                             "fontSize": 15
                         },
-                        "formatter": "0x9eee6862b78fb6f9627d7d5a908d2114814fcecd -> 0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd<br>{2021-12-13 12:16:57, BNB: 5.0, transferhash: 0xde595eb1cb2615cf4d8d385fecf53be7442555ecc98cba0bb929fed1cb0e9511}<br>"
+                        "formatter": "0x44cc771fbe10dea3836f37918cf89368589b6316 -> 0x0000000000000000000000000000000000000000<br>{2021-10-31 02:29:37, anyETH: 450.0, transferhash: 0x56d14f430b4351cc34c082fd504a578f1bf4f9dcddf88a3a0276dd996bca8285}<br>{2021-10-31 02:38:55, anyETH: 100.0, transferhash: 0x3f18a5be1d593abc6d2e26073fcd6bef087fd361cd04185dd7682c82ae431262}<br>{2021-10-31 02:43:32, anyETH: 450.0, transferhash: 0xd9f33fe152ccb3a2767cb542ae1035323b004f77bd3c53c4cb6482d04e059432}<br>{2021-10-31 02:47:20, anyETH: 450.0, transferhash: 0x14d9a8dc18d16ccbe0139e82564a2562cf854f673216587ff59a79a28ee13917}<br>{2021-10-31 02:50:02, anyETH: 450.0, transferhash: 0x6433f8e213ba9205fe9b002569631908e1bb9a6f3d08541f83c1411c74d72f07}<br>{2021-10-31 02:54:29, anyETH: 450.0, transferhash: 0x9571138b1a1af41ae60ca8dad13bb410a584add3b04c0a3d6c5bfa5db8a8041d}<br>{2021-10-31 02:58:05, anyETH: 450.0, transferhash: 0x635a3813bbb485cb2d77462b69c44220ec479fb63197b2f25ad3f7479d8bcb75}<br>{2021-10-31 03:00:29, anyETH: 450.0, transferhash: 0xaf4dc9e83036afa0b7443a42dbf62c5c4835ae009c31491c60f51ec46c7936a3}<br>{2021-10-31 03:03:50, anyETH: 450.0, transferhash: 0x3b94257317ebf6efa7bca2953e7ea478dbee24865e65ee576b0675e114e1a53a}<br>{2021-10-31 03:07:32, anyETH: 450.0, transferhash: 0xd0ecbeac9bef852b7336bdfabcfafb910b96c997cf0149048997defbda7ad381}<br>{2021-10-31 03:13:53, anyETH: 450.0, transferhash: 0xb654618801929ad903abcffaff75fbbe30a34673d641d8323dd437ebfbc19354}<br>{2021-10-31 03:24:53, anyETH: 450.0, transferhash: 0x5bd7795460e450910fd4909861a78e8344677d27475f17932d497af53f007903}<br>{2021-10-31 03:29:02, anyETH: 450.0, transferhash: 0x614b5f04ecc7ca4d4268e883f5a50b527f34aae3ee3f6c934997c4c0360a1dad}<br>{2021-10-31 03:44:26, anyETH: 450.0, transferhash: 0xa0a2642d044e2b78cb9f90b7e5bfc0c16569b5267aca6131e1b31e1185f0b259}<br>{2021-11-03 02:04:10, renBTC: 70.0, transferhash: 0xf8e64eb614f50b807797e951d36381a3594feed1ee7ebd4bb9b9ed2372713c2d}<br>{2021-11-03 03:05:29, renBTC: 79.0, transferhash: 0x68d98a12bfb018bd4136e9a66f088f5d65e7a8a21d27e4dec09df7b7237cbd2d}<br>{2021-11-03 03:12:03, renBTC: 77.0, transferhash: 0x8359a562e9155cb448a8a306f3fdd583c743caf45216200c8585be0ed38da833}<br>"
                     }
                 },
                 {
-                    "source": "0x9eee6862b78fb6f9627d7d5a908d2114814fcecd",
-                    "target": "0x70dcf33ca09bd87bb2a301280331406ebd32c8a0",
+                    "source": "0x48c94305bddfd80c6f4076963866d968cac27d79",
+                    "target": "0x4967ec98748efb98490663a65b16698069a1eb35",
                     "symbol": [
                         null,
                         "arrow"
                     ],
                     "lineStyle": {
-                        "color": "black",
+                        "color": "red",
                         "width": 2
                     },
                     "enterable": true,
@@ -219,12 +233,12 @@
                             "align": "center",
                             "fontSize": 15
                         },
-                        "formatter": "0x9eee6862b78fb6f9627d7d5a908d2114814fcecd -> 0x70dcf33ca09bd87bb2a301280331406ebd32c8a0<br>{2021-12-13 14:37:43, BNB: 1570.0, transferhash: 0x633bc472ac02f1776fc9782e3d0fbb9433fcf8a802d25bc2d1add5cd6f21dc59}<br>"
+                        "formatter": "0x48c94305bddfd80c6f4076963866d968cac27d79 -> 0x4967ec98748efb98490663a65b16698069a1eb35<br>{2021-11-11 03:21:13, BNB: 5.0, transferhash: 0x5444820c1384cf6b21fb2868f7be80be94e4ce277ec6f6390bdf5ebacef21d3e}<br>{2021-11-11 03:26:10, USDT: 24669898.0, transferhash: 0x9a08c80ddf8921ad3d4e0b3c1beabab623df094d01ea025906e9940dca0f1f4c}<br>{2021-11-11 07:23:38, BUSD: 6415714.0, transferhash: 0xda5c3d9235cd6b4cc56c2b2e0686641f1f31af2dc935ec1c666f78883ca54c6d}<br>{2021-11-11 07:27:50, USDC: 2428247.0, transferhash: 0x1282e35d032354c7089514ecea773584d2a95dcb026292847f10ffdcf76884c2}<br>"
                     }
                 },
                 {
-                    "source": "0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd",
-                    "target": "0x2c6900b24221de2b4a45c8c89482fff96ffb7e55",
+                    "source": "0x48c94305bddfd80c6f4076963866d968cac27d79",
+                    "target": "0x44cc771fbe10dea3836f37918cf89368589b6316",
                     "symbol": [
                         null,
                         "arrow"
@@ -242,53 +256,7 @@
                             "align": "center",
                             "fontSize": 15
                         },
-                        "formatter": "0x986a2fca9eda0e06fbf7839b89bfc006ee2a23dd -> 0x2c6900b24221de2b4a45c8c89482fff96ffb7e55<br>{2021-12-12 04:12:27, BNB: 1500.0, transferhash: 0xa6c6c1ba686c5ca2d980746a5b10e6df7ff8db1752a51b7eb7ae8b4b23ac1b32}<br>{2021-12-12 04:29:03, BNB: 60.0, transferhash: 0xbf41670c955e9cf74d49ac4c328dc9399b7859685f77c97060984e204ea80e72}<br>{2021-12-12 05:31:45, BNB: 7.0, transferhash: 0x1af84dee64eade485e83cf611969ea09cb34009c307f3a07c39d8f3c972ea910}<br>{2021-12-12 22:41:52, BNB: 1.0, transferhash: 0x47fe425108e5cc6e9c4096f0b00bed2ac307be203ac6acd1f21dbd61cdaf9616}<br>"
-                    }
-                },
-                {
-                    "source": "0x2c6900b24221de2b4a45c8c89482fff96ffb7e55",
-                    "target": "0xdc1c37ba039f06e4ba721834b505911376329eba",
-                    "symbol": [
-                        null,
-                        "arrow"
-                    ],
-                    "lineStyle": {
-                        "color": "black",
-                        "width": 2
-                    },
-                    "enterable": true,
-                    "label": {
-                        "fontSize": 15
-                    },
-                    "tooltip": {
-                        "textStyle": {
-                            "align": "center",
-                            "fontSize": 15
-                        },
-                        "formatter": "0x2c6900b24221de2b4a45c8c89482fff96ffb7e55 -> 0xdc1c37ba039f06e4ba721834b505911376329eba<br>{2021-12-12 21:39:17, BNB: 0.0, transferhash: 0xa5e69a859235638692995ea1f776bd4afa20d9b0851038c6f3ba2fce613221af}<br>"
-                    }
-                },
-                {
-                    "source": "0x2c6900b24221de2b4a45c8c89482fff96ffb7e55",
-                    "target": "0x9eee6862b78fb6f9627d7d5a908d2114814fcecd",
-                    "symbol": [
-                        null,
-                        "arrow"
-                    ],
-                    "lineStyle": {
-                        "color": "black",
-                        "width": 2
-                    },
-                    "enterable": true,
-                    "label": {
-                        "fontSize": 15
-                    },
-                    "tooltip": {
-                        "textStyle": {
-                            "align": "center",
-                            "fontSize": 15
-                        },
-                        "formatter": "0x2c6900b24221de2b4a45c8c89482fff96ffb7e55 -> 0x9eee6862b78fb6f9627d7d5a908d2114814fcecd<br>{2021-12-13 10:54:23, BNB: 999.0, transferhash: 0x11fe5e4658f0380d1fccca719be90b1f4249bf2fcc6b199cfab51fe3c56ef618}<br>{2021-12-13 10:55:29, BNB: 400.0, transferhash: 0xde5ce9817f9c846bf96b6fb07a02afd66d7b812135a45846958ec6d6954faf9c}<br>{2021-12-13 10:56:08, BNB: 0.0, transferhash: 0xf169d358b4e9e1297a08400958f02a13c47bd95429b31c664cc8742eb0dc8af2}<br>{2021-12-13 11:00:17, BNB: 169.0, transferhash: 0x8b0ade32d31249c78fd1a380f2c0752b77249ec602596016f8d337ceaeef02c8}<br>"
+                        "formatter": "0x48c94305bddfd80c6f4076963866d968cac27d79 -> 0x44cc771fbe10dea3836f37918cf89368589b6316<br>{2021-10-31 00:54:05, BNB: 5.0, transferhash: 0xf45259d95c37e57201d3458f5f5b0b199386c9e096dd967d087d4344add7d72c}<br>{2021-10-31 00:55:20, ETH: 2000.0, transferhash: 0x80636964e0ec33b44689e22aa7c5d47518751411475b5dd0975048342faf6099}<br>{2021-10-31 02:53:29, ETH: 4000.0, transferhash: 0xce864913d488efbbd07916f9813d021839be264407f96367950d3138b600e6ff}<br>{2021-10-31 03:30:59, ETH: 1000.0, transferhash: 0x5c0b2fd45f6274a23b19ea6362b226f2dcaea5e57209f8dc211e8746e9aab411}<br>{2021-11-03 02:08:51, ETH: 2304.0, transferhash: 0x68f28d69f30b6aca06752fa371907fdf4165a17b6f95d09d70ef2810014f8edc}<br>"
                     }
                 }
             ]
@@ -296,8 +264,16 @@
     ],
     "legend": [
         {
-            "data": [],
-            "selected": {}
+            "data": [
+                "\u8d77\u59cb\u8282\u70b9",
+                "\u666e\u901a\u8282\u70b9",
+                "\u4ea4\u6613\u6240"
+            ],
+            "selected": {
+                "\u8d77\u59cb\u8282\u70b9": true,
+                "\u666e\u901a\u8282\u70b9": true,
+                "\u4ea4\u6613\u6240": true
+            }
         }
     ],
     "tooltip": {
@@ -318,7 +294,10 @@
         "padding": 5
     }
 };
-        chart_56b6b4729e0743969212d1048aa02d4f.setOption(option_56b6b4729e0743969212d1048aa02d4f);
+        chart_chart.setOption(option_chart);
+            window.addEventListener('resize', function(){
+                chart_chart.resize();
+            })
     </script>
 </body>
 </html>

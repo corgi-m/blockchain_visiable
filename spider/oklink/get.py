@@ -101,7 +101,6 @@ class OKlink(ABC):
             return 0
         data = Json.loads(res.text)
         if data is None or "code" in data and data["code"] != 0 or "status" in data and data["status"] == 404:
-            print("get_total")
             return 0
         return data['data']['total']
 
@@ -130,7 +129,7 @@ class OKlink(ABC):
         if data is None or data["code"] != 0:
             return set()
         hits = data["data"]["hits"]
-        return [(i["txhash"], address, Date.date_transform(i["blocktime"]/100)) for i in hits]
+        return [(i["txhash"], address, Date.date_transform(i["blocktime"])) for i in hits]
 
     @staticmethod
     def parse_internal_value(address, internal_main_res, internal_other_res):
@@ -254,6 +253,7 @@ class OKGet(ABCGet):
     def get_next_nodes(self, nodes, from_or_to) -> set[str]:
         print('start get len')
         len_edges = self.get_len_edges(nodes)
+        print(len_edges)
         print('start get res')
         node_addr = []
         next_nodes_res = []
@@ -341,4 +341,5 @@ class OKGet(ABCGet):
         self.__nodeslist = [i for i in count['from'] | count['to'] if not Label.get(i)]
         print('total nodes count: ' + str(len(self.__nodeslist)))
         self.save_balance()
-        #self.save_internal()
+        if config.internal:
+            self.save_internal()

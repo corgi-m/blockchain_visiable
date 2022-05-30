@@ -7,7 +7,7 @@ class ABCGet(ABC):
     # 获取下一级节点
     @classmethod
     @abstractmethod
-    def get_next_nodes(cls, node) -> set[str]:
+    def get_next_nodes(cls, nodes, from_or_to) -> set[str]:
         ...
 
     # 获取节点信息

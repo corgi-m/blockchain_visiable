@@ -92,6 +92,7 @@ class Config:
         cfg.MAX_TIME_STAMP = Date.date_transform_reverse(cfg.MAX_TIME_STAMP)
         cfg.db.dbname = args.link
         cfg.from_or_to = args.direction
+        cfg.symbol = args.symbol
         cfg.nodes = set(Config.parse_nodes(cfg.parser_readfile(args.nodes)))
         cfg.save = args.save
         cfg.visnodes = Config.parse_nodes(cfg.parser_readfile(args.visnodes))
@@ -128,10 +129,10 @@ def parser_init():
     parser.add_argument('-l', '--log', nargs='?', type=argparse.FileType('a'), default='./configs/error.log')
     parser.add_argument('-m', '--dbstruct', type=argparse.FileType('r'), default='./configs/db.sql')
     parser.add_argument('-d', '--deep', type=int, default=3)
-    parser.add_argument('-e', '--edgelimit', type=int)
-    parser.add_argument('-u', '--valuelimit', type=int)
     parser.add_argument('-L', '--link', nargs='?', type=str, default='trx', choices=['trx', 'eth', 'bnb'])
     parser.add_argument('-D', '--direction', nargs='+', type=str, default=['from', 'to'], choices=['from', 'to'])
+    parser.add_argument('-S', '--symbol', nargs='+', type=str, default=[])
+    parser.add_argument('-I', '--internal', action='store_true')
 
     args = parser.parse_args(sys.argv[1:])
     global config

@@ -19,7 +19,8 @@ class BNB(OKlink):
 
     @staticmethod
     def get_total_transfer(address) -> list[Net.AsyncRequest]:  # 下一级节点个数
-        return Net.greq_get(None)
+        params = {"tokenType": 'BEP20'}
+        return Net.greq_get(config.bnbtransfer.format(address), params)
 
     @staticmethod
     def get_total_transaction(address) -> list[Net.AsyncRequest]:  # 下一级节点个数
@@ -28,7 +29,8 @@ class BNB(OKlink):
 
     @staticmethod
     def get_nodes_transfer(address, offset, limit) -> list[Net.AsyncRequest]:  # 下一级节点的集合。
-        return Net.greq_get(None)
+        params = {"offset": offset, "limit": limit, "tokenType": 'BEP20'}
+        return Net.greq_get(config.bnbtransfer.format(address), params)
 
     @staticmethod
     def get_nodes_transaction(address, offset, limit) -> list[Net.AsyncRequest]:  # 下一级节点的集合。

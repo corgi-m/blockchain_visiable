@@ -21,10 +21,12 @@ class Get:
         layers.append(cls.create_node(next_node))
 
         count[from_or_to] |= set(next_node)
+        print(count[from_or_to])
 
         for _ in range(config.TURN):
             transfers = Transfer.get_transfer(next_node, from_or_to)
             transfer = [direction(transfer) for transfer in transfers]
+
             this_nodes, this_edges = cls.create_edge(transfer, from_or_to)
             next_node = {node for node in this_nodes if not Nodecut(node, from_or_to).cut()}
 
@@ -43,18 +45,18 @@ class Get:
         nodes = []
 
         for edge in all_edge:
+            if len(config.symbol) > 0 and edge[2][2] not in config.symbol:
+                continue
             last, this = (edge[0], edge[1]) if from_or_to == 'to' else (edge[1], edge[0])
             if last not in pairs:
                 pairs[last] = dict()
             if this not in pairs[last]:
                 pairs[last].update({this: Edge(edge[0], edge[1])})
             pairs[last][this].add_info(edge[2])
-
         for address, pair in pairs.items():
             postcut = Postcut(len(pair), address, Node.get_label(address))
             if postcut.cut():
                 continue
-
             edges.extend(pair.values())
             nodes.extend(pair.keys())
 
@@ -127,7 +129,8 @@ class Nodeinfo:
     def get_node_tips(self) -> str:
         tips = self.node.address + '<br>'
         tips += self.balanceformat(self.node.balance)
-        # self.internalformat(sorted(self.node.internal))
+        if config.internal:
+            tips += self.internalformat(sorted(self.node.internal))
         if self.color == 'blue':
             tips = self.node.label + '<br>' + tips
         tips = Utils.tip_filter(tips)

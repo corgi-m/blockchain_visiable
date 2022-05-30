@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import model
+from config import config
 from utils import Date
 
 Info = tuple[str, str, str, float]
@@ -10,7 +11,8 @@ class Node:
     def __init__(self, address: str):
         self.__address: str = address
         self.__balance: dict[str, float] = self.get_balance(address)
-        #self.__internal: list[tuple[int, str, str, float, str, float]] = self.get_internal(address)
+        if config.internal:
+            self.__internal: list[tuple[int, str, str, float, str, float]] = self.get_internal(address)
         self.__label: str = self.get_label(address)
         self.__hlen: int = 0
 
@@ -46,6 +48,8 @@ class Node:
             return res
         for i in internal:
             res.append((Date.date_transform_reverse(str(i[6])), i[0], i[6], i[3], i[2], i[5], i[4]))
+        print(address)
+
         return res
 
     @property

@@ -90,12 +90,15 @@ class OKPostcut(ABCPostcut):
 
     def is_tag(self) -> bool:
         if self.from_or_to + "Tag" in self.edge and len(self.edge[self.from_or_to + "Tag"]) > 0:
-            Save.save_label(self.node, self.edge[self.from_or_to + "Tag"][0]['tag'])
-            return True
-        if self.from_or_to + "EntityTag" in self.edge:
-            Save.save_label(self.node, self.edge[self.from_or_to + "EntityTag"])
-            return True
-        return False
+            tag = self.edge[self.from_or_to + "Tag"][0]['tag']
+        elif self.from_or_to + "EntityTag" in self.edge:
+            tag = self.edge[self.from_or_to + "EntityTag"]
+        elif self.from_or_to + "TagMap" in self.edge and self.node in self.edge[self.from_or_to + "TagMap"]:
+            tag = self.edge[self.from_or_to + "TagMap"][self.node]
+        else:
+            return False
+        Save.save_label(self.node, tag)
+        return True
 
     def cut(self) -> bool:
         if self.is_count():
